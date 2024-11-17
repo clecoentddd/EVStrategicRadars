@@ -1,71 +1,71 @@
-import request from "supertest";
-import { clearEventStore } from "../../radars/infrastructure/eventStore"; 
+import { handleRadarCreation } from "../../radars/model/radars"; // Import the function
+import { clearEventStore } from "../../radars/infrastructure/eventStore"; // Import the helper to clear events
+import { getEvents } from "../../radars/infrastructure/eventStore"; 
 
-// Assuming the base URL for your application is running on localhost:3000
-const baseUrl = "http://localhost:3000"; 
+// Clear event store before tests run
+beforeAll(async () => {
+  console.log("Clearing all events before tests...");
+  await clearEventStore();
+});
 
-describe("Radar API", () => {
-
-    // Clear events before running all the tests
-    beforeAll(async () => {
-      console.log("Clearing all events before tests...");
-      await clearEventStore(); // Clear all events from the event store
-    });
-
-
-  it("should create a new radar", async () => {
+describe("Radar Creation Tests", () => {
+  test("should create a new radar (OOO)", async () => {
     const command = {
-      type: "CREATE_RADAR",
       payload: {
-        name: "CEO5",  // First radar name
+        name: "OOO232",
         description: "Top radar of the company",
         level: 1,
       },
     };
 
-    const res = await request(baseUrl)
-      .post("/api/radars")
-      .send(command);
+    // Call the function directly without the API
+    const result = await handleRadarCreation(command);
 
-    console.log("Create Radar Response:", res.body);  // Log the response
+    // Check if the radar was successfully created
+    expect(result.success).toBe(true);
+    expect(result.radar).toHaveProperty("id");
+    expect(result.radar.name).toBe("OOO232");
+    expect(result.radar.description).toBe("Top radar of the company");
+    expect(result.radar.level).toBe(1);
+    expect(result.uuid).toBe(result.radar.id); // Ensure that the returned uuid matches the radar's id
 
-    expect(res.status).toBe(200);
-    expect(res.body.success).toBe(true);
+    // Validate the event is saved correctly
+    const events = await getEvents();
+    expect(events.length).toBe(1); // Check if only one event exists
+    expect(events[0].type).toBe("CREATE_RADAR");
+    expect(events[0].payload.name).toBe("OOO232");
+    expect(events[0].payload.id).toBe(result.uuid); // Ensure the event has the correct uuid
   });
 
-  it("should not allow duplicate radar names", async () => {
-    const command = {
-      type: "CREATE_RADAR",
+  test("should not allow duplicate radar names", async () => {
+    // Creating the first radar
+    const command1 = {
       payload: {
-        name: "CEO5",  // Same name to trigger the duplicate check
+        name: "OOO232",
         description: "Another radar",
         level: 1,
       },
     };
 
-    // Log the existing radars before trying to create a duplicate radar
-    const existingRadars = await request(baseUrl).get("/api/radars");
-    console.log("Existing Radars Before Creating CEO2:", existingRadars.body); 
+    await handleRadarCreation(command1); // This should succeed
 
-    const res = await request(baseUrl)
-      .post("/api/radars")
-      .send(command);
+    // Attempt to create a radar with the same name
+    const command2 = {
+      payload: {
+        name: "OOO232", // Duplicate name
+        description: "Duplicate radar",
+        level: 2,
+      },
+    };
 
-    console.log("Duplicate Radar Response:", res.body);  // Log the response
-    console.log("Duplicate Radar Status:", res.status); // Log the status code
+    const result = await handleRadarCreation(command2); // This should fail
 
-    expect(res.status).toBe(400);  // Expecting 400 for duplicate names
-    expect(res.body.success).toBe(false);
-    expect(res.body.message).toContain("Radar name must be unique");
-  });
-});
+    // Check that it fails with the appropriate message
+    expect(result.success).toBe(false);
+    expect(result.message).toBe("Radar name must be unique");
 
-describe("Example Test", () => {
-  it("should pass", async () => {
-    // Mocking a simple GET request to the root endpoint
-    const res = await request(baseUrl).get("/");
-
-    // Check that the status code returned is 200
-    expect(res.statusCode).toBe(200);
+    // Verify that no new events were added
+    const events = await getEvents();
+    expect(events.length).toBe(1); // Only the first event should be saved
   });
 });

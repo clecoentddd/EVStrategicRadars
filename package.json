@@ -7,14 +7,15 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
-    "dev:test": "concurrently \"npm run dev\" \"npm test\""
+    "dev:test": "concurrently \"npm run dev\" \"npm test --watch\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.46.1",
     "d3": "^7.9.0",
     "next": "^15.0.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -22,6 +23,7 @@
     "babel-jest": "^29.7.0",
     "concurrently": "^9.1.0",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "supertest": "^7.0.0"
   }
 }
