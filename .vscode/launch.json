@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Next.js with Jest",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run", 
+        "dev:test"  // This will run both Next.js server and Jest in watch mode
+      ],
+      "env": {
+        "NODE_OPTIONS": "--inspect=9232" // Ensure the correct port for inspection
+      },
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/.next/**/*.js"
+      ]
+    }
+  ]
+}

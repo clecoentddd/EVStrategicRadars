@@ -1,26 +1,21 @@
-// infrastructure/eventStore.js
+// pages/radars/infrastructure/eventStore.js
 
-const eventStore = [];
+const eventStore = []; // In-memory event storage
 
-// Save events to the in-memory event store
 export const saveEvent = async (event) => {
-  // Check if an event with the same radar name already exists
-  const existingEvent = eventStore.find(e => e.payload.name === event.payload.name);
-  
-  if (existingEvent) {
-    throw new Error("Radar name must be unique");
-  }
+  eventStore.push(event); // Push the new event into the event store
 
-  // If no duplicate found, save the event
-  eventStore.push(event);
+  // Log the event being saved and the current state of the event store
+  console.log("ES Event saved:", event);
+  console.log("ES Current Events in Memory after saving:", eventStore); // Log all stored events after saving
 };
 
-// Get all stored events (useful for tests or debugging)
 export const getEvents = async () => {
+  console.log("ES Fetching Events from Memory:", eventStore); // Log the fetch operation
   return [...eventStore]; // Return a copy to prevent mutation
 };
 
-// Clear the event store (useful for tests)
 export const clearEventStore = async () => {
-  eventStore.length = 0;
+  eventStore.length = 0; // Clear all events
+  console.log("ES Event store cleared."); // Log when the store is cleared
 };

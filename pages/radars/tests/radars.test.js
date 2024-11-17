@@ -1,14 +1,23 @@
 import request from "supertest";
+import { clearEventStore } from "../../radars/infrastructure/eventStore"; 
 
 // Assuming the base URL for your application is running on localhost:3000
 const baseUrl = "http://localhost:3000"; 
 
 describe("Radar API", () => {
+
+    // Clear events before running all the tests
+    beforeAll(async () => {
+      console.log("Clearing all events before tests...");
+      await clearEventStore(); // Clear all events from the event store
+    });
+
+
   it("should create a new radar", async () => {
     const command = {
       type: "CREATE_RADAR",
       payload: {
-        name: "CEO1",  // First radar name
+        name: "CEO5",  // First radar name
         description: "Top radar of the company",
         level: 1,
       },
@@ -28,7 +37,7 @@ describe("Radar API", () => {
     const command = {
       type: "CREATE_RADAR",
       payload: {
-        name: "CEO1",  // Same name to trigger the duplicate check
+        name: "CEO5",  // Same name to trigger the duplicate check
         description: "Another radar",
         level: 1,
       },
