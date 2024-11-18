@@ -7,9 +7,10 @@ export async function handleRadarCreation(command) {
 
   // Fetch existing events to check for duplicates
   const existingRadars = await getEvents();
-  console.log("Existing events:", existingRadars); // Log all existing events
+  console.log("MODEL Existing events:", existingRadars); // Log all existing events
 
   // Check for duplicates
+  console.log("MODEL Check for duplicate");
   const isDuplicate = existingRadars.some((event) => {
     console.log("MODEL Duplicate? from event", event.payload.name); // Log the name from each event
     console.log("MODEL Duplicate? from input", name);
