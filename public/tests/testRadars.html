@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Radar Creation</title>
+  <script>
+    async function createRadar() {
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+      const level = parseInt(document.getElementById("level").value, 10);
+
+      const response = await fetch("/api/radars", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, description, level }),
+      });
+
+      const result = await response.json();
+      const resultDiv = document.getElementById("result");
+
+      if (response.ok) {
+        resultDiv.innerHTML = `
+          <p>Radar created successfully!</p>
+          <p>UUID: ${result.uuid}</p>
+          <p>Name: ${result.radar.name}</p>
+          <p>Description: ${result.radar.description}</p>
+          <p>Level: ${result.radar.level}</p>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p>Error: ${result.message}</p>`;
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Create a New Radar</h1>
+  <form onsubmit="event.preventDefault(); createRadar();">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required />
+    <br />
+    <label for="description">Description:</label>
+    <input type="text" id="description" required />
+    <br />
+    <label for="level">Level:</label>
+    <input type="number" id="level" required />
+    <br />
+    <button type="submit">Create Radar</button>
+  </form>
+  <div id="result"></div>
+</body>
+</html>
