@@ -1,1 +1,22 @@
-node_modules
+# Node modules
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# VSCode settings
+.vscode/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db

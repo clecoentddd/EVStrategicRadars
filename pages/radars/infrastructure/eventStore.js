@@ -14,10 +14,11 @@ export const saveEvent = async (event) => {
   // If the event type is "CREATE_RADAR", project it to Supabase
   if (event.type === 'CREATE_RADAR') {
     try {
-      await testConnection
-      // await projectRadarToSupabase(event.payload); // Project to Supabase
+      // await testConnection();
+      await projectRadarToSupabase(event.payload); // Project to Supabase
     } catch (error) {
-      console.error('ES1 Error projecting radar to Supabase:', error);
+      console.log("ES3 Event type:", event.type);
+      console.log('ES3 Error projecting radar to Supabase:', error);
     }
   }
 };
