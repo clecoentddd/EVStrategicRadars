@@ -1,4 +1,5 @@
 // pages/radars/infrastructure/eventStore.js
+import { projectRadarToSupabase } from './radarProjection';
 
 const eventStore = []; // In-memory event storage
 
@@ -6,8 +7,19 @@ export const saveEvent = async (event) => {
   eventStore.push(event); // Push the new event into the event store
 
   // Log the event being saved and the current state of the event store
-  console.log("ES Event saved:", event);
-  console.log("ES Current Events in Memory after saving:", eventStore); // Log all stored events after saving
+  console.log("ES1 Event saved:", event);
+  console.log("ES1 Current Events in Memory after saving:", eventStore); // Log all stored events after saving
+  console.log("ES1 Event type:", event.type);
+
+  // If the event type is "CREATE_RADAR", project it to Supabase
+  if (event.type === 'CREATE_RADAR') {
+    try {
+      await testConnection
+      // await projectRadarToSupabase(event.payload); // Project to Supabase
+    } catch (error) {
+      console.error('ES1 Error projecting radar to Supabase:', error);
+    }
+  }
 };
 
 export const getEvents = async () => {

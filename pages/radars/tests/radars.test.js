@@ -1,3 +1,10 @@
+import { config } from 'dotenv';
+config();
+
+// Check .env.local are picked up
+console.log('RadarTest URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+console.log('RadarTest Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
 import { handleRadarCreation } from "../../radars/model/radars"; // Import the function
 import { clearEventStore } from "../../radars/infrastructure/eventStore"; // Import the helper to clear events
 import { getEvents } from "../../radars/infrastructure/eventStore"; 
