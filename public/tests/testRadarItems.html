@@ -14,7 +14,7 @@
       const category = document.getElementById("category").value;
       const impact = document.getElementById("impact").value;
       const cost = document.getElementById("cost").value;
-      const zoom_id = document.getElementById("zoom_id").value || null;
+      const zoom_in = document.getElementById("zoom_in").value || null;
 
       // Make the API request to create the radar item
       const response = await fetch("/api/radaritems", {
@@ -22,7 +22,7 @@
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ radar_id, name, description, type, category, impact, cost, zoom_id }),
+        body: JSON.stringify({ radar_id, name, description, type, category, impact, cost, zoom_in }),
       });
 
       const resultDiv = document.getElementById("result");
@@ -37,7 +37,7 @@
                                <p><strong>Category:</strong> ${data.category}</p>
                                <p><strong>Impact:</strong> ${data.impact}</p>
                                <p><strong>Cost:</strong> ${data.cost}</p>
-                               <p><strong>Zoom ID:</strong> ${data.zoom_id || 'None'}</p>`;
+                               <p><strong>Zoom ID:</strong> ${data.zoom_in || 'None'}</p>`;
       } else {
         // If an error occurs, display the error message
         const error = await response.json();
@@ -87,8 +87,8 @@
       <option value="high">High</option>
     </select>
     <br />
-    <label for="zoom_id">Zoom ID (optional):</label>
-    <input type="text" id="zoom_id" />
+    <label for="zoom_in">Zoom ID (optional):</label>
+    <input type="text" id="zoom_in" />
     <br />
     <button type="submit">Create Radar Item</button>
   </form>

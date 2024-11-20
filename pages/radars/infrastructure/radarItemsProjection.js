@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid"; // UUID generator for creating radar item i
 
 /**
  * Project a radar item creation event into the Supabase "radar_items" table.
- * @param {Object} radarItem - The radar item object containing radar_id, name, description, type, category, impact, cost, zoom_id, etc.
+ * @param {Object} radarItem - The radar item object containing radar_id, name, description, type, category, impact, cost, zoom_in, etc.
  * @returns {Promise<Object>} The result of the Supabase insert operation.
  */
 export async function projectRadarItemToSupabase(radarItem) {
@@ -28,7 +28,7 @@ export async function projectRadarItemToSupabase(radarItem) {
           category: radarItem.category,
           impact: radarItem.impact,
           cost: radarItem.cost,
-          zoom_in: radarItem.zoom_id || null, // Optional field
+          zoom_in: radarItem.zoom_in || null, // Optional field
           created_at: new Date().toISOString(), // Set creation time
         },
       ]);
