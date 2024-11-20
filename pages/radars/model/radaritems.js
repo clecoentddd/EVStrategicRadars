@@ -1,8 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
 import { saveRadarItemEvent, getRadarItemEvents } from "../infrastructure/eventStoreRadarItems"; // Import event handling functions
 
 export async function handleRadarItemCreation(command) {
-  const { radar_id, name, description, type, category, impact, cost, zoom_id } = command.payload;
+  const { radar_id, name, description, type, category, impact, cost, zoom_in } = command.payload;
 
   // Validate inputs to ensure mandatory fields are provided
   if (!radar_id || !name || !type || !category || !impact || !cost) {
@@ -21,14 +20,10 @@ export async function handleRadarItemCreation(command) {
     return { success: false, message: `Radar item with name "${name}" already exists for this radar.` };
   }
 
-  // Generate a unique radar item ID
-  const radarItemId = uuidv4(); // Generate a new UUID for the radar item
-
   // Create radar item event
   const event = {
     type: "CREATE_RADAR_ITEM",
     payload: {
-      radar_item_id: radarItemId, // Store the unique radar item ID
       radar_id,
       name,
       description,
@@ -36,12 +31,16 @@ export async function handleRadarItemCreation(command) {
       category,
       impact,
       cost,
-      zoom_id: zoom_id || null, // Optional zoom_id
+      zoom_in: zoom_in || null, // Optional zoom_in
     },
   };
 
   // Save the event to the event store
-  await saveRadarItemEvent(event);
+  try {
+    await saveRadarItemEvent(event);
+  } catch (error) {
+    return { success: false, message: `Error saving event: ${error.message}` };
+  }
 
   return { success: true, message: "Radar item created successfully", radarItem: event.payload };
 }

@@ -1,12 +1,21 @@
-import { projectRadarItemToSupabase } from './radarItemsProjection';
+import { v4 as uuidv4 } from "uuid"; // UUID generator for creating radar item id
+import { projectRadarItemToSupabase } from './radarItemsProjection'; // Import projection function
 
 const radarItemEvents = []; // In-memory storage for radar item events
 
 export const saveRadarItemEvent = async (event) => {
-  radarItemEvents.push(event);
+  try {
+    // Generate a unique radar_item_id
+    const radar_item_id = uuidv4();
 
-  console.log("Radar Item Event saved:", event);
-  console.log("Current Radar Item Events in Memory:", radarItemEvents);
+    // Add the generated radar_item_id to the event payload
+    event.payload.radar_item_id = radar_item_id;
+
+    // Save the event in memory
+    radarItemEvents.push(event);
+
+    console.log("Radar Item Event saved:", event);
+    console.log("Current Radar Item Events in Memory:", radarItemEvents);
 
     // Project the radar item to Supabase
     try {
@@ -16,6 +25,10 @@ export const saveRadarItemEvent = async (event) => {
       console.error("Projection Error projecting radar item to Supabase:", error.message);
       return { success: false, message: "Projection Error projecting radar item to Supabase" };
     }
+  } catch (error) {
+    console.error("Error saving radar item event:", error.message);
+    return { success: false, message: "Error saving radar item event" };
+  }
 };
 
 export const getRadarItemEvents = async () => {
