@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Radar Item</title>
+  <script>
+    async function createRadarItem() {
+      // Get input values from the form
+      const radar_id = '7267ff9d-4f29-43e2-9310-1746f20136df' // document.getElementById("radar_id").value;  // Use value from the input field
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value || null;
+      const type = document.getElementById("type").value;
+      const category = document.getElementById("category").value;
+      const impact = document.getElementById("impact").value;
+      const cost = document.getElementById("cost").value;
+      const zoom_id = document.getElementById("zoom_id").value || null;
+
+      // Make the API request to create the radar item
+      const response = await fetch("/api/radaritems", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ radar_id, name, description, type, category, impact, cost, zoom_id }),
+      });
+
+      const resultDiv = document.getElementById("result");
+
+      if (response.ok) {
+        // If the creation is successful, display the response details
+        const data = await response.json();
+        resultDiv.innerHTML = `<p>Radar item created successfully!</p>
+                               <p><strong>Radar Item ID:</strong> ${data.radar_item_id}</p>
+                               <p><strong>Name:</strong> ${data.name}</p>
+                               <p><strong>Type:</strong> ${data.type}</p>
+                               <p><strong>Category:</strong> ${data.category}</p>
+                               <p><strong>Impact:</strong> ${data.impact}</p>
+                               <p><strong>Cost:</strong> ${data.cost}</p>
+                               <p><strong>Zoom ID:</strong> ${data.zoom_id || 'None'}</p>`;
+      } else {
+        // If an error occurs, display the error message
+        const error = await response.json();
+        resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Create a Radar Item</h1>
+  <form onsubmit="event.preventDefault(); createRadarItem();">
+    <label for="radar_id">Radar ID:</label>
+    <input type="text" id="radar_id" required />
+    <br />
+    <label for="name">Name:</label>
+    <input type="text" id="name" required />
+    <br />
+    <label for="description">Description:</label>
+    <input type="text" id="description" />
+    <br />
+    <label for="type">Type:</label>
+    <select id="type" required>
+      <option value="problem">Problem</option>
+      <option value="opportunity">Opportunity</option>
+    </select>
+    <br />
+    <label for="category">Category:</label>
+    <select id="category" required>
+      <option value="cat1">Cat1</option>
+      <option value="cat2">Cat2</option>
+      <option value="cat3">Cat3</option>
+      <option value="cat4">Cat4</option>
+      <option value="cat5">Cat5</option>
+    </select>
+    <br />
+    <label for="impact">Impact:</label>
+    <select id="impact" required>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+    <br />
+    <label for="cost">Cost:</label>
+    <select id="cost" required>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+    <br />
+    <label for="zoom_id">Zoom ID (optional):</label>
+    <input type="text" id="zoom_id" />
+    <br />
+    <button type="submit">Create Radar Item</button>
+  </form>
+  <div id="result"></div>
+</body>
+</html>
