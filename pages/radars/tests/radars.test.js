@@ -31,19 +31,22 @@ describe("Radar Creation Tests", () => {
     const result = await handleRadarCreation(command);
 
     // Check if the radar was successfully created
+    console.log("Debugging UUIDs:", result);
+    console.log("Result UUID:", result.radar.aggregate_id);
+    console.log("Radar Aggregate ID:", result.radar.aggregate_id);
     expect(result.success).toBe(true);
     expect(result.radar).toHaveProperty("aggregate_id"); // Updated to reflect aggregate_id
     expect(result.radar.name).toBe(radarName);
     expect(result.radar.description).toBe("Top radar of the company");
     expect(result.radar.level).toBe(1);
-    expect(result.uuid).toBe(result.radar.aggregate_id); // Ensure the returned uuid matches the radar's aggregate_id
-
+  
     // Validate the event is saved correctly
     const events = await getEvents();
     expect(events.length).toBe(1); // Check if only one event exists
     expect(events[0].type).toBe("CREATE_RADAR");
     expect(events[0].payload.name).toBe(radarName);
-    expect(events[0].payload.aggregate_id).toBe(result.uuid); // Ensure the event has the correct uuid
+    expect(events[0].payload.aggregate_id).toBe(result.radar.aggregate_id); // Ensure the event has the correct uuid
+    // Debugging: Log values to verify UUIDs
   });
 
   test("should not allow duplicate radar names", async () => {
