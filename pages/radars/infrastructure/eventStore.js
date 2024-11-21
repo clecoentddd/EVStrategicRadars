@@ -1,26 +1,34 @@
-// pages/radars/infrastructure/eventStore.js
+import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
 import { projectRadarToSupabase } from './radarProjection';
 
 const eventStore = []; // In-memory event storage
 
 export const saveEvent = async (event) => {
-  eventStore.push(event); // Push the new event into the event store
+  // Add aggregate_id (UUID) to the event payload
+  const eventWithId = {
+    ...event,
+    payload: {
+      ...event.payload,
+      aggregate_id: uuidv4(), // Generate a unique ID and add it as aggregate_id
+    },
+  };
 
-  // Log the event being saved and the current state of the event store
-  console.log("ES1 Event saved:", event);
-  console.log("ES1 Current Events in Memory after saving:", eventStore); // Log all stored events after saving
-  console.log("ES1 Event type:", event.type);
+  console.log("ES1234 Event to be pushed:", eventWithId);
+
+  eventStore.push(eventWithId); // Push the new event with the ID into the event store
 
   // If the event type is "CREATE_RADAR", project it to Supabase
-  if (event.type === 'CREATE_RADAR') {
+  if (eventWithId.type === 'CREATE_RADAR') {
     try {
-      // await testConnection();
-      await projectRadarToSupabase(event.payload); // Project to Supabase
+      // Project the event to Supabase
+      await projectRadarToSupabase(eventWithId.payload); // Pass the payload with aggregate_id
     } catch (error) {
-      console.log("ES3 Event type:", event.type);
-      console.log('ES3 Error projecting radar to Supabase:', error);
+      console.log('saveEvent: Error projecting radar to Supabase:', error);
     }
   }
+
+  // Explicitly return the saved event with the aggregate_id
+  return eventWithId;
 };
 
 export const getEvents = async () => {

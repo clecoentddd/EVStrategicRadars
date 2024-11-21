@@ -31,7 +31,7 @@
         // If the creation is successful, display the response details
         const data = await response.json();
         resultDiv.innerHTML = `<p>Radar item created successfully!</p>
-                               <p><strong>Radar Item ID:</strong> ${data.radar_item_id}</p>
+                               <p><strong>Radar Item ID:</strong> ${data.aggregate_id}</p>
                                <p><strong>Name:</strong> ${data.name}</p>
                                <p><strong>Type:</strong> ${data.type}</p>
                                <p><strong>Category:</strong> ${data.category}</p>

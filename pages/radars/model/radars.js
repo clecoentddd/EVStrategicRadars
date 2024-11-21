@@ -1,10 +1,9 @@
-import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
 import { saveEvent, getEvents } from '../infrastructure/eventStore'; // Ensure you have access to getEvents
 
 export async function handleRadarCreation(command) {
   console.log("Handling radar creation for:", command); // Log the received command
   const { name, description, level } = command.payload;
-
+  
   // Fetch existing events to check for duplicates
   const existingRadars = await getEvents();
   console.log("MODEL Existing events:", existingRadars); // Log all existing events
@@ -22,18 +21,24 @@ export async function handleRadarCreation(command) {
     return { success: false, message: "Radar name must be unique" }; // Return an error response
   }
 
-  // Generate a UUID for the new radar
-  const id = uuidv4();
-  console.log("MODEL Radar UUID:", id);
+  console.log("MODEL123 New radar to create now");
+  // Create the radar object (without UUID, which will be added in eventStore.js)
+  const newRadar = { name, description, level };
 
-  // Create the radar object
-  const newRadar = { id, name, description, level };
-
-  console.log("MODEL New radar created:", newRadar); // Log the created radar
+  console.log("MODEL123 New radar created (before event store):", newRadar); // Log the radar object before storing
 
   // Save the radar creation event
-  await saveEvent({ type: "CREATE_RADAR", payload: newRadar });
-
-  // Return the UUID along with success and radar details
-  return { success: true, radar: newRadar, uuid: id }; // Return the UUID as part of the response
+  let savedEvent;
+  try {
+    console.log("MODEL123 about to create SaveEvent::",savedEvent);
+    savedEvent = await saveEvent({ type: "CREATE_RADAR", payload: newRadar });
+    console.log("MODEL123 SaveEvent created:",savedEvent);
+} catch (error) {
+    console.error("Error in saveEvent:", error.message);
+    throw new Error("Failed to save event");
+  }
+  
+  // Return the result including the generated UUID from the event store
+  console.log("MODEL123 return SavedEvent.payload:",savedEvent.payload);
+  return { success: true, radar: savedEvent.payload };
 }

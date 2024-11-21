@@ -1,5 +1,4 @@
 import { supabase } from "../../../utils/supabaseClient"; // Supabase client library
-import { v4 as uuidv4 } from "uuid"; // UUID generator for creating radar item id
 
 /**
  * Project a radar item creation event into the Supabase "radar_items" table.
@@ -12,15 +11,12 @@ export async function projectRadarItemToSupabase(radarItem) {
     console.log('radarItemProjection URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
     console.log('radarItemProjection Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-    // Generate a unique ID for the radar item
-    const radarItemId = uuidv4();
-
     // Insert the radar item into the "radar_items" table
     const { data, error } = await supabase
       .from("radar_items")
       .insert([
         {
-          radar_item_id: radarItem.radar_item_id,
+          aggregate_id: radarItem.aggregate_id,
           radar_id: radarItem.radar_id,
           name: radarItem.name,
           description: radarItem.description,

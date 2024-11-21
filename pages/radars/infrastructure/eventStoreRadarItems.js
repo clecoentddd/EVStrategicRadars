@@ -5,11 +5,11 @@ const radarItemEvents = []; // In-memory storage for radar item events
 
 export const saveRadarItemEvent = async (event) => {
   try {
-    // Generate a unique radar_item_id
-    const radar_item_id = uuidv4();
+    // Generate a unique aggregate_id
+    const aggregate_id = uuidv4();
 
-    // Add the generated radar_item_id to the event payload
-    event.payload.radar_item_id = radar_item_id;
+    // Add the generated aggregate_id to the event payload
+    event.payload.aggregate_id = aggregate_id;
 
     // Save the event in memory
     radarItemEvents.push(event);

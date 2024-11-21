@@ -13,7 +13,7 @@ export default async function radarItemHandler(req, res) {
       // Check the result and respond accordingly
       if (result.success) {
         return res.status(201).json({
-          radar_item_id: result.radarItem.radar_item_id, 
+          aggregate_id: result.radarItem.aggregate_id, 
           radar_id: result.radarItem.radar_id,
           name: result.radarItem.name,
           description: result.radarItem.description,

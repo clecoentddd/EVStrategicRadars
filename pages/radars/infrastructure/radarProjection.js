@@ -1,59 +1,46 @@
-import { supabase } from '../../../utils/supabaseClient'; // Supabase client library
+import { supabase } from "../../../utils/supabaseClient";
 
-/**
- * Project a radar creation event into the Supabase "radars" table.
- * @param {Object} radar - The radar object containing id, name, description, level, and created_at.
- * @returns {Promise<Object>} The result of the Supabase insert operation.
- */
 export async function projectRadarToSupabase(radar) {
+  console.log("Entering Projection: Radar to project to Supabase:", radar);
   try {
-    // Check .env.local values
-    console.log('radarProjections URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-    console.log('radarProjections Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    if (!radar) {
+      throw new Error("Invalid radar object received. Missing payload.");
+    }
+    
+    console.log("Projection: Radar to project to Supabase:", radar);
 
+    // Ensure radar has all the expected properties
+    const { name, description, level, aggregate_id } = radar;
+    console.log("Extracted values:", { name, description, level, aggregate_id });
+
+    // Proceed with the Supabase insertion
     const { data, error } = await supabase
       .from("radars")
       .insert([
         {
+          aggregate_id: radar.aggregate_id,
           name: radar.name,
           description: radar.description,
           org_level: radar.level,
-        },
-      ]);
-
+          created_at: new Date().toISOString(), // Set creation time
+          updated_at: new Date().toISOString(), // Set creation time
+        }
+      ])
+      .select();
+    // Check for any error during insertion
     if (error) {
       console.log("Error projecting radar to Supabase:", error.message);
-      throw new Error("Failed to project radar to Supabase.");
+      throw new Error(`Error inserting radar into Supabase: ${error.message}`);
     }
 
+    // Log the successfully inserted data
     console.log("Radar successfully projected to Supabase:", data);
+
+    // Since Supabase doesn't automatically return the inserted data after .insert(),
+    // return the data manually or handle as necessary.
     return data;
   } catch (err) {
     console.log("Unexpected error in projecting radar:", err.message);
-    throw err;
-  }
-}
-
-/**
- * Test Supabase connection by querying the "radars" table.
- */
-export async function testConnection() {
-  try {
-    console.log('ES3 radarProjections URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-    console.log('ES3 radarProjections Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-
-    const { data, error } = await supabase.from("radars").select("*");
-
-    if (error) {
-      console.log('ES3 radarProjections URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-      console.log("Supabase connection test failed:", error.message);
-      throw new Error("Supabase connection failed.");
-    }
-
-    console.log("Supabase connection successful:", data);
-    return data;
-  } catch (err) {
-    console.log("Unexpected error in testConnection:", err.message);
-    throw err;
+    throw err; // Propagate the error if needed
   }
 }
