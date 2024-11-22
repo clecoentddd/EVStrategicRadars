@@ -1,5 +1,5 @@
 import { handleRadarCreation } from "../radars/model/radars"; // Adjust the path if necessary
-import { fetchAllRadars } from "../radars/infrastructure/radarsDB"; // Adjust the path if necessary
+import { fetchAllRadars, fetchRadarById } from "../radars/infrastructure/radarsDB"; // Adjust the path if necessary
 
 export default async function radarsHandler(req, res) {
   try {
@@ -24,7 +24,18 @@ export default async function radarsHandler(req, res) {
         return res.status(409).json({ message: result.message }); // Conflict for duplicate names
       }
     } else if (req.method === "GET") {
-      // Handle GET request: Fetch all radars
+      const { aggregate_id } = req.query; // Check if there's a query parameter for aggregate_id
+
+      if (aggregate_id) {
+        // Fetch a specific radar by its aggregate_id
+        const radar = await fetchRadarById(aggregate_id);
+        if (!radar) {
+          return res.status(404).json({ message: "Radar not found" });
+        }
+        return res.status(200).json(radar);
+      }
+
+      // Handle GET request: Fetch all radars if no aggregate_id is provided
       const radars = await fetchAllRadars();
       return res.status(200).json(radars);
     } else {

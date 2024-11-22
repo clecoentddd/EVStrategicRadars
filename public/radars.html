@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radars</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      margin: auto;
+      max-width: 800px;
+    }
+    .button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .button:disabled {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+    .button.green {
+      background-color: #28a745;
+    }
+    .button.red {
+      background-color: #dc3545;
+    }
+    .button.grey {
+      background-color: grey;
+    }
+    .radar-item {
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .radar-item h3 {
+      margin: 0;
+    }
+    .level-separator {
+      margin-top: 20px;
+      border-bottom: 2px solid #333;
+    }
+    #create-form {
+      display: none;
+      margin-top: 20px;
+    }
+    #radar-list {
+      margin-top: 20px;
+    }
+    #result-message {
+      margin: 15px 0;
+      padding: 10px;
+      color: white;
+      background-color: green;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Radars</h1>
+    <button id="sync-status" class="button grey">Sync Status</button>
+    <button id="create-radar-button" class="button">Create Radar</button>
+
+    <!-- Create Radar Form -->
+    <div id="create-form">
+      <h2>Create Radar</h2>
+      <form onsubmit="event.preventDefault(); saveRadar();">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" required><br><br>
+        <label for="description">Description:</label><br>
+        <input type="text" id="description" required><br><br>
+        <label for="level">Level:</label><br>
+        <input type="number" id="level" required><br><br>
+        <button type="submit" class="button">Save</button>
+        <button type="button" class="button" onclick="cancelCreateRadar()">Cancel</button>
+      </form>
+    </div>
+
+    <!-- Success Message -->
+    <div id="result-message"></div>
+
+    <!-- Radar List -->
+    <div id="radar-list"></div>
+  </div>
+
+  <script>
+    async function fetchRadars() {
+      const radarList = document.getElementById("radar-list");
+      radarList.innerHTML = ""; // Clear the list
+
+      try {
+        const response = await fetch("/api/radars");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const radars = await response.json();
+        let currentLevel = null;
+
+        radars.sort((a, b) => a.org_level - b.org_level); // Sort by level
+
+        radars.forEach(radar => {
+          if (currentLevel !== radar.org_level) {
+            currentLevel = radar.org_level;
+            const levelSeparator = document.createElement("div");
+            levelSeparator.className = "level-separator";
+            levelSeparator.innerHTML = `<h2>Level ${currentLevel}</h2>`;
+            radarList.appendChild(levelSeparator);
+          }
+
+          const listItem = document.createElement("div");
+          listItem.className = "radar-item";
+          listItem.innerHTML = `
+            <h3>${radar.name}</h3>
+            <p>${radar.description}</p>
+            <p><strong>Level:</strong> ${radar.org_level}</p>
+            <p><small>Aggregate ID: ${radar.aggregate_id}</small></p>
+            <button class="button" onclick="viewRadar('${radar.name}', '${radar.aggregate_id}')">>View</button>
+            <button class="button" onclick="alert('API to be implemented')">Update</button>
+            <button class="button" onclick="alert('API to be implemented')">Delete</button>
+          `;
+          radarList.appendChild(listItem);
+        });
+      } catch (error) {
+        console.error("Error fetching radars:", error.message);
+      }
+    }
+
+    function toggleCreateForm(show) {
+      document.getElementById("create-form").style.display = show ? "block" : "none";
+      document.getElementById("create-radar-button").style.display = show ? "none" : "block";
+    }
+
+    function cancelCreateRadar() {
+      toggleCreateForm(false);
+    }
+
+    async function saveRadar() {
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+      const level = parseInt(document.getElementById("level").value, 10);
+
+      try {
+        const response = await fetch("/api/radars", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, description, level }),
+        });
+
+        const result = await response.json();
+        const resultMessage = document.getElementById("result-message");
+
+        if (response.ok) {
+          resultMessage.style.display = "block";
+          resultMessage.innerHTML = `Radar created successfully! Data: ${JSON.stringify(result)}`;
+          toggleCreateForm(false);
+          fetchRadars();
+        } else {
+          resultMessage.style.display = "block";
+          resultMessage.style.backgroundColor = "red";
+          resultMessage.innerHTML = `Error: ${result.message}`;
+        }
+      } catch (error) {
+        console.error("Error saving radar:", error.message);
+      }
+    }
+
+    // go to to the radar items page
+    function viewRadar(name, aggregateId) {
+      // Navigate to the radar details page with the name and aggregate_id as query parameters
+      const radarPage = `/radars/ui/${encodeURIComponent(name)}?radar_id=${encodeURIComponent(aggregateId)}`;
+      window.location.href = radarPage;
+    }
+
+    async function checkSyncStatus() {
+      const syncStatusButton = document.getElementById("sync-status");
+      syncStatusButton.className = "button grey";
+
+      try {
+        const response = await fetch("/api/sync-status");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.isSynced) {
+          syncStatusButton.className = "button green";
+          syncStatusButton.innerText = "Synced";
+        } else {
+          syncStatusButton.className = "button red";
+          syncStatusButton.innerText = "Sync Issue";
+        }
+      } catch (error) {
+        console.error("Error checking sync status:", error.message);
+        syncStatusButton.className = "button red";
+        syncStatusButton.innerText = "Sync Error";
+      }
+    }
+
+    document.getElementById("create-radar-button").addEventListener("click", () => toggleCreateForm(true));
+    document.getElementById("sync-status").addEventListener("click", checkSyncStatus);
+
+    // Fetch radars on page load
+    document.addEventListener("DOMContentLoaded", fetchRadars);
+  </script>
+</body>
+</html>

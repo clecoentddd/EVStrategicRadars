@@ -23,3 +23,11 @@ export async function fetchAllRadars() {
   }
 }
 
+// radarsDB.js (or the appropriate file)
+export async function fetchRadarById(aggregateId) {
+  // Fetch radar by its aggregate_id from the database (or in-memory data structure)
+  const radars = await fetchAllRadars(); // Assuming fetchAllRadars fetches all the radars
+  return radars.find(radar => radar.aggregate_id === aggregateId); // Find and return the radar
+}
+
+
