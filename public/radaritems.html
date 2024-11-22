@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar View</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+    .container {
+      margin-bottom: 30px;
+    }
+    .radar-item-list {
+      list-style: none;
+      padding: 0;
+    }
+    .radar-item-list li {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    button {
+      margin-right: 10px;
+    }
+    .create-form {
+      display: none;
+      margin-bottom: 20px;
+    }
+  </style>
+  <script>
+    const radarId = new URLSearchParams(window.location.search).get("radar_id");
+    const radarName = new URLSearchParams(window.location.search).get("radar_name");
+
+    // Function to fetch radar items
+    async function fetchRadarItems() {
+      const radarItemsList = document.getElementById("radar-items-list");
+      radarItemsList.innerHTML = ""; // Clear the list
+
+      try {
+        const response = await fetch(`/api/radar-items?radar_id=${radarId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const radarItems = await response.json();
+
+        // Group by category and sort alphabetically
+        const groupedItems = radarItems.reduce((acc, item) => {
+          acc[item.category] = acc[item.category] || [];
+          acc[item.category].push(item);
+          return acc;
+        }, {});
+
+        // Display items grouped by category
+        for (const category of Object.keys(groupedItems).sort()) {
+          const categoryHeader = document.createElement("h2");
+          categoryHeader.textContent = category;
+          radarItemsList.appendChild(categoryHeader);
+
+          groupedItems[category]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .forEach(item => {
+              const listItem = document.createElement("li");
+              listItem.innerHTML = `
+                <strong>${item.name}</strong> - ${item.description} <br/>
+                Type: ${item.type}, Distance: ${item.distance}, Impact: ${item.impact}, Cost: ${item.cost}
+                <br/>
+                <button onclick="alert('Not implemented')">Edit</button>
+                <button onclick="alert('Not implemented')">Delete</button>
+              `;
+              radarItemsList.appendChild(listItem);
+            });
+        }
+      } catch (error) {
+        console.error("Error fetching radar items:", error.message);
+        radarItemsList.innerHTML = "<p>Failed to fetch radar items.</p>";
+      }
+    }
+
+    // Function to handle creating a new radar item
+    async function createRadarItem() {
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+      const category = document.getElementById("category").value;
+      const type = document.getElementById("type").value;
+      const distance = parseFloat(document.getElementById("distance").value);
+      const impact = parseFloat(document.getElementById("impact").value);
+      const cost = parseFloat(document.getElementById("cost").value);
+
+      const newItem = {
+        radar_id: radarId,
+        name,
+        description,
+        category,
+        type,
+        distance,
+        impact,
+        cost,
+      };
+
+      try {
+        const response = await fetch("/api/radar-items", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newItem),
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          alert("Radar item created successfully!");
+          document.getElementById("create-form").reset();
+          toggleCreateForm(false);
+          fetchRadarItems();
+        } else {
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("Error creating radar item:", error.message);
+      }
+    }
+
+    // Toggle create form visibility
+    function toggleCreateForm(show) {
+      const createForm = document.getElementById("create-form");
+      createForm.style.display = show ? "block" : "none";
+      document.getElementById("create-new-item").style.display = show ? "none" : "inline-block";
+    }
+
+    // Initialize the page
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("radar-title").textContent = radarName;
+      fetchRadarItems();
+    });
+  </script>
+</head>
+<body>
+  <h1 id="radar-title"></h1>
+
+  <!-- Create Radar Item Form -->
+  <div class="container">
+    <button id="create-new-item" onclick="toggleCreateForm(true)">Create New Radar Item</button>
+    <form id="create-form" class="create-form" onsubmit="event.preventDefault(); createRadarItem();">
+      <h2>Create Radar Item</h2>
+      <label for="name">Name:</label>
+      <input type="text" id="name" required />
+      <br />
+      <label for="description">Description:</label>
+      <input type="text" id="description" required />
+      <br />
+      <label for="category">Category:</label>
+      <input type="text" id="category" required />
+      <br />
+      <label for="type">Type:</label>
+      <input type="text" id="type" required />
+      <br />
+      <label for="distance">Distance:</label>
+      <input type="number" id="distance" step="0.1" required />
+      <br />
+      <label for="impact">Impact:</label>
+      <input type="number" id="impact" step="0.1" required />
+      <br />
+      <label for="cost">Cost:</label>
+      <input type="number" id="cost" step="0.1" required />
+      <br />
+      <button type="submit">Save</button>
+      <button type="button" onclick="toggleCreateForm(false)">Cancel</button>
+    </form>
+  </div>
+
+  <!-- Radar Items List -->
+  <div class="container">
+    <h2>Radar Items</h2>
+    <ul id="radar-items-list" class="radar-item-list"></ul>
+  </div>
+</body>
+</html>

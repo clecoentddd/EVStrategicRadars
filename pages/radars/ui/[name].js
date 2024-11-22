@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
+import RadarChart from '../../../components/RadarChart';  // Make sure the path is correct for the RadarChart component
 
 export default function RadarPage() {
   const [radar, setRadar] = useState(null);
@@ -71,6 +72,10 @@ export default function RadarPage() {
       <p><strong>Aggregate ID:</strong> {radar.aggregate_id}</p>
       <p><strong>Description:</strong> {radar.description}</p>
       <p><strong>Level:</strong> {radar.org_level}</p>
+
+      {/* Radar Chart Visualization */}
+      <h2>Radar Chart</h2>
+      <RadarChart items={radarItems} radius={200} />
 
       <h2>Radar Items</h2>
       {radarItems.length === 0 ? (

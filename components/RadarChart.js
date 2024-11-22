@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useRouter } from 'next/router'; // For navigation
-import { createClient } from '../../uitl/supabaseClient';
+import { supabase } from '../utils/supabaseClient';
 import styles from './RadarChart.module.css'; // Import the CSS Module (or use a global CSS file)
 
 // Initialize Supabase client
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+//const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 const RadarChart = ({ items, radius = 200 }) => {
   const svgRef = useRef();
