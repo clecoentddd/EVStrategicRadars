@@ -13,7 +13,7 @@ export const saveEvent = async (event) => {
     },
   };
 
-  console.log("ES1234 Event to be pushed:", eventWithId);
+  //console.log("ES1234 Event to be pushed:", eventWithId);
 
   eventStore.push(eventWithId); // Push the new event with the ID into the event store
 
@@ -23,7 +23,7 @@ export const saveEvent = async (event) => {
       // Project the event to Supabase
       await projectRadarToSupabase(eventWithId.payload); // Pass the payload with aggregate_id
     } catch (error) {
-      console.log('saveEvent: Error projecting radar to Supabase:', error);
+    //  console.log('saveEvent: Error projecting radar to Supabase:', error);
     }
   }
 
@@ -32,11 +32,11 @@ export const saveEvent = async (event) => {
 };
 
 export const getEvents = async () => {
-  console.log("ES Fetching Events from Memory:", eventStore); // Log the fetch operation
+  // console.log("ES Fetching Events from Memory:", eventStore); // Log the fetch operation
   return [...eventStore]; // Return a copy to prevent mutation
 };
 
 export const clearEventStore = async () => {
   eventStore.length = 0; // Clear all events
-  console.log("ES Event store cleared."); // Log when the store is cleared
+ // console.log("ES Event store cleared."); // Log when the store is cleared
 };

@@ -32,13 +32,13 @@ export async function handleRadarCreation(command) {
   try {
     // console.log("MODEL123 about to create SaveEvent::",savedEvent);
     savedEvent = await saveEvent({ type: "CREATE_RADAR", payload: newRadar });
-    console.log("MODEL123 SaveEvent created:",savedEvent);
+    // console.log("MODEL123 SaveEvent created:",savedEvent);
 } catch (error) {
     // console.error("Error in saveEvent:", error.message);
     throw new Error("Failed to save event");
   }
   
   // Return the result including the generated UUID from the event store
-  console.log("MODEL HandleRadarCreation - return SavedEvent.payload:",savedEvent.payload);
+  // console.log("MODEL HandleRadarCreation - return SavedEvent.payload:",savedEvent.payload);
   return { success: true, radar: savedEvent.payload };
 }

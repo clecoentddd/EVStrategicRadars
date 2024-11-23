@@ -15,7 +15,7 @@ export async function fetchAllRadars() {
       throw new Error("Failed to fetch radars.");
     }
 
-    console.log("Fetched radars successfully:", data);
+    // console.log("Fetched radars successfully:", data);
     return data;
   } catch (err) {
     console.error("Unexpected error in fetchAllRadars:", err.message);
