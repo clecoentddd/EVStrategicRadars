@@ -5,7 +5,8 @@ import RadarChart from '../../../components/RadarChart';
 export default function RadarPage() {
   const [radar, setRadar] = useState(null);
   const [radarItems, setRadarItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingRadar, setLoadingRadar] = useState(true);  // Loading state for radar data
+  const [loadingItems, setLoadingItems] = useState(true);  // Loading state for radar items
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -30,7 +31,7 @@ export default function RadarPage() {
 
     const fetchRadar = async () => {
       try {
-        setLoading(true);
+        setLoadingRadar(true);
         setError(null);
         logMessage("Fetching radar data...");
 
@@ -47,6 +48,8 @@ export default function RadarPage() {
       } catch (err) {
         setError('Error fetching radar');
         logMessage("Error fetching radar data");
+      } finally {
+        setLoadingRadar(false); // Set loading to false after fetching radar
       }
     };
 
@@ -67,7 +70,7 @@ export default function RadarPage() {
         setError('Error fetching radar items');
         logMessage("Error fetching radar items");
       } finally {
-        setLoading(false);
+        setLoadingItems(false); // Set loading to false after fetching radar items
       }
     };
 
@@ -158,8 +161,6 @@ export default function RadarPage() {
       logMessage(`Error during radar item fetch: ${error.message}`);
     }
   };
- 
-  
 
   const handleSave = async () => {
     try {
@@ -220,7 +221,7 @@ export default function RadarPage() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loadingRadar || loadingItems) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!radar) return <p>No radar found</p>;
 
@@ -341,18 +342,22 @@ export default function RadarPage() {
       )}
 
       <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
-        {radarItems.map((item) => (
-          <li key={item.aggregate_id} style={{ padding: "10px", border: "1px solid #ccc", marginBottom: "10px" }}>
-            <h3>{item.name}</h3>
-            <p><strong>Description:</strong> {item.description}</p>
-            <button
-              onClick={() => handleEdit(item)}
-              style={{ padding: "5px 10px", backgroundColor: "#FFA500", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
-            >
-              Edit
-            </button>
-          </li>
-        ))}
+        {radarItems.length === 0 ? (
+          <li>No radar items yet</li>
+        ) : (
+          radarItems.map((item) => (
+            <li key={item.aggregate_id} style={{ padding: "10px", border: "1px solid #ccc", marginBottom: "10px" }}>
+              <h3>{item.name}</h3>
+              <p><strong>Description:</strong> {item.description}</p>
+              <button
+                onClick={() => handleEdit(item)}
+                style={{ padding: "5px 10px", backgroundColor: "#FFA500", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
+              >
+                Edit
+              </button>
+            </li>
+          ))
+        )}
       </ul>
 
       {/* Log messages */}

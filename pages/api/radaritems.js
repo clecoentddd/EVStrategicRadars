@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         try {
           const radarItems = await fetchAllRadarItemsByRadarId(radar_id);
 
-          if (radarItems.length > 0) {
+          if (radarItems.length >= 0) {
             return res.status(200).json(radarItems);
           } else {
             return res.status(404).json({ message: "No radar items found for this radar." });
@@ -64,9 +64,10 @@ export default async function handler(req, res) {
 
       try {
         console.log ("API Creating the radar item: ", command )
-        const result = await handleRadarItemCreation(command);
-        if (result.success) {
-          return res.status(201).json(result.radarItem);
+        const radarItem = await handleRadarItemCreation(command);
+        console.log("API -> let us see what is in result.radarItem", radarItem)
+        if (radarItem.success) {
+          return res.status(201).json(radarItem);
         } else {
           return res.status(400).json({ message: result.message });
         }
@@ -100,10 +101,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: "Payload is required" });
       }
       console.log ("API -> updatig the item")
-      const updatedRadarItem = await updateRadarItem(command);
+      const radarItem = await updateRadarItem(command);
 
-      if (updatedRadarItem) {
-        return res.status(200).json(updatedRadarItem); // Respond with the updated radar item
+      if (radarItem) {
+        return res.status(200).json(radarItem); // Respond with the updated radar item
       } else {
         return res.status(404).json({ message: "Radar item not found or failed to update" });
       }
