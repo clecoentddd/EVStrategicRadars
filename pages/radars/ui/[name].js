@@ -88,76 +88,114 @@ export default function RadarPage() {
     });
   };
 
-  const handleEdit = (item) => {
-    setFormData({
-      name: item.name,
-      description: item.description,
-      category: item.category,
-      type: item.type,
-      distance: item.distance,
-      impact: item.impact,
-      cost: item.cost,
-      zoom_in: item.zoom_in,
-    });
-    setEditMode(true);
-    setCurrentEditingId(item.aggregate_id); // Set the current editing item ID
-    setShowForm(true);
+  const handleEdit = async (item) => {
+    setLoading(true); // Set loading state
+    setError(null); // Reset error state
+  
+    // Fetch the latest radar item state from the event store
+    try {
+
+      console.log("html fetch", item.aggregate_id);
+
+      const response = await fetch(`/api/radaritems?aggregate_id=${item.aggregate_id}`); // Send GET request with aggregate_id
+  
+      console.log("html response", response);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from API:", errorText);
+        setError("Error fetching radar item from event store.");
+        setLoading(false); // Set loading to false on error
+        return;
+      }
+  
+      const latestRadarItem = await response.json(); // Get the latest version of the radar item
+  
+      console.log("latestRadaritem is", latestRadarItem);
+
+      // Update the form data with the latest state
+      setFormData({
+        name: latestRadarItem.name,
+        description: latestRadarItem.description,
+        category: latestRadarItem.category,
+        type: latestRadarItem.type,
+        distance: latestRadarItem.distance,
+        impact: latestRadarItem.impact,
+        cost: latestRadarItem.cost,
+        zoom_in: latestRadarItem.zoom_in,
+      });
+      setEditMode(true);
+      setCurrentEditingId(item.aggregate_id); // Set the item being edited
+      setShowForm(true); // Show the form for editing
+    } catch (err) {
+      console.error("Error fetching radar item:", err);
+      setError("Error fetching radar item from event store.");
+    } finally {
+      setLoading(false); // Always set loading to false once the request finishes
+    }
   };
+  
 
   const handleSave = async () => {
-    
-    console.log("Saving radar item with id:", currentEditingId); // Log the payload
-   
     try {
       const method = editMode ? 'PUT' : 'POST';
       const url = editMode ? `/api/radaritems?aggregate_id=${currentEditingId}` : `/api/radaritems`;
   
-      
-      const payload = {
+      // Wrap the data inside command.payload
+      const command = {
         payload: {
-          radar_id,
+          radar_id, // Include radar_id in the payload
           ...formData,
         },
       };
   
-    console.log("Saving radar item with id:", currentEditingId); // Log the payload
-
-
-    console.log("Saving radar item with payload:", payload);
+      console.log("Saving radar item with command:", command);
   
       const response = await fetch(url, {
         method: method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(command), // Send the command structure
       });
   
-      const text = await response.text(); // Get the raw response text
-      console.log("Raw response:", text); // Log the raw response
-  
       if (!response.ok) {
-        console.error("Response not OK:", response.status);
-        console.error("Response text:", text);
-        setError("Error saving radar item: " + text); // Set error with raw response
-        return; // Exit the function early
+        const errorText = await response.text();
+        console.error("Error response text:", errorText);
+        setError(`Error saving radar item: ${errorText}`);
+        return;
       }
   
-      const data = JSON.parse(text); // Parse the JSON only if response is OK
+      const data = await response.json();
   
       if (editMode) {
+        // Update the radar item in the radarItems state
         setRadarItems(radarItems.map(item => item.aggregate_id === currentEditingId ? data : item));
       } else {
+        // Add the new radar item to the radarItems state
         setRadarItems([...radarItems, data]);
       }
+  
+      // Reset the form and states
       setShowForm(false);
       setEditMode(false);
       setCurrentEditingId(null);
+      setFormData({
+        name: '',
+        description: '',
+        category: '',
+        type: '',
+        distance: '',
+        impact: '',
+        cost: '',
+        zoom_in: '',
+      });
     } catch (err) {
-      console.error("Error during save operation:", err);
+      console.error("Error saving radar item:", err);
       setError('Error saving radar item');
     }
   };
+  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;

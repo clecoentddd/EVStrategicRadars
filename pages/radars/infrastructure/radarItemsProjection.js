@@ -21,10 +21,11 @@ export async function projectRadarItemToSupabase(radarItem) {
       .eq("aggregate_id", radarItem.aggregate_id)
       .single(); // Use single to fetch one row (if exists)
 
-    if (fetchError) {
-      console.log("Error fetching radar item:", fetchError.message);
-      throw new Error("Failed to check if radar item exists.");
-    }
+    console.log ("Projection -> exist or not", existingItem);
+    //if (fetchError) {
+    //  console.log("Error fetching radar item:", fetchError.message);
+    //  throw new Error("Failed to check if radar item exists.");
+    //}
 
     if (existingItem) {
       // If item exists, update it

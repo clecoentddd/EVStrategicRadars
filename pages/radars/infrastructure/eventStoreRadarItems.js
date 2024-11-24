@@ -37,11 +37,14 @@ export const saveRadarItemEvent = async (event) => {
 };
 
 // Fetch all Radar Item Events (for a given radar_id)
-export const getRadarItemEvents= async (radar_id) => {
+export const getRadarItemEvents= async (aggregate_id) => {
   // Filter radar item events by radar_id (if passed)
-  const filteredEvents = radarItemEvents.filter((event) => event.payload.radar_id === radar_id);
 
-  console.log("Fetching Radar Item Events for radar_id:", radar_id);
+  console.log("ES: get all events for aggregate_id", aggregate_id)
+
+  const filteredEvents = radarItemEvents.filter((event) => event.payload.aggregate_id === aggregate_id);
+
+  console.log("Fetching Radar Item Events for radar_id:", aggregate_id);
   console.log("Filtered Events:", filteredEvents);
 
   return [...filteredEvents];  // Return a copy of the filtered events
@@ -56,29 +59,33 @@ export const clearRadarItemEventStore = async () => {
 // Replay events to get the last state of the radar item based on the most recent event
 export const replayRadarItemState = async (aggregate_id) => {
   try {
-    const events = await getRadarItemEvents(aggregate_id);  // Fetch events for the given radar_id
+    // Fetch events for the given aggregate_id
+    const events = await getRadarItemEvents(aggregate_id);
 
-    if (events.length === 0) {
-      return { success: false, message: `No events found for radar_id: ${aggregate_id}` };
+    if (!events || events.length === 0) {
+      return { success: false, message: `No events found for aggregate_id: ${aggregate_id}` };
     }
 
-    // Sort events by timestamp or sequence (assuming events are stored in chronological order)
-    events.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // If events have a timestamp
+    console.log("ES: Events to replay", events);
 
-    // Replay the events to get the final state
-    const finalState = events.reduce((state, event) => {
-      switch (event.event_name) {
-        case "radarItemCreated":
-          return { ...state, ...event.payload };  // Apply changes from radarItemCreated
-        case "radarItemUpdated":
-          return { ...state, ...event.payload };  // Apply updates from radarItemUpdated
-        default:
-          return state;
-      }
-    }, {});
+    // Identify the latest event based on timestamp or sequence
+    const latestEvent = events.reduce((latest, current) => {
+      const latestTimestamp = new Date(latest.timestamp).getTime();
+      const currentTimestamp = new Date(current.timestamp).getTime();
+      return currentTimestamp > latestTimestamp ? current : latest;
+    });
 
-    console.log("Replayed Radar Item State:", finalState);
-    return { success: true, state: finalState };
+    console.log("Latest Event for Hydration:", latestEvent);
+
+    // Hydrate the aggregate using the latest event's payload
+    const hydratedAggregate = {
+      ...latestEvent.payload, // Use the payload of the latest event to construct the state
+      aggregate_id,           // Ensure the aggregate_id is part of the state
+    };
+
+    console.log("Hydrated Radar Item Aggregate:", hydratedAggregate);
+
+    return { success: true, state: hydratedAggregate };
   } catch (error) {
     console.error("Error replaying radar item state:", error.message);
     return { success: false, message: "Error replaying radar item state" };

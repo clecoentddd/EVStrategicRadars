@@ -2,7 +2,7 @@
 import { fetchAllRadarItemsByRadarId } from "../radars/infrastructure/radarItemsDB"; // Adjust the path if necessary
 
 // WRITE of CQRS
-import {handleRadarItemCreation, updateRadarItem} from "../radars/model/radarItems"
+import {handleRadarItemCreation, updateRadarItem, getRadarItem} from "../radars/model/radarItems"
 
 export default async function handler(req, res) {
   console.log("Body received:", req.body);
@@ -17,27 +17,41 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === "GET") {
-      const { radar_id } = req.query;  // Extract radar_id from query params
-  
-      if (!radar_id) {
-        return res.status(400).json({ message: "Radar ID is required" });
-      }
-  
-      try {
-        // Fetch all radar items for the given radar_id
-        const radarItems = await fetchAllRadarItemsByRadarId(radar_id);
-  
-        // Respond with the radar items or a message if none are found
-        if (radarItems.length > 0) {
-          return res.status(200).json(radarItems);
-        } else {
-          return res.status(404).json({ message: "No radar items found for this radar." });
-        }
-      } catch (error) {
-        console.error("Error fetching radar items:", error.message);
-        return res.status(500).json({ message: "Internal Server Error" });
-      }
+      const { radar_id, aggregate_id } = req.query; // Extract radar_id and aggregate_id
 
+      if (aggregate_id) {
+        // Handle the new GET API for fetching radar item aggregate
+        try {
+          console.log("Fetching radar item aggregate for:", aggregate_id);
+          const radarItem = await getRadarItem(aggregate_id); // Call the model method
+
+          if (radarItem) {
+            return res.status(200).json(radarItem); // Return the radar item aggregate
+          } else {
+            return res.status(404).json({ message: "Radar item aggregate not found." });
+          }
+        } catch (error) {
+          console.error("Error fetching radar item aggregate:", error.message);
+          return res.status(500).json({ message: "Internal Server Error", error: error.message });
+        }
+      } else if (radar_id) {
+        // Existing GET API to fetch all radar items by radar_id
+        try {
+          const radarItems = await fetchAllRadarItemsByRadarId(radar_id);
+
+          if (radarItems.length > 0) {
+            return res.status(200).json(radarItems);
+          } else {
+            return res.status(404).json({ message: "No radar items found for this radar." });
+          }
+        } catch (error) {
+          console.error("Error fetching radar items:", error.message);
+          return res.status(500).json({ message: "Internal Server Error" });
+        }
+      } else {
+        return res.status(400).json({ message: "Either radar_id or aggregate_id is required." });
+      }
+      
     } else if (req.method === "POST") {
       // Handle radar item creation logic
       const command = req.body;  // Get the payload from the request body

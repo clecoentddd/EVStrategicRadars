@@ -1,5 +1,33 @@
 // using write model
-import { saveRadarItemEvent, fetchAllRadarItems } from "../infrastructure/eventStoreRadarItems"; // Import event handling functions
+import { replayRadarItemState, saveRadarItemEvent, fetchAllRadarItems } from "../infrastructure/eventStoreRadarItems"; // Import event handling functions
+
+/**
+ * Retrieves the latest radar item state based on aggregate_id.
+ * 
+ * @param {string} aggregate_id - The unique identifier for the radar item.
+ * @returns {object} - The latest radar item state.
+ * @throws {Error} - Throws an error if the radar item cannot be retrieved.
+ */
+export async function getRadarItem(aggregate_id) {
+  if (!aggregate_id) {
+    throw new Error("Aggregate ID is required to get radar item.");
+  }
+
+  try {
+    // Fetch and replay the state for the radar item using the aggregate_id
+    const radarItemState = await replayRadarItemState(aggregate_id);
+
+    if (!radarItemState) {
+      throw new Error(`No radar item found for aggregate_id: ${aggregate_id}`);
+    }
+    console.log("Model -> the aggregate is", radarItemState);
+    return radarItemState; // Return the reconstructed radar item state
+  } catch (error) {
+    console.error(`Error in getRadarItem for aggregate_id ${aggregate_id}:`, error.message);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+}
+
 
 export async function handleRadarItemCreation(command) {
   console.log ("Model -> creating a new item", command);
@@ -13,16 +41,16 @@ export async function handleRadarItemCreation(command) {
   }
 
   // Fetch events to check for duplicates in the given radar_id
-  const events = await fetchAllRadarItemsByRadarId();
-  const existingRadarItems = events
-    .filter((event) => event.type === "CREATE_RADAR_ITEM" && event.payload.radar_id === radar_id)
-    .map((event) => event.payload);
+  //const events = await fetchAllRadarItemsByRadarId();
+  //const existingRadarItems = events
+  //  .filter((event) => event.type === "CREATE_RADAR_ITEM" && event.payload.radar_id === radar_id)
+  //  .map((event) => event.payload);
 
   // Check for duplicate radar item name within the radar
-  const duplicateItem = existingRadarItems.find((item) => item.name === name);
-  if (duplicateItem) {
-    return { success: false, message: `Radar item with name "${name}" already exists for this radar.` };
-  }
+  //const duplicateItem = existingRadarItems.find((item) => item.name === name);
+  //if (duplicateItem) {
+  //  return { success: false, message: `Radar item with name "${name}" already exists for this radar.` };
+  //}
 
   // Create radar item event
   const event = {
