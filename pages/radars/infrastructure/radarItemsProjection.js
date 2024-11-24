@@ -37,6 +37,7 @@ export async function projectRadarItemToSupabase(radarItem) {
           description: radarItem.description,
           type: radarItem.type,
           category: radarItem.category,
+          distance: radarItem.distance,
           impact: radarItem.impact,
           cost: radarItem.cost,
           zoom_in: radarItem.zoom_in || null, // Optional field
@@ -63,6 +64,7 @@ export async function projectRadarItemToSupabase(radarItem) {
             description: radarItem.description,
             type: radarItem.type,
             category: radarItem.category,
+            distance: radarItem.distance,
             impact: radarItem.impact,
             cost: radarItem.cost,
             zoom_in: radarItem.zoom_in || null, // Optional field

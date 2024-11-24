@@ -21,6 +21,7 @@ export default function RadarPage() {
   const [showForm, setShowForm] = useState(false); // Toggle to show/hide form
   const [editMode, setEditMode] = useState(false); // Flag to switch between create/edit mode
   const [currentEditingId, setCurrentEditingId] = useState(null); // Track the id of the item being edited
+  const [logs, setLogs] = useState([]); // State to manage logs
   const router = useRouter();
   const { name, radar_id } = router.query;
 
@@ -31,32 +32,40 @@ export default function RadarPage() {
       try {
         setLoading(true);
         setError(null);
+        logMessage("Fetching radar data...");
 
         const response = await fetch(`/api/radars?aggregate_id=${radar_id}`);
         const data = await response.json();
 
         if (response.ok) {
           setRadar(data);
+          logMessage("Radar data fetched successfully");
         } else {
           setError(data.message);
+          logMessage(`Error fetching radar data: ${data.message}`);
         }
       } catch (err) {
         setError('Error fetching radar');
+        logMessage("Error fetching radar data");
       }
     };
 
     const fetchRadarItems = async () => {
       try {
+        logMessage("Fetching radar items...");
         const response = await fetch(`/api/radaritems?radar_id=${radar_id}`);
         const data = await response.json();
 
         if (response.ok) {
           setRadarItems(data);
+          logMessage("Radar items fetched successfully");
         } else {
           setError(data.message);
+          logMessage(`Error fetching radar items: ${data.message}`);
         }
       } catch (err) {
         setError('Error fetching radar items');
+        logMessage("Error fetching radar items");
       } finally {
         setLoading(false);
       }
@@ -72,6 +81,7 @@ export default function RadarPage() {
         }
       } catch (err) {
         setError('Error fetching radar options for zoom-in');
+        logMessage("Error fetching radar options for zoom-in");
       }
     };
 
@@ -79,6 +89,10 @@ export default function RadarPage() {
     fetchRadarItems();
     fetchZoomInOptions();
   }, [radar_id]);
+
+  const logMessage = (message) => {
+    setLogs((prevLogs) => [...prevLogs, message]); // Add log message to state
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -89,55 +103,67 @@ export default function RadarPage() {
   };
 
   const handleEdit = async (item) => {
-    setLoading(true); // Set loading state
-    setError(null); // Reset error state
-  
-    // Fetch the latest radar item state from the event store
     try {
-
-      console.log("html fetch", item.aggregate_id);
-
-      const response = await fetch(`/api/radaritems?aggregate_id=${item.aggregate_id}`); // Send GET request with aggregate_id
+      logMessage("Entering handleEdit...");
+      setEditMode(true);
+      setCurrentEditingId(item.aggregate_id); // Set the current editing item ID
+      setShowForm(true); // Show the form for editing
   
-      console.log("html response", response);
-
+      // Fetch the latest data for the selected aggregate
+      logMessage(`Fetching radar item with aggregate_id: ${item.aggregate_id}`);
+      const response = await fetch(`/api/radaritems?aggregate_id=${item.aggregate_id}`);
+  
+      // Log the response status
+      logMessage(`Response status: ${response.status}`);
+  
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Error response from API:", errorText);
-        setError("Error fetching radar item from event store.");
-        setLoading(false); // Set loading to false on error
+        const errorText = await response.text(); // Get the raw error text
+        setError(`Failed to fetch radar item: ${errorText}`);
+        logMessage(`Failed to fetch radar item: ${errorText}`);
         return;
       }
   
-      const latestRadarItem = await response.json(); // Get the latest version of the radar item
+      // Get the raw response text
+      const rawResponseText = await response.text(); // Read response as raw text
+      logMessage(`Raw Response Text: ${rawResponseText}`);
   
-      console.log("latestRadaritem is", latestRadarItem);
-
-      // Update the form data with the latest state
+      // Parse the raw response text as JSON
+      const radarItem = JSON.parse(rawResponseText); // Safely parse JSON from text
+  
+      logMessage(`Parsed Radar Item: ${JSON.stringify(radarItem)}`);
+      logMessage (`radar item is : ${radarItem.name}`);
+  
+      // Check if the response indicates success
+      if (radarItem.success === false) {
+        setError(radarItem.message); // Show the message from the response
+        logMessage(`Error: ${radarItem.message}`);
+        return;
+      }
+  
+      logMessage("Fetched radar item data successfully");
+  
+      // Populate the form with the fetched data
       setFormData({
-        name: latestRadarItem.name,
-        description: latestRadarItem.description,
-        category: latestRadarItem.category,
-        type: latestRadarItem.type,
-        distance: latestRadarItem.distance,
-        impact: latestRadarItem.impact,
-        cost: latestRadarItem.cost,
-        zoom_in: latestRadarItem.zoom_in,
+        name: radarItem.name || '',
+        description: radarItem.description || '',
+        category: radarItem.category || '',
+        type: radarItem.type || '',
+        distance: radarItem.distance || '',
+        impact: radarItem.impact || '',
+        cost: radarItem.cost || '',
+        zoom_in: radarItem.zoom_in || '',
       });
-      setEditMode(true);
-      setCurrentEditingId(item.aggregate_id); // Set the item being edited
-      setShowForm(true); // Show the form for editing
-    } catch (err) {
-      console.error("Error fetching radar item:", err);
-      setError("Error fetching radar item from event store.");
-    } finally {
-      setLoading(false); // Always set loading to false once the request finishes
+    } catch (error) {
+      setError('Error fetching radar item for edit');
+      logMessage(`Error during radar item fetch: ${error.message}`);
     }
   };
+ 
   
 
   const handleSave = async () => {
     try {
+      logMessage("Entering handleSave...");
       const method = editMode ? 'PUT' : 'POST';
       const url = editMode ? `/api/radaritems?aggregate_id=${currentEditingId}` : `/api/radaritems`;
   
@@ -149,8 +175,6 @@ export default function RadarPage() {
         },
       };
   
-      console.log("Saving radar item with command:", command);
-  
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -161,8 +185,8 @@ export default function RadarPage() {
   
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Error response text:", errorText);
         setError(`Error saving radar item: ${errorText}`);
+        logMessage(`Error saving radar item: ${errorText}`);
         return;
       }
   
@@ -176,7 +200,6 @@ export default function RadarPage() {
         setRadarItems([...radarItems, data]);
       }
   
-      // Reset the form and states
       setShowForm(false);
       setEditMode(false);
       setCurrentEditingId(null);
@@ -190,12 +213,12 @@ export default function RadarPage() {
         cost: '',
         zoom_in: '',
       });
+      logMessage("Radar item saved successfully");
     } catch (err) {
-      console.error("Error saving radar item:", err);
       setError('Error saving radar item');
+      logMessage("Error saving radar item");
     }
   };
-  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -203,7 +226,7 @@ export default function RadarPage() {
 
   return (
     <div>
-      <h1>Radar: {radar.name}</h1>
+      <h1>Radar - {radar.name}</h1>
       <p><strong>Aggregate ID:</strong> {radar.aggregate_id}</p>
       <p><strong>Description:</strong> {radar.description}</p>
       <p><strong>Level:</strong> {radar.org_level}</p>
@@ -212,8 +235,6 @@ export default function RadarPage() {
       <RadarChart items={radarItems} radius={200} />
 
       <h2>Radar Items</h2>
-
-      {/* Create Radar Item Button */}
       <button
         onClick={() => setShowForm(!showForm)}
         style={{ padding: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", marginBottom: "20px" }}
@@ -225,62 +246,107 @@ export default function RadarPage() {
         <div style={{ marginTop: '20px' }}>
           <h3>{editMode ? "Edit Radar Item" : "Create Radar Item"}</h3>
           <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-            <div>
-              <label>Name:</label>
-              <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
-            </div>
-            <div>
-              <label>Description:</label>
-              <input type="text" name="description" value={formData.description} onChange={handleInputChange} />
-            </div>
-            <div>
-              <label>Category:</label>
-              <input type="text" name="category" value={formData.category} onChange={handleInputChange} />
-            </div>
-            <div>
-              <label>Type:</label>
-              <input type="text" name="type" value={formData.type} onChange={handleInputChange} />
-            </div>
-            <div>
-              <label>Distance:</label>
-              <input type="text" name="distance" value={formData.distance} onChange={handleInputChange} />
-            </div>
-            <div>
-              <label>Impact:</label>
-              <input type="text" name="impact" value={formData.impact} onChange={handleInputChange} />
-            </div>
-            <div>
-              <label>Cost:</label>
-              <input type="text" name="cost" value={formData.cost} onChange={handleInputChange} />
-            </div>
-            <div>
-              <label>Zoom In:</label>
-              <select value={formData.zoom_in || ""} onChange={handleInputChange} name="zoom_in">
-              <option value="">None</option>
-              {zoomInOptions.map((item) => (
-                <option key={item.aggregate_id} value={item.aggregate_id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-            </div>
-            <div>
-              <button type="submit" style={{ padding: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "5px" }}>
-                Save
-              </button>
-            </div>
+            <label>
+              Name:
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Description:
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Category:
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Type:
+              <input
+                type="text"
+                name="type"
+                value={formData.type}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Distance:
+              <input
+                type="text"
+                name="distance"
+                value={formData.distance}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Impact:
+              <input
+                type="text"
+                name="impact"
+                value={formData.impact}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Cost:
+              <input
+                type="text"
+                name="cost"
+                value={formData.cost}
+                onChange={handleInputChange}
+                required
+              />
+            </label>
+            <label>
+              Zoom In:
+              <select
+                name="zoom_in"
+                value={formData.zoom_in}
+                onChange={handleInputChange}
+                required
+              >
+                {zoomInOptions.map(option => (
+                  <option key={option.aggregate_id} value={option.aggregate_id}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              type="submit"
+              style={{ padding: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", marginTop: "10px" }}
+            >
+              Save
+            </button>
           </form>
         </div>
       )}
 
-      {/* Compact Radar Items List */}
       <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
         {radarItems.map((item) => (
           <li key={item.aggregate_id} style={{ padding: "10px", border: "1px solid #ccc", marginBottom: "10px" }}>
             <h3>{item.name}</h3>
             <p><strong>Description:</strong> {item.description}</p>
-            <button 
-              onClick={() => handleEdit(item)} 
+            <button
+              onClick={() => handleEdit(item)}
               style={{ padding: "5px 10px", backgroundColor: "#FFA500", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
             >
               Edit
@@ -288,6 +354,16 @@ export default function RadarPage() {
           </li>
         ))}
       </ul>
+
+      {/* Log messages */}
+      <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#f4f4f4", borderTop: "1px solid #ccc", maxHeight: "200px", overflowY: "scroll" }}>
+        <h3>Logs</h3>
+        <ul>
+          {logs.map((log, index) => (
+            <li key={index}>{log}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

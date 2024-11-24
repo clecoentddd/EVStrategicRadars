@@ -22,8 +22,9 @@ export default async function handler(req, res) {
       if (aggregate_id) {
         // Handle the new GET API for fetching radar item aggregate
         try {
-          console.log("Fetching radar item aggregate for:", aggregate_id);
+          console.log("API Fetching radar item aggregate for:", aggregate_id);
           const radarItem = await getRadarItem(aggregate_id); // Call the model method
+          console.log ("API -> ready to return aggregate :",radarItem);
 
           if (radarItem) {
             return res.status(200).json(radarItem); // Return the radar item aggregate

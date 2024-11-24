@@ -8,6 +8,9 @@ export const saveRadarItemEvent = async (event) => {
   try {
     // Generate a unique aggregate_id (if not provided)
     const aggregate_id = event.payload.aggregate_id || uuidv4();
+    const distance = event.payload.distance
+    
+    console.log("EVENTSTORE event is ", distance);
     console.log("EVENTSTORE event is ", event);
 
     // Add the generated aggregate_id to the event payload if it's not already there
@@ -85,7 +88,7 @@ export const replayRadarItemState = async (aggregate_id) => {
 
     console.log("Hydrated Radar Item Aggregate:", hydratedAggregate);
 
-    return { success: true, state: hydratedAggregate };
+    return { success: true, ...hydratedAggregate };
   } catch (error) {
     console.error("Error replaying radar item state:", error.message);
     return { success: false, message: "Error replaying radar item state" };

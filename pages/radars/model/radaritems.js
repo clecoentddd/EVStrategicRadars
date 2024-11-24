@@ -32,10 +32,10 @@ export async function getRadarItem(aggregate_id) {
 export async function handleRadarItemCreation(command) {
   console.log ("Model -> creating a new item", command);
 
-  const { radar_id, name, description, type, category, impact, cost, zoom_in } = command.payload;
+  const { radar_id, name, description, type, category, distance, impact, cost, zoom_in } = command.payload;
 
   // Validate inputs to ensure mandatory fields are provided
-  if (!radar_id || !name || !type || !category || !impact || !cost) {
+  if (!radar_id || !name || !type || !category || !distance|| !impact || !cost) {
     console.log ("Model -< fields missing", radar_id);
     return { success: false, message: "Mandatory fields are missing" };
   }
@@ -61,13 +61,14 @@ export async function handleRadarItemCreation(command) {
       description,
       type,
       category,
+      distance,
       impact,
       cost,
       zoom_in: zoom_in || null, // Optional zoom_in
     },
   };
 
-  console.log ("MODEL -> ready to save the item for this radar", radar_id );
+  console.log ("MODEL -> ready to save the item for this radar", event );
   // Save the event to the event store
   try {
     await saveRadarItemEvent(event);
@@ -80,12 +81,12 @@ export async function handleRadarItemCreation(command) {
 
 export async function updateRadarItem(command) {
   console.log ("MODEL -> updating", command);
-  const { radar_id, name, description, type, category, impact, cost, zoom_in } = command.payload;
+  const { radar_id, name, description, type, category, distance,impact, cost, zoom_in } = command.payload;
 
   console.log ("MODEL 345-> updating aggregate id", command.aggregate_id);
   console.log ("MODEL 345 -> new name is", command.payload.name);
   // Validate inputs to ensure mandatory fields are provided
-  if (!radar_id || !name || !type || !category || !impact || !cost) {
+  if (!radar_id || !name || !type || !category || !distance|| !impact || !cost) {
     return { success: false, message: "Mandatory fields are missing" };
   }
 
@@ -99,6 +100,7 @@ export async function updateRadarItem(command) {
       description : description,
       type : type,
       category :category,
+      distance: distance,
       impact : impact,
       cost: cost,
       zoom_in: zoom_in || null, // Optional zoom_in
