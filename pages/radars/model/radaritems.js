@@ -76,7 +76,7 @@ export async function handleRadarItemCreation(command) {
     return { success: false, message: `Error saving event: ${error.message}` };
   }
 
-  return { success: true, message: "Radar item created successfully", radarItem: event.payload };
+  return { success: true, message: "Radar item created successfully", ...event.payload };
 }
 
 export async function updateRadarItem(command) {
@@ -116,5 +116,5 @@ export async function updateRadarItem(command) {
     return { success: false, message: `Error saving event: ${error.message}` };
   }
 
-  return { success: true, message: "Radar item updated successfully", radarItem: event.payload };
+  return { success: true, message: "Radar item updated successfully", ...event.payload };
 }

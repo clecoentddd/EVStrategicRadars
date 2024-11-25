@@ -25,14 +25,17 @@ export const saveRadarItemEvent = async (event) => {
     console.log("Radar Item Event saved:", event);
     console.log("Current Radar Item Events in Memory:", radarItemEvents);
 
-    // Project the radar item to Supabase
-    try {
-      const projectionResult = await projectRadarItemToSupabase(event.payload); // Pass the payload to the projection function
-      return { success: true, message: "Projection Radar item created and projected successfully", radarItem: event.payload, projectionResult };
-    } catch (error) {
-      console.error("Projection Error projecting radar item to Supabase:", error.message);
-      return { success: false, message: "Projection Error projecting radar item to Supabase" };
-    }
+    // Project the radar item to Supabase - don't wait
+    const projectionResult = projectRadarItemToSupabase(event.payload); // Pass the payload to the projection function
+    
+    const aggregate = {
+      ...eventvent.payload, // Use the payload of the latest event to construct the state
+    };
+
+    console.log ("ES: Aggregate created or saved is" , aggregate)
+    return { success: true, ...aggregate };
+    
+
   } catch (error) {
     console.error("Error saving radar item event:", error.message);
     return { success: false, message: "Error saving radar item event" };

@@ -183,43 +183,57 @@ export default function RadarPage() {
         },
         body: JSON.stringify(command), // Send the command structure
       });
+      logMessage(`Error saving radar item 0: ${response.status}`);
   
       if (!response.ok) {
         const errorText = await response.text();
-        setError(`Error saving radar item: ${errorText}`);
-        logMessage(`Error saving radar item: ${errorText}`);
+        logMessage(`Error saving radar item 1: ${errorText}`);
         return;
       }
   
-      const data = await response.json();
+      // Get the raw response text
+      const rawResponseText = await response.text(); // Read response as raw text
+      logMessage(`Raw Response Text: ${rawResponseText}`);
   
-      if (editMode) {
-        // Update the radar item in the radarItems state
-        setRadarItems(radarItems.map(item => item.aggregate_id === currentEditingId ? data : item));
-      } else {
-        // Add the new radar item to the radarItems state
-        setRadarItems([...radarItems, data]);
-      }
+      // Parse the raw response text as JSON
+      const radarItem = JSON.parse(rawResponseText); // Safely parse JSON from text
   
-      setShowForm(false);
-      setEditMode(false);
-      setCurrentEditingId(null);
-      setFormData({
-        name: '',
-        description: '',
-        category: '',
-        type: '',
-        distance: '',
-        impact: '',
-        cost: '',
-        zoom_in: '',
-      });
-      logMessage("Radar item saved successfully");
-    } catch (err) {
-      setError('Error saving radar item');
-      logMessage("Error saving radar item");
-    }
-  };
+      logMessage(`Parsed Radar Item: ${JSON.stringify(radarItem)}`);
+      logMessage (`radar item is : ${radarItem.name}`);
+  
+ // Update the radarItems state in both edit and save (create) modes
+ setRadarItems(prevRadarItems => {
+  if (editMode) {
+    // Replace the updated item in the list
+    return prevRadarItems.map(item =>
+      item.aggregate_id === currentEditingId ? radarItem : item
+    );
+  } else {
+    // Add the new item to the list
+    return [radarItem, ...prevRadarItems];
+  }
+});
+
+// Close the form and reset all states
+setShowForm(false);
+setEditMode(false);
+setCurrentEditingId(null);
+setFormData({
+  name: '',
+  description: '',
+  category: '',
+  type: '',
+  distance: '',
+  impact: '',
+  cost: '',
+  zoom_in: '',
+});
+
+logMessage("Radar item saved successfully");
+} catch (err) {
+logMessage("Error saving radar item");
+}
+};
 
   if (loadingRadar || loadingItems) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
