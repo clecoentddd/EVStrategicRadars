@@ -1,15 +1,16 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import RadarChart from '../../../components/RadarChart';
-// import ValueDistance from './model/config'; // Adjust the path as necessary
+
 
 export default function RadarPage() {
   const [radar, setRadar] = useState(null);
   const [radarItems, setRadarItems] = useState([]);
   const [loadingRadar, setLoadingRadar] = useState(true);  // Loading state for radar data
   const [loadingItems, setLoadingItems] = useState(true);  // Loading state for radar items
+
   const [error, setError] = useState(null);
-  const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
     name: '',
     description: '',
     category: '',
@@ -20,6 +21,8 @@ export default function RadarPage() {
     zoom_in: '', // This will hold the selected zoom-in radar ID
   });
   const [zoomInOptions, setZoomInOptions] = useState([]);
+  const [impactOptions, setImpactOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
   const [showForm, setShowForm] = useState(false); // Toggle to show/hide form
   const [editMode, setEditMode] = useState(false); // Flag to switch between create/edit mode
   const [currentEditingId, setCurrentEditingId] = useState(null); // Track the id of the item being edited
@@ -89,6 +92,36 @@ export default function RadarPage() {
       }
     };
 
+    const fetchConfig = async () => {
+      try {
+        const response = await fetch('/api/testconfig');
+        const data = await response.json();
+
+        // Extract distance and impact options
+        const distanceOptions = Object.values(data.distanceOptions);
+        const impactOptions = Object.values(data.impactOptions);
+        const typeOptions = Object.values(data.typeOptions);
+        const categoryOptions = Object.values(data.categoryOptions);
+        const toleranceOptions = Object.values(data.toleranceOptions);
+        logMessage(` HTML RAW RESPONSE fetching config - Distance: ${distanceOptions}`);
+        logMessage(` HTML RAW RESPONSE fetching config - Impact: ${impactOptions}`);
+        logMessage(` HTML RAW RESPONSE fetching config - Tolerance: ${toleranceOptions}`);
+        logMessage(` HTML RAW RESPONSE fetching config - Type: ${typeOptions}`);
+        logMessage(` HTML RAW RESPONSE fetching config - Category: ${categoryOptions}`);
+        
+        setImpactOptions(impactOptions); // Set the fetched impact options
+        setTypeOptions(typeOptions); // Set the fetched impact options
+        setIsLoading(false);
+        
+        // ... use the other data as needed
+      } catch (error) {
+        logMessage(` Error fetching config: ${error}`);
+      }
+    };
+  
+    // Call fetchConfig to retrieve impact options
+    logMessage(`2 Impact options retrieved successfully`);
+    fetchConfig();
     fetchRadar();
     fetchRadarItems();
     fetchZoomInOptions();
@@ -294,14 +327,19 @@ logMessage("Error saving radar item");
               />
             </label>
             <label>
-              Type:
-              <input
-                type="text"
-                name="type"
-                value={formData.type}
-                onChange={handleInputChange}
-                required
-              />
+              Type
+              <select name="type" value={formData.impact} onChange={handleInputChange}>
+                <option value="">Select Type</option>
+                {typeOptions.length > 0 ? (
+                  typeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading options...</option>
+                )}
+              </select>
             </label>
             <label>
               Distance:
@@ -315,13 +353,18 @@ logMessage("Error saving radar item");
             </label>
             <label>
               Impact:
-              <input
-                type="text"
-                name="impact"
-                value={formData.impact}
-                onChange={handleInputChange}
-                required
-              />
+              <select name="impact" value={formData.impact} onChange={handleInputChange}>
+                <option value="">Select Impact</option>
+                {impactOptions.length > 0 ? (
+                  impactOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.name}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading options...</option>
+                )}
+              </select>
             </label>
             <label>
               Cost:
