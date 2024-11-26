@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import RadarChart from '../../../components/RadarChart';
+// import ValueDistance from './model/config'; // Adjust the path as necessary
 
 export default function RadarPage() {
   const [radar, setRadar] = useState(null);
@@ -183,6 +184,8 @@ export default function RadarPage() {
         },
         body: JSON.stringify(command), // Send the command structure
       });
+      logMessage(`HTML Payload being sent: ${JSON.stringify(command)}`);
+
       logMessage(`Error saving radar item 0: ${response.status}`);
   
       if (!response.ok) {

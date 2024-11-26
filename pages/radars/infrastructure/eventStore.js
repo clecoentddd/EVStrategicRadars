@@ -5,11 +5,14 @@ const eventStore = []; // In-memory event storage
 
 export const saveEvent = async (event) => {
   // Add aggregate_id (UUID) to the event payload
+
+  const newtimestamp = new Date(latest.timestamp).getTime();
   const eventWithId = {
     ...event,
     payload: {
       ...event.payload,
       aggregate_id: uuidv4(), // Generate a unique ID and add it as aggregate_id
+      timestamp: newtimestamp,
     },
   };
 

@@ -19,6 +19,11 @@ export const saveRadarItemEvent = async (event) => {
     // Add the event name to the event payload
     event.event_name = event.type || 'Unknown';  // Set event name dynamically based on type (e.g., radarItemCreated, radarItemUpdated)
 
+    // Add timestamp
+    event.timestamp = new Date().getTime();
+
+    console.log("Current Radar Item Events in Memory - Timestamp:", event.timestamp);
+
     // Save the event in memory
     radarItemEvents.push(event);
 
@@ -76,11 +81,10 @@ export const replayRadarItemState = async (aggregate_id) => {
 
     // Identify the latest event based on timestamp or sequence
     const latestEvent = events.reduce((latest, current) => {
-      const latestTimestamp = new Date(latest.timestamp).getTime();
-      const currentTimestamp = new Date(current.timestamp).getTime();
-      return currentTimestamp > latestTimestamp ? current : latest;
-    });
-
+      // Assuming 'timestamp' is the property representing the event time
+      return current.timestamp > latest.timestamp ? current : latest;
+    }, events[0]); // Initial value is the first event
+ 
     console.log("Latest Event for Hydration:", latestEvent);
 
     // Hydrate the aggregate using the latest event's payload
