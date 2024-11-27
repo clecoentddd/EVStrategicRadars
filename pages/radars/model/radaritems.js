@@ -32,11 +32,11 @@ export async function getRadarItem(aggregate_id) {
 export async function handleRadarItemCreation(command) {
   console.log ("Model -> creating a new item", command);
 
-  const { radar_id, name, description, type, category, distance, impact, cost, zoom_in } = command.payload;
+  const { radar_id, name, description, type, category, distance, impact, tolerance, zoom_in } = command.payload;
 
   // Validate inputs to ensure mandatory fields are provided
-  if (!radar_id || !name || !type || !category || !distance|| !impact || !cost) {
-    console.log ("Model -< fields missing", radar_id);
+  if (!radar_id || !name || !type || !category || !distance|| !impact || !tolerance) {
+    console.log ("Model -< fields missing", tolerance, type, name, distance, impact);
     return { success: false, message: "Mandatory fields are missing" };
   }
 
@@ -63,8 +63,9 @@ export async function handleRadarItemCreation(command) {
       category,
       distance,
       impact,
-      cost,
+      tolerance,
       zoom_in: zoom_in || null, // Optional zoom_in
+      timestamp: null,
     },
   };
 
@@ -81,12 +82,12 @@ export async function handleRadarItemCreation(command) {
 
 export async function updateRadarItem(command) {
   console.log ("MODEL -> updating", command);
-  const { radar_id, name, description, type, category, distance,impact, cost, zoom_in } = command.payload;
+  const { radar_id, name, description, type, category, distance,impact, tolerance, zoom_in } = command.payload;
 
   console.log ("MODEL 345-> updating aggregate id", command.aggregate_id);
   console.log ("MODEL 345 -> new name is", command.payload.name);
   // Validate inputs to ensure mandatory fields are provided
-  if (!radar_id || !name || !type || !category || !distance|| !impact || !cost) {
+  if (!radar_id || !name || !type || !category || !distance|| !impact || !tolerance) {
     return { success: false, message: "Mandatory fields are missing" };
   }
 
@@ -102,8 +103,9 @@ export async function updateRadarItem(command) {
       category :category,
       distance: distance,
       impact : impact,
-      cost: cost,
+      tolerance: tolerance,
       zoom_in: zoom_in || null, // Optional zoom_in
+      timestamp: timestamp,
     },
   };
 

@@ -17,12 +17,15 @@ export default function RadarPage() {
     type: '',
     distance: '',
     impact: '',
-    cost: '',
+    tolerance: '',
     zoom_in: '', // This will hold the selected zoom-in radar ID
   });
   const [zoomInOptions, setZoomInOptions] = useState([]);
   const [impactOptions, setImpactOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
+  const [toleranceOptions, setToleranceOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [distanceOptions, setDistanceOptions] = useState([]);
   const [showForm, setShowForm] = useState(false); // Toggle to show/hide form
   const [editMode, setEditMode] = useState(false); // Flag to switch between create/edit mode
   const [currentEditingId, setCurrentEditingId] = useState(null); // Track the id of the item being edited
@@ -111,6 +114,9 @@ export default function RadarPage() {
         
         setImpactOptions(impactOptions); // Set the fetched impact options
         setTypeOptions(typeOptions); // Set the fetched impact options
+        setToleranceOptions(toleranceOptions);
+        setCategoryOptions(categoryOptions);
+        setDistanceOptions(distanceOptions);
         setIsLoading(false);
         
         // ... use the other data as needed
@@ -187,7 +193,7 @@ export default function RadarPage() {
         type: radarItem.type || '',
         distance: radarItem.distance || '',
         impact: radarItem.impact || '',
-        cost: radarItem.cost || '',
+        tolerance: radarItem.tolerance || '',
         zoom_in: radarItem.zoom_in || '',
       });
     } catch (error) {
@@ -261,7 +267,7 @@ setFormData({
   type: '',
   distance: '',
   impact: '',
-  cost: '',
+  tolerance: '',
   zoom_in: '',
 });
 
@@ -317,65 +323,80 @@ logMessage("Error saving radar item");
               />
             </label>
             <label>
-              Category:
-              <input
-                type="text"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
+                Category
+                <select name="category" value={formData.category} onChange={handleInputChange}>
+                  <option value="">Select Category</option>
+                  {categoryOptions.length > 0 ? (
+                    categoryOptions.map((option) => (
+                      <option key={option._id} value={option.name}>
+                        {option.label}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading options...</option>
+                  )}
+                </select>
+              </label>
+              <label>
+                Distance
+                <select name="distance" value={formData.distance} onChange={handleInputChange}>
+                  <option value="">Select Distance</option>
+                  {distanceOptions.length > 0 ? (
+                    distanceOptions.map((option) => (
+                      <option key={option._id} value={option.name}>
+                        {option.label}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading options...</option>
+                  )}
+                </select>
+              </label>
             <label>
-              Type
-              <select name="type" value={formData.impact} onChange={handleInputChange}>
-                <option value="">Select Type</option>
-                {typeOptions.length > 0 ? (
-                  typeOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading options...</option>
-                )}
-              </select>
-            </label>
+                Type
+                <select name="type" value={formData.type} onChange={handleInputChange}>
+                  <option value="">Select Type</option>
+                  {typeOptions.length > 0 ? (
+                    typeOptions.map((option) => (
+                      <option key={option._id} value={option.name}>
+                        {option.label}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading options...</option>
+                  )}
+                </select>
+              </label>
             <label>
-              Distance:
-              <input
-                type="text"
-                name="distance"
-                value={formData.distance}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Impact:
-              <select name="impact" value={formData.impact} onChange={handleInputChange}>
-                <option value="">Select Impact</option>
-                {impactOptions.length > 0 ? (
-                  impactOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.name}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading options...</option>
-                )}
-              </select>
-            </label>
-            <label>
-              Cost:
-              <input
-                type="text"
-                name="cost"
-                value={formData.cost}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
+                Impact
+                <select name="impact" value={formData.impact} onChange={handleInputChange}>
+                  <option value="">Select Impact</option>
+                  {impactOptions.length > 0 ? (
+                    impactOptions.map((option) => (
+                      <option key={option._id} value={option.name}>
+                        {option.label}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading options...</option>
+                  )}
+                </select>
+              </label>
+              <label>
+                Tolerance
+                <select name="tolerance" value={formData.tolerance} onChange={handleInputChange}>
+                  <option value="">Select Tolerance</option>
+                  {toleranceOptions.length > 0 ? (
+                    toleranceOptions.map((option) => (
+                      <option key={option._id} value={option.name}>
+                        {option.label}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading options...</option>
+                  )}
+                </select>
+              </label>
             <label>
               Zoom In:
               <select

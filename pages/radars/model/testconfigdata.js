@@ -1,14 +1,24 @@
+function createOptionsFromEnum(enumObject) {
+  return Object.keys(enumObject).map(key => ({
+    value: key,
+    label: enumObject[key]
+  }));
+}
+
 export function getValueDistanceOptions2() {
+  
   const ValueDistance = {
-    SHORT: 'Short Distance',
-    MEDIUM: 'Medium Distance',
-    LONG: 'Long Distance'
+    LEVEL1: 'Detected',
+    LEVEL2: 'Assessing',
+    LEVEL3: 'Assessed',
+    LEVEL4: 'Responding',
+    LEVEL5: 'Responded',
   };
 
   const ValueImpact = {
-    LOW: "Low Impact",
-    MEDIUM: "Medium Impact",
-    HIGH: "High Impact"
+    LOW: "Low",
+    MEDIUM: "Medium",
+    HIGH: "High"
   };
 
   const ValueTolerance = {
@@ -18,10 +28,10 @@ export function getValueDistanceOptions2() {
   };
 
   const ValueCategory = {
-    CAT1: "Business",
-    CAT2: "Operating Model",
-    CAT3: "People and Knowledge",
-    CAT4: "Capabilities",
+    CATEGORY1: "Business",
+    CATEGORY2: "Operating Model",
+    CATEGORY3: "People and Knowledge",
+    CATEGORY4: "Capabilities",
   };
 
   const ValueType = {
@@ -30,10 +40,10 @@ export function getValueDistanceOptions2() {
   };
 
   return {
-    distanceOptions: Object.values(ValueDistance),
-    impactOptions: Object.values(ValueImpact),
-    toleranceOptions: Object.values(ValueTolerance),
-    categoryOptions: Object.values(ValueCategory),
-    typeOptions: Object.values(ValueType)
+    distanceOptions: createOptionsFromEnum(ValueDistance),
+    impactOptions: createOptionsFromEnum(ValueImpact),
+    toleranceOptions: createOptionsFromEnum(ValueTolerance),
+    categoryOptions: createOptionsFromEnum(ValueCategory),
+    typeOptions: createOptionsFromEnum(ValueType)
   };
 }

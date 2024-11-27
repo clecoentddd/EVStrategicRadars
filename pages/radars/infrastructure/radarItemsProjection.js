@@ -2,7 +2,7 @@ import { supabase } from "../../../utils/supabaseClient"; // Supabase client lib
 
 /**
  * Project a radar item creation event into the Supabase "radar_items" table.
- * @param {Object} radarItem - The radar item object containing radar_id, name, description, type, category, impact, cost, zoom_in, etc.
+ * @param {Object} radarItem - The radar item object containing radar_id, name, description, type, category, impact, tolerance, zoom_in, etc.
  * @returns {Promise<Object>} The result of the Supabase insert operation.
  */
 
@@ -39,7 +39,7 @@ export async function projectRadarItemToSupabase(radarItem) {
           category: radarItem.category,
           distance: radarItem.distance,
           impact: radarItem.impact,
-          cost: radarItem.cost,
+          tolerance: radarItem.tolerance,
           zoom_in: radarItem.zoom_in || null, // Optional field
           updated_at: new Date().toISOString(), // Update time
         })
@@ -66,7 +66,7 @@ export async function projectRadarItemToSupabase(radarItem) {
             category: radarItem.category,
             distance: radarItem.distance,
             impact: radarItem.impact,
-            cost: radarItem.cost,
+            tolerance: radarItem.tolerance,
             zoom_in: radarItem.zoom_in || null, // Optional field
             created_at: new Date().toISOString(), // Set creation time
           },
