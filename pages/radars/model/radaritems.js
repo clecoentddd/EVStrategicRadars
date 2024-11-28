@@ -90,7 +90,7 @@ export async function updateRadarItem(command) {
   if (!radar_id || !name || !type || !category || !distance|| !impact || !tolerance) {
     return { success: false, message: "Mandatory fields are missing" };
   }
-
+ 
   // Create radar item updated event
   const event = {
     type: "RADAR_ITEM_UPDATED",
@@ -105,7 +105,7 @@ export async function updateRadarItem(command) {
       impact : impact,
       tolerance: tolerance,
       zoom_in: zoom_in || null, // Optional zoom_in
-      timestamp: timestamp,
+      timestamp: null,
     },
   };
 

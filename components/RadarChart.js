@@ -65,20 +65,33 @@ const RadarChart = ({ items, radius = 200 }) => {
 
     // Map distance to radius
     const distanceToRadius = {
-      dist1: radius,
-      dist2: radius * 0.75,
-      dist3: radius * 0.5,
-      dist4: radius * 0.25,
+      Detected: radius,
+      Assessing: radius * 0.75,
+      Assessed: radius * 0.5,
+      Responding: radius * 0.25,
     };
 
     // Position items in each category quadrant based on distance
+    const ValueCategory = {
+      CATEGORY1: "Business",
+      CATEGORY2: "Operating Model",
+      CATEGORY3: "People and Knowledge",
+      CATEGORY4: "Capabilities"
+    };
+
+    const categoryToIndex = {};
+    Object.keys(ValueCategory).forEach((key, index) => {
+  categoryToIndex[ValueCategory[key]] = index;
+});
+
     Object.entries(groupedItems).forEach(([key, items]) => {
       const [category, distance] = key.split('-');
-      const angleOffset = (Math.PI / 2) * (parseInt(category.replace('cat', '')) - 1);
+      const categoryIndex = categoryToIndex[category];
+      const angleOffset = (Math.PI / 2) * categoryIndex;
       const distRadius = distanceToRadius[distance] || radius;
-
-      console.log(`Category: ${category}, Distance: ${distance}, Radius: ${distRadius}`);
-
+      
+      console.log(`Check Param . CategoryIndex: ${categoryIndex}, category : ${category}, Offset: ${angleOffset}, Distance: ${distance}, Radius: ${distRadius}`);
+      console.log (`Check ValueCategory ${Object.keys(ValueCategory).indexOf("Business")}`);
       // Calculate equal-angle spacing for items at the same distance
       const angleStep = (Math.PI / 2) / (items.length + 1);
       items.forEach((item, index) => {
@@ -86,10 +99,10 @@ const RadarChart = ({ items, radius = 200 }) => {
         const x = distRadius * Math.cos(angle);
         const y = distRadius * Math.sin(angle);
 
-        console.log(`Item: ${item.name}, Position: (${x}, ${y}), Impact: ${item.impact}, Cost: ${item.cost}`);
+        console.log(`index: ${index}, Angle step: ${angleStep}, Angle Offset: ${angleOffset}, Item: ${item.name}, Position: (${x}, ${y}), Impact: ${item.impact}, Tolerance: ${item.tolerance}`);
 
         const color = getColorByImpact(item.impact);
-        const size = getSizeByCost(item.cost);
+        const size = getSizeByTolerance(item.tolerance);
 
         // Append group for each item
         const itemGroup = svg.append('g')
@@ -99,7 +112,7 @@ const RadarChart = ({ items, radius = 200 }) => {
             d3.select(this).select('circle').attr('stroke', 'black').attr('stroke-width', 3);
 
             // Fetch the radar name based on zoom_in
-            let tooltipText = `<strong>${item.name}</strong><br/>Description: ${item.description}</strong><br/>Impact: ${item.impact}<br/>Cost: ${item.cost}`;
+            let tooltipText = `<strong>${item.name}</strong><br/>Category: ${item.category}</strong><br/>Type: ${item.type}</strong><br/>Description: ${item.description}</strong><br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}</strong><br/>Distance: ${item.distance}<br/>Distance to radius : ${distanceToRadius[item.distance]}`;
 
             if (item.zoom_in) {
               const radar = await fetchRadarName(item.zoom_in);
@@ -142,7 +155,7 @@ const RadarChart = ({ items, radius = 200 }) => {
           .text(item.name);
       });
     });
-  }, [items, radius, router]);
+  }, [items, radius, router])
 
   // Function to fetch radar name by zoom_in
   const fetchRadarName = async (zoom_in) => {
@@ -199,29 +212,29 @@ const RadarChart = ({ items, radius = 200 }) => {
   );
 };
 
-// Helper functions for impact and cost
+// Helper functions for impact and tolerance
 const getColorByImpact = (impact) => {
   console.log(`Getting color for impact: ${impact}`);
   switch (impact) {
-    case 'low':
+    case 'Low':
       return 'green';
-    case 'medium':
+    case 'Medium':
       return 'orange';
-    case 'high':
+    case 'High':
       return 'red';
     default:
       return 'steelblue';
   }
 };
 
-const getSizeByCost = (cost) => {
-  console.log(`Getting size for cost: ${cost}`);
-  switch (cost) {
-    case 'low':
+const getSizeByTolerance = (tolerance) => {
+  console.log(`Getting size for tolerance: ${tolerance}`);
+  switch (tolerance) {
+    case 'Low':
       return 7;
-    case 'medium':
+    case 'Medium':
       return 10;
-    case 'high':
+    case 'High':
       return 15;
     default:
       return 10;
