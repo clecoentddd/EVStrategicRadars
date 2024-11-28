@@ -5,7 +5,7 @@ function createOptionsFromEnum(enumObject) {
   }));
 }
 
-export function getValueDistanceOptions2() {
+export function getValueDistanceOptions() {
   
   const ValueDistance = {
     LEVEL1: 'Detected',

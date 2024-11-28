@@ -97,7 +97,7 @@ export default function RadarPage() {
 
     const fetchConfig = async () => {
       try {
-        const response = await fetch('/api/testconfig');
+        const response = await fetch('/api/config');
         const data = await response.json();
 
         // Extract distance and impact options

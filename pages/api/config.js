@@ -1,10 +1,10 @@
-import { getValueDistanceOptions2 } from '../radars/model/testconfigdata';
+import { getValueDistanceOptions } from '../radars/model/configdata';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    console.log (" API Config", getValueDistanceOptions2());
+    console.log (" API Config", getValueDistanceOptions());
     const config = {
-      ...getValueDistanceOptions2(),
+      ...getValueDistanceOptions(),
       // ... other options
     };
     console.log ("API Config returning config", config);
