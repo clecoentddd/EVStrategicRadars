@@ -43,3 +43,19 @@ export const clearEventStore = async () => {
   eventStore.length = 0; // Clear all events
  // console.log("ES Event store cleared."); // Log when the store is cleared
 };
+
+export async function getRadarByIdFromEventSource(aggregateId) {
+  const events = await getEvents();
+  const radarEvents = events.filter(event => event.payload.aggregate_id === aggregateId);
+
+  // Sort events by timestamp in descending order
+  radarEvents.sort((a, b) => b.payload.timestamp - a.payload.timestamp);
+
+  // Return the latest event
+  const latestEvent = radarEvents[0];
+
+  // Reconstruct the radar state from the latest event
+  const radar = latestEvent ? { ...latestEvent.payload } : {};
+
+  return radar;
+}

@@ -283,7 +283,14 @@ logMessage("Error saving radar item");
 
   return (
     <div>
-      <h1>Radar - {radar.name}</h1>
+      <div>
+      <a href="/radars.html" style={{ position: "absolute", top: "10px", left: "10px" }}>
+        <button style={{ backgroundColor: "lightblue", color: "white", padding: "5px 10px", borderRadius: "5px", cursor: "pointer",border: "none" }}>
+          Radars
+        </button>
+      </a>
+      <h1> ............. Radar - {radar.name}</h1>
+      </div>
       <p><strong>Aggregate ID:</strong> {radar.aggregate_id}</p>
       <p><strong>Description:</strong> {radar.description}</p>
       <p><strong>Level:</strong> {radar.org_level}</p>
