@@ -1,17 +1,17 @@
 import { supabase } from "../../../utils/supabaseClient";
 
 export async function projectRadarToSupabase(radar) {
-  console.log("Entering Projection: Radar to project to Supabase:", radar);
+  // console.log("Entering Projection: Radar to project to Supabase:", radar);
   try {
     if (!radar) {
       throw new Error("Invalid radar object received. Missing payload.");
     }
     
-    console.log("Projection: Radar to project to Supabase:", radar);
+   // console.log("Projection: Radar to project to Supabase:", radar);
 
     // Ensure radar has all the expected properties
     const { name, description, level, aggregate_id } = radar;
-    console.log("Extracted values:", { name, description, level, aggregate_id });
+    //bconsole.log("Extracted values:", { name, description, level, aggregate_id });
 
     // Proceed with the Supabase insertion
     const { data, error } = await supabase

@@ -67,7 +67,7 @@
               const listItem = document.createElement("li");
               listItem.innerHTML = `
                 <strong>${item.name}</strong> - ${item.description} <br/>
-                Type: ${item.type}, Distance: ${item.distance}, Impact: ${item.impact}, Cost: ${item.cost}
+                Type: ${item.type}, Distance: ${item.distance}, Impact: ${item.impact}, tolerance: ${item.tolerance}
                 <br/>
                 <button onclick="alert('Not implemented')">Edit</button>
                 <button onclick="alert('Not implemented')">Delete</button>
@@ -89,7 +89,7 @@
       const type = document.getElementById("type").value;
       const distance = parseFloat(document.getElementById("distance").value);
       const impact = parseFloat(document.getElementById("impact").value);
-      const cost = parseFloat(document.getElementById("cost").value);
+      const tolerance = parseFloat(document.getElementById("tolerance").value);
 
       const newItem = {
         radar_id: radarId,
@@ -99,7 +99,7 @@
         type,
         distance,
         impact,
-        cost,
+        tolerance,
       };
 
       try {
@@ -165,8 +165,8 @@
       <label for="impact">Impact:</label>
       <input type="number" id="impact" step="0.1" required />
       <br />
-      <label for="cost">Cost:</label>
-      <input type="number" id="cost" step="0.1" required />
+      <label for="tolerance">tolerance:</label>
+      <input type="number" id="tolerance" step="0.1" required />
       <br />
       <button type="submit">Save</button>
       <button type="button" onclick="toggleCreateForm(false)">Cancel</button>

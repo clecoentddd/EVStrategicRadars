@@ -5,7 +5,7 @@ import { fetchAllRadarItemsByRadarId } from "../radars/infrastructure/radarItems
 import {handleRadarItemCreation, updateRadarItem, getRadarItem} from "../radars/model/radarItems"
 
 export default async function handler(req, res) {
-  console.log("Body received:", req.body);
+  // console.log("Body received:", req.body);
   
   // Debugging: Log the URL to verify it's correct
   // Log details of the request

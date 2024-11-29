@@ -1,9 +1,12 @@
 import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
 import { projectRadarToSupabase } from './radarProjection';
+import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents'
 
 const eventStore = []; // In-memory event storage
 
 export const saveEvent = async (event) => {
+
+
   // Add aggregate_id (UUID) to the event payload
 
   const newtimestamp = new Date().getTime();
@@ -19,6 +22,15 @@ export const saveEvent = async (event) => {
   //console.log("ES1234 Event to be pushed:", eventWithId);
 
   eventStore.push(eventWithId); // Push the new event with the ID into the event store
+
+  // Publish event
+  console.log ("eventstore.js publishing events");
+  try {
+  publishIntegrationEvent({ message: 'Hello, world2!' });
+  } catch (error) {
+  console.error('Error publishing event:', error);
+  // Consider additional error handling, such as retrying the operation or notifying an administrator
+  }
 
   // If the event type is "CREATE_RADAR", project it to Supabase
   if (eventWithId.type === 'CREATE_RADAR') {
