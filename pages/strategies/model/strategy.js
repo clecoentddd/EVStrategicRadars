@@ -1,18 +1,11 @@
-import { saveStrategyToEventSource } from '../infrastructure/eventStore';
+import { saveToEventSource } from '../infrastructure/eventStore';
 
-export async function CreateStrategy(eventData) {
+export async function CreateStrategyStream(command) {
     // Implement your strategy creation logic here
-    console.log('Strategy model: creating strategy with data:', eventData);
-    console.log('Creating strategy with type:', eventData.type);
-    console.log('Creating strategy with payload:', eventData.payload);
-    // ... other logic to create the strategy
-
-    if (eventData.type !== "CREATE_RADAR") {
-      return { success: false, message: "Wrong event type received", eventData };
-    }
-  
+    console.log('Strategy stream creating with radar data:', command);
     
-    const { radar_id, name, description, level, status, aggregate_id, timestamp } = eventData.payload;
+       
+    const { radar_id, name, description, level, status, timestamp } = command;
   
     // Validate inputs
     if (!aggregate_id || !name ) {
@@ -20,23 +13,62 @@ export async function CreateStrategy(eventData) {
     }
   
     // Create the strategy item
-    const newStrategy = {
+    const newStrategyStream = {
       // ... other properties based on your needs
       radar_id: aggregate_id,
-      name: name
+      name: name,
+      description: description,
+      type: "STRATEGY_STREAM_CREATED"
     };
 
-    console.log ("Strategy about to create", newStrategy);
+    console.log ("Strategy stream about to create", newStrategyStream);
+  
+    // Save the strategy item (replace with your actual saving logic)
+  let savedStrategyStream;
+
+    try {
+      console.log ("Strategy stream... saving");
+      savedStrategyStream = await saveToEventSource( newStrategyStream);
+      console.log ("Strategy stream ... saved... it seems", savedStrategyStream);
+      return { success: true, message: "Strategy stream created successfully", savedStrategyStream };
+    } catch (error) {
+      return { success: false, message: `Error creating strategy stream : ${error.message}` };
+    }
+  }
+
+  
+
+export async function CreateNewVersionOfStrategy(command) {
+    // Implement your strategy creation logic here
+    console.log('Creating new version of strategy with payload:', command);
+    // ... other logic to create the strategy
+
+    // Validate inputs
+    if (!command.stream_id || !command.aggregate_id || !command.name ) {
+      return { success: false, message: "Missing required fields to create a new version" };
+    }
+    const newStrategy = {
+      // ... other properties based on your needs
+      type: "STRATEGY_NEW_VERSION_CREATED",
+      stream: strategy_id,
+      aggregate_id: command.aggregate_id,
+      title: command.name,
+      description: command.description,
+    };
+  
+    
+    console.log ("Strategy about to create as new version", newStrategy);
   
     // Save the strategy item (replace with your actual saving logic)
   let savedStrategy;
 
     try {
       console.log ("Strategy... saving");
-      savedStrategy = await saveStrategyToEventSource({ type: "CREATE_STRATEGY", payload: newStrategy });
+      savedStrategy = await saveToEventSource( newStrategy );
       console.log ("Strategy... saved... it seems", savedStrategy);
-      return { success: true, message: "Strategy created successfully", strategy };
+      return { success: true, message: "Strategy created successfully", savedStrategy };
     } catch (error) {
       return { success: false, message: `Error creating strategy: ${error.message}` };
     }
   }
+
