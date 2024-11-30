@@ -6,16 +6,16 @@ const eventStore = [];
 function getLatestStrategy(streamId) {
 
     const streamEvents = getEventsForStream(streamId);
-    console.log("All events for stream:", streamId, streamEvents);
+    // console.log("All events for stream:", streamId, streamEvents);
   
     const strategyEvents = streamEvents.filter(event => event.type === 'STRATEGY_NEW_VERSION_CREATED');
-    console.log("Filtered strategy events:", strategyEvents);
+    //console.log("Filtered strategy events:", strategyEvents);
   
     strategyEvents.sort((a, b) => b.timestamp - a.timestamp);
-    console.log("Sorted strategy events:", strategyEvents);
+    // console.log("Sorted strategy events:", strategyEvents);
   
     if (strategyEvents.length > 0) {
-      console.log("Latest strategy:", strategyEvents[0]);
+      // console.log("Latest strategy:", strategyEvents[0]);
       return strategyEvents[0];
     } else {
       return null;
@@ -23,9 +23,9 @@ function getLatestStrategy(streamId) {
   };
 
 export function getEventsForStream(streamId) {
-    console.log("Getting events for stream ID:", streamId);
+    //console.log("Getting events for stream ID:", streamId);
     const filteredEvents = eventStore.filter(event => event.stream_id === streamId);
-    console.log("Filtered events:", filteredEvents);
+    //console.log("Filtered events:", filteredEvents);
     return filteredEvents;
   };
 
@@ -45,15 +45,16 @@ export const saveToEventSource = async (event) => {
         status: 'Open',
       };
     
+      console.log("Current state of eventStore - Before:", eventStore);
       eventStore.push(streamEvent);
-      console.log('New strategy stream version created:', streamEvent);
+      console.log("Current state of eventStore - After:", eventStore);
       return streamEvent;
 
     } else if (event.type === 'STRATEGY_NEW_VERSION_CREATED') {
         // Retrieve the latest strategy based on the stream_id
         const previousStrategy = getLatestStrategy(event.stream_id);
         
-        console.log("Return previous strategy", previousStrategy?.aggregateId || null);
+        // console.log("Return previous strategy", previousStrategy?.aggregateId || null);
       
         // Calculate the new version
         const previousVersion = previousStrategy?.version || 0; // Default to 0 if no previous version
@@ -61,35 +62,41 @@ export const saveToEventSource = async (event) => {
       
         // preparing to close the book
         ' Close the book'
-        console.log ("Before closing the book", newVersion);
+        //console.log ("Before closing the book", newVersion);
+        console.log("Test1 Current state of eventStore - Before:", eventStore);
+        
         if ( newVersion > 0 ) {
-            previousStrategy.status = 'Close';
-            previousStrategy.type = 'STRATEGY_CLOSED';
-            previousStrategy.timeStamp = new Date().toISOString();
-        }
+            const closeStrategy = {
+                type: 'STRATEGY_CLOSED',
+                stream_id: previousStrategy.stream_id,
+                aggregate_id: previousStrategy.aggregate_id, 
+                timeStamp: new Date().toISOString(),
+                status: 'Close',
+            }
+
+            console.log("Current state of eventStore - Before:", eventStore);
+            eventStore.push(closeStrategy);
+            console.log("Current state of eventStore - After:", eventStore);
+        };
+        console.log("Test2 Current state of eventStore - After:", eventStore);
 
         ' Opening the new book'
         const newStrategy = {
           type: event.type,
           stream_id: event.stream_id,
-          aggregateId: uuidv4(), // Generate a unique ID for the new aggregate
-          previousAggregateId: previousStrategy?.aggregateId || null, // Null if no previous aggregate
+          aggregate_id: uuidv4(), // Generate a unique ID for the new aggregate
+          previousAggregate_id: previousStrategy?.aggregate_id || null, // Null if no previous aggregate
           version: newVersion, // Increment or initialize the version
           timeStamp: new Date().toISOString(), // Ensure timestamp is properly set
           status: 'Open',
         };
 
-    console.log("New strategy event created:", newStrategy);
-
-    // Close the previous strategy if it exists.
-    if (newVersion > 0) {
-      eventStore.push(previousStrategy);
-      console.log ("Closing the book for", previousStrategy);
-    };
+    // console.log("New strategy event created:", newStrategy);
 
     ' Open the book'
+    console.log("Current state of eventStore - Before:", eventStore);
       eventStore.push(newStrategy);
-      console.log('New strategy version created:', newStrategy);
+      console.log("Current state of eventStore - After:", eventStore);
       return newStrategy;
 
     } else {
