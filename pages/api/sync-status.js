@@ -15,7 +15,7 @@ export default async function syncStatusHandler(req, res) {
     // Extract radar names from both sources for comparison
     const radarNames = radars.map((r) => r.name);
     const eventNames = events
-      .filter((e) => e.type === 'CREATE_RADAR') // Only consider radar creation events
+      .filter((e) => e.type === 'RADAR_CREATED') // Only consider radar creation events
       .map((e) => e.payload.name);
 
     // Check if radars are up-to-date

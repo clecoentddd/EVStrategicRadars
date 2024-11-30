@@ -32,7 +32,7 @@ export async function handleRadarCreation(command) {
   let savedEvent;
   try {
     // console.log("MODEL123 about to create SaveEvent::",savedEvent);
-    savedEvent = await saveEvent({ type: "CREATE_RADAR", payload: newRadar });
+    savedEvent = await saveEvent({ type: "RADAR_CREATED", payload: newRadar });
     // console.log("MODEL123 SaveEvent created:",savedEvent);
 } catch (error) {
     // console.error("Error in saveEvent:", error.message);

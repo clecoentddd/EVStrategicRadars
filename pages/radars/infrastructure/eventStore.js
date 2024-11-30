@@ -33,8 +33,8 @@ export const saveEvent = async (event) => {
   }
 
   if (process.env.NODE_ENV !== 'test') {
-  // If the event type is "CREATE_RADAR", project it to Supabase
-  if (eventWithId.type === 'CREATE_RADAR') {
+  // If the event type is "RADAR_CREATED", project it to Supabase
+  if (eventWithId.type === 'RADAR_CREATED') {
     try {
       // Project the event to Supabase
       await projectRadarToSupabase(eventWithId.payload); // Pass the payload with aggregate_id
