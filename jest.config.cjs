@@ -2,7 +2,7 @@ const { config } = require('dotenv'); // Use require for CommonJS
 config({ path: '.env.local' }); // Load environment variables
 const path = require('path');
 
-console.log('jest.config.cjs path:',  path.resolve(__dirname, './jest.config.cjs')); // Reference your setup file if needed
+// console.log('jest.config.cjs path:',  path.resolve(__dirname, './jest.config.cjs')); // Reference your setup file if needed
 
 module.exports = {
   testEnvironment: "jest-environment-jsdom",  // Explicitly refer to the jsdom environment
@@ -11,7 +11,8 @@ module.exports = {
   },
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   testMatch: [
-    "<rootDir>/pages/radars/tests/**/*.test.js"  // Ensure Jest looks in the right directory for tests
+    "<rootDir>/pages/radars/tests/**/*.test.js",  // Ensure Jest looks in the right directory for tests
+    "<rootDir>/pages/strategies/tests/**/*.test.js"
   ],
   setupFiles: [path.resolve(__dirname, './jest.config.cjs')], // Reference your setup file if needed
 };

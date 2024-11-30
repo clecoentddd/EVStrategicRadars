@@ -23,8 +23,8 @@ export async function handleRadarCreation(command) {
 
   //console.log("MODEL123 New radar to create now");
   // Create the radar object (without UUID, which will be added in eventStore.js)
-  const newStatus = "Created"
-  const newRadar = { name, description, level, newStatus };
+  const status = "Created"
+  const newRadar = { name, description, level, status };
 
   //console.log("MODEL123 New radar created (before event store):", newRadar); // Log the radar object before storing
 

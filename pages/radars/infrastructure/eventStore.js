@@ -23,15 +23,16 @@ export const saveEvent = async (event) => {
 
   eventStore.push(eventWithId); // Push the new event with the ID into the event store
 
-  // Publish event
+  // Publish integration event
   console.log ("eventstore.js publishing events");
   try {
-  publishIntegrationEvent({ message: 'Hello, world2!' });
+    publishIntegrationEvent(eventWithId);
   } catch (error) {
   console.error('Error publishing event:', error);
   // Consider additional error handling, such as retrying the operation or notifying an administrator
   }
 
+  if (process.env.NODE_ENV !== 'test') {
   // If the event type is "CREATE_RADAR", project it to Supabase
   if (eventWithId.type === 'CREATE_RADAR') {
     try {
@@ -41,6 +42,7 @@ export const saveEvent = async (event) => {
     //  console.log('saveEvent: Error projecting radar to Supabase:', error);
     }
   }
+}
 
   // Explicitly return the saved event with the aggregate_id
   return eventWithId;
