@@ -1,4 +1,4 @@
-import { saveToEventSource } from '../infrastructure/eventStore';
+import { sendNewStreamCreated, sendNewStrategyCreated } from '../infrastructure/eventStoreStream';
 
 export async function CreateStrategyStream(command) {
     // Implement your strategy creation logic here
@@ -28,7 +28,7 @@ export async function CreateStrategyStream(command) {
 
     try {
       console.log ("Strategy stream... saving");
-      savedStrategyStream = await saveToEventSource( newStrategyStream);
+      savedStrategyStream = await sendNewStreamCreated( newStrategyStream);
       console.log ("Strategy stream ... saved... it seems", savedStrategyStream);
       return { success: true, message: "Strategy stream created successfully", savedStrategyStream };
     } catch (error) {
@@ -64,11 +64,10 @@ export async function CreateNewVersionOfStrategy(command) {
 
     try {
       console.log ("Strategy... saving");
-      savedStrategy = await saveToEventSource( newStrategy );
+      savedStrategy = await sendNewStrategyCreated( newStrategy );
       console.log ("Strategy... saved... it seems", savedStrategy);
       return { success: true, message: "Strategy created successfully", savedStrategy };
     } catch (error) {
       return { success: false, message: `Error creating strategy: ${error.message}` };
     }
   }
-

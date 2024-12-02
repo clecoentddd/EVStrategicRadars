@@ -57,10 +57,10 @@ test('Radar item creation test', async () => {
       name: "Practice",
       description: "A practice radar item",
       category: "category1",
-      distance: "dist1"
-      type: "opportunity", // Assuming the type is "opportunity"
-      tolerance: "medium",
-      impact: "high",
+      distance: "dist1",
+      type: "Opportunity", // Assuming the type is "opportunity"
+      tolerance: "Medium",
+      impact: "High",
       distance: "short",
       radar_id: "1ab3675e-91f9-40b8-a0db-e3b4a474d299", // Using the specified radar_id
     };

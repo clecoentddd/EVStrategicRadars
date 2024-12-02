@@ -1,3 +1,4 @@
+
 import { v4 as uuidv4 } from 'uuid';
 
 // Simulating an in-memory event store
@@ -8,7 +9,7 @@ const eventStore = [];
 export const sendItemCreated = async (eventPayload) => {
   const event = {
     type: 'StrategicItemCreated',
-    aggregateId: uuidv4(), // Generate unique ID for the new item
+    aggregate_id: uuidv4(), // Generate unique ID for the new item
     version: 1, // Starting version
     timeStamp: new Date().toISOString(),
     state: 'Created',

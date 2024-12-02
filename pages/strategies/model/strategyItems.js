@@ -1,37 +1,30 @@
 // model/strategicItems.js
 import {sendItemCreated, sendItemUpdated, sendItemDeleted} from "../infrastructure/eventStoreStrategicItems"
 
-const validateStrategicItemCreation = (strategyAggregateId, name, period, description, diagnosis, overallApproach, setOfCoherentActions, proximateObjectives) => {
-    if (!strategyAggregateId) throw new Error('Strategy aggregate ID is required.');
-    if (!name) throw new Error('Name is required.');
-    if (!description) throw new Error('Diagnosis is required.');
-    if (!period) throw new Error('Overall approach is required.');
+const validateStrategicItemCreation = (command) => {
+    if (!command.stream_id) throw new Error('Strategy aggregate ID is required.');
+    if (!command.name) throw new Error('Name is required.');
+    if (!command.description) throw new Error('Diagnosis is required.');
+    if (!command.period) throw new Error('Overall approach is required.');
 
   };
 
-  const validateStrategicItemUpdate = (AggregateId, name, period, description, diagnosis, overallApproach, setOfCoherentActions, proximateObjectives) => {
-    if (!AggregateId) throw new Error('Strategy aggregate ID is required.');
-    if (!name) throw new Error('Name is required.');
-    if (!description) throw new Error('Diagnosis is required.');
-    if (!period) throw new Error('Overall approach is required.');
+  const validateStrategicItemUpdate = (command) => {
+    if (!command.stream_id) throw new Error('Strategy aggregate ID is required.');
+    if (!command.name) throw new Error('Name is required.');
+    if (!command.description) throw new Error('Diagnosis is required.');
+    if (!command.period) throw new Error('Overall approach is required.');
 
   };
   
   // Command to create a new Strategic Item
-  const createANewStrategicItem = async (strategyAggregateId, name, period, description, diagnosis, overallApproach, setOfCoherentActions, proximateObjectives, tags) => {
-    validateStrategicItemCreation(strategyAggregateId, name, period, description, diagnosis, overallApproach, setOfCoherentActions, proximateObjectives);
+  const createANewStrategicItem = async (command) => {
+    console.log("validateStrategicItemCreation input: ", command);
+    
+    validateStrategicItemCreation(command);
 
     try {
-        const savedItem = await sendItemCreated({
-            strategyAggregateId,
-            name,
-            diagnosis,
-            overallApproach,
-            setOfCoherentActions,
-            proximateObjectives,
-            status: 'active',
-            tags: tags || [],
-        });
+        const savedItem = await sendItemCreated(command);
         return savedItem;
     } catch (error) {
         console.error('Error creating strategic item:', error);
@@ -40,26 +33,16 @@ const validateStrategicItemCreation = (strategyAggregateId, name, period, descri
 };
   
   // Command to update an existing Strategic Item
-  const updateANewStrategicItem = async (aggregateId, name, period, description, diagnosis, overallApproach, setOfCoherentActions, proximateObjectives, tags) => {
+  const updateANewStrategicItem = async (command) => {
    
      // check basic logic
-     validateStrategicItemUpdate(aggregateId, name, period, description, diagnosis, overallApproach, setOfCoherentActions, proximateObjectives);
+     validateStrategicItemUpdate(command);
       
     // Calls the event store to send the update eve diagnosisnt
     let updatedEvent;
 
-    updatedEvent = await sendItemUpdated({
-      aggregateId,
-      name,
-      period,
-      description,
-      diagnosis,
-      overallApproach,
-      setOfCoherentActions,
-      proximateObjectives,
-      status: status || 'active',
-      tags: tags || [],
-    });
+    updatedEvent = await sendItemUpdated(command);
+
     return updatedEvent
   };
   
