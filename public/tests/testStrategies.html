@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Management</title>
+</head>
+<body>
+    <h1>Strategy Management</h1>
+    
+    <section>
+        <h2>Create Strategy Stream</h2>
+        <form id="createStrategyForm">
+            <input type="text" id="radar_id" placeholder="Radar ID" required><br>
+            <input type="text" id="name" placeholder="Name" required><br>
+            <input type="text" id="description" placeholder="Description"><br>
+            <button type="submit">Create</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Create New Strategy Version</h2>
+        <form id="createVersionForm">
+            <input type="text" id="stream_id" placeholder="Stream ID" required><br>
+            <input type="text" id="name_version" placeholder="Name" required><br>
+            <input type="text" id="description_version" placeholder="Description"><br>
+            <button type="submit">Create</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Get Strategy By ID</h2>
+        <form id="getStrategyForm">
+            <input type="text" id="strategy_id" placeholder="Strategy ID" required><br>
+            <button type="submit">Get Strategy</button>
+        </form>
+    </section>
+
+    <!-- Log Table to display results -->
+    <section>
+        <h2>API Call Logs</h2>
+        <table id="logTable" border="1">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <script>
+        // Base URL has been removed to use relative paths
+        const baseUrl = '/api';
+
+        // Function to log results into the table
+        function logToTable(action, data, status) {
+            const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
+            const row = tableBody.insertRow(0); // Insert a new row at the top
+            row.insertCell(0).textContent = action;
+            row.insertCell(1).textContent = JSON.stringify(data, null, 2); // Pretty print data
+            row.insertCell(2).textContent = status;
+            row.insertCell(3).textContent = new Date().toLocaleString();
+        }
+
+        document.getElementById('createStrategyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                radar_id: document.getElementById('radar_id').value,
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value
+            };
+            try {
+                const response = await fetch(`${baseUrl}/strategy-stream`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                logToTable('Create Strategy Stream', result, response.ok ? 'Success' : 'Failed');
+            } catch (err) {
+                logToTable('Create Strategy Stream', err.message, 'Error');
+            }
+        });
+
+        document.getElementById('createVersionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                stream_id: document.getElementById('stream_id').value,
+                name: document.getElementById('name_version').value,
+                description: document.getElementById('description_version').value
+            };
+            try {
+                const response = await fetch(`${baseUrl}/strategy-version`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                logToTable('Create Strategy Version', result, response.ok ? 'Success' : 'Failed');
+            } catch (err) {
+                logToTable('Create Strategy Version', err.message, 'Error');
+            }
+        });
+
+        document.getElementById('getStrategyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const strategy_id = document.getElementById('strategy_id').value;
+            try {
+                const response = await fetch(`${baseUrl}/strategy/${strategy_id}`);
+                const result = await response.json();
+                logToTable('Get Strategy By ID', result, response.ok ? 'Success' : 'Failed');
+            } catch (err) {
+                logToTable('Get Strategy By ID', err.message, 'Error');
+            }
+        });
+    </script>
+</body>
+</html>
