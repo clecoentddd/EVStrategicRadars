@@ -1,5 +1,5 @@
 // model/strategicItems.js
-import {sendItemCreated, sendItemUpdated, sendItemDeleted} from "../infrastructure/eventStoreStrategicItems"
+import {sendItemCreated, sendItemUpdated, sendItemDeleted} from '../infrastructure/eventStoreStrategicItems';
 
 const validateStrategicItemCreation = (command) => {
     if (!command.stream_id) throw new Error('Strategy aggregate ID is required.');
@@ -61,9 +61,5 @@ const validateStrategicItemCreation = (command) => {
     return deletedEvent;
   };
   
-  module.exports = {
-    createANewStrategicItem,
-    updateANewStrategicItem,
-    deleteANewStrategicItem,
-  };
+  export { createANewStrategicItem, updateANewStrategicItem, deleteANewStrategicItem };
   

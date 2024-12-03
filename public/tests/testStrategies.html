@@ -53,15 +53,15 @@
     </section>
 
     <script>
-        // Base URL has been removed to use relative paths
-        const baseUrl = '/api';
+        // Base URL for API calls
+        const baseUrl = '/api/';
 
         // Function to log results into the table
         function logToTable(action, data, status) {
             const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
             const row = tableBody.insertRow(0); // Insert a new row at the top
             row.insertCell(0).textContent = action;
-            row.insertCell(1).textContent = JSON.stringify(data, null, 2); // Pretty print data
+            row.insertCell(1).textContent = JSON.stringify(data, null, 2).substring(0, 100) + '...'; // Truncate long responses
             row.insertCell(2).textContent = status;
             row.insertCell(3).textContent = new Date().toLocaleString();
         }
@@ -79,10 +79,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
+                //const result = await response.json();
+                console.log('Response Status:', response.status);  // Log the status code
+                console.log('Response Text:', response.statusText); // Log the response text
                 const result = await response.json();
                 logToTable('Create Strategy Stream', result, response.ok ? 'Success' : 'Failed');
             } catch (err) {
-                logToTable('Create Strategy Stream', err.message, 'Error');
+                logToTable('Create Strategy Stream', { error: err.message }, 'Error');
             }
         });
 
@@ -102,21 +105,26 @@
                 const result = await response.json();
                 logToTable('Create Strategy Version', result, response.ok ? 'Success' : 'Failed');
             } catch (err) {
-                logToTable('Create Strategy Version', err.message, 'Error');
+                logToTable('Create Strategy Version', { error: err.message }, 'Error');
             }
         });
 
         document.getElementById('getStrategyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const strategy_id = document.getElementById('strategy_id').value;
+            if (!strategy_id) {
+                logToTable('Get Strategy By ID', { error: 'Strategy ID is required' }, 'Error');
+                return;
+            }
             try {
-                const response = await fetch(`${baseUrl}/strategy/${strategy_id}`);
+                const response = await fetch(`/api/strategy-version?aggregate_id=${strategy_id}`); // This will call the dynamic API route
                 const result = await response.json();
                 logToTable('Get Strategy By ID', result, response.ok ? 'Success' : 'Failed');
             } catch (err) {
-                logToTable('Get Strategy By ID', err.message, 'Error');
+                logToTable('Get Strategy By ID', { error: err.message }, 'Error');
             }
         });
     </script>
+
 </body>
 </html>
