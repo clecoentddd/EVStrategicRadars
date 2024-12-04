@@ -13,21 +13,22 @@ describe('Event Store', () => {
     //clearStrategyEventSource();
   });
 
-  it('should create a new stream and initial strategy', async () => {
+  it('should create a new stream and no initial strategy', async () => {
     const streamCreatedEvent = {
       type: 'STRATEGY_STREAM_CREATED',
       radar_id: 'some_radar_id',
-      name: 'Initial Strategy',
+      name: 'Initial Strategy'
     };
     
     const strategyStream = await sendNewStreamCreated(streamCreatedEvent);
 
     const strategies = getStrategiesFromEventSource();
     //console.log("test: ", strategies)
-    createdStreamId =  strategyStream.stream_id;
+    createdStreamId =  strategyStream.id;
     //expect(strategies.length).toBe(0);
     //expect(strategies[0].version).toBe(0);
-    expect(createdStreamId !== null);
+    expect(strategyStream.id !== null);
+    expect(strategyStream.active_version !== null);
   });
 
   it('should create a new strategy version', async () => {
@@ -41,6 +42,9 @@ describe('Event Store', () => {
     };
     const newStrategySaved = await sendNewStrategyCreated(initialStrategyEvent);
 
+    const currentStream = getEventsForStream(createdStreamId);
+
+    expect(currentStream.active_version).toBe(initialStrategyEvent.aggregate_id);
     const strategies1 = getStrategiesFromEventSource();
     // console.log("test first strategy: ", strategies1);
     //console.log ("version of the new strategy is:" , newStrategySaved.version);
@@ -50,6 +54,7 @@ describe('Event Store', () => {
       type: 'STRATEGY_NEW_VERSION_CREATED',
       stream_id: createdStreamId,
       name: 'Second Strategy',
+      description: "This is my 2nd strategy",
     };
 
     const newStrategySaved1 = await sendNewStrategyCreated(newVersionEvent);
@@ -57,7 +62,10 @@ describe('Event Store', () => {
     const strategies = getStrategiesFromEventSource();
     //console.log("Second version of strategy: ", strategies);
 
-    const eventList = getEventsForStream(createdStreamId);
+    
+    const currentStream1 = getEventsForStream(createdStreamId);
+
+    expect(currentStream1.active_version).toBe(newStrategySaved1.aggregate_id);
     
     //console.log("second strategy:", newStrategySaved1);
 

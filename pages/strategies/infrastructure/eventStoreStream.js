@@ -26,12 +26,13 @@ export const sendNewStreamCreated = async (event) => {
     if (event.type === 'STRATEGY_STREAM_CREATED') {
       const streamId = uuidv4();
       const streamEvent = {
-        type: event.type,
-        stream_id: streamId,
+        type: "NEW_STREAM_CREATED",
+        id: streamId,
         radar_id: event.radar_id,
         name: event.name,
         timestamp: timeStamp,
         state: 'Open',
+        active_version: null,
       };
 
       
@@ -51,32 +52,41 @@ export const sendNewStreamCreated = async (event) => {
 export const sendNewStrategyCreated = async (event) => {
   try {
     // Retrieve the latest strategy based on the stream_id
-    const previousStrategy = getLatestStrategy(event.stream_id);
+    console.log ("sendNewStrategyCreated - event received:", event);
+    const currentStream = replayStream(event.stream_id);
     
+    console.log ("Stream is:", currentStream);
+
+    const currentStrategy = replayStrategy(currentStream.active_version);
+
+    console.log ("Current Strategy is : ", currentStrategy);
+
     // Calculate the new version
-    const previousVersion = previousStrategy?.version || 0; // Default to 0 if no previous version
-    const newVersion = previousStrategy ? previousVersion + 1 : 1;
-    
+    const previousVersion = currentStrategy?.version || 0; // Default to 0 if no previous version
+    const newVersion = currentStrategy ? previousVersion + 1 : 1;
+    const previousVersionId = currentStrategy?.id || 0 ;
+
+    console.log ("EventStoreStream -> check id of previous version :", previousVersionId);
+   
     // Preparing to close the previous strategy if it exists
     if (newVersion > 1) {
       const closeStrategy = {
         type: 'STRATEGY_CLOSED',
-        stream_id: previousStrategy.stream_id,
-        aggregate_id: previousStrategy.aggregate_id,
         timestamp: new Date().toISOString(),
         state: 'Closed',
       };
-
       eventStore.push(closeStrategy);
       console.log("Closing version: Current state of eventStore - After:", eventStore);
     }
     
     // Opening the new strategy
+    const new_uuid = uuidv4();
+  
     const newStrategy = {
-      type: event.type,
+      type: "NEW_STRATEGY_CREATED",
       stream_id: event.stream_id,
-      aggregate_id: uuidv4(), // Generate a unique ID for the new aggregate
-      previousAggregate_id: previousStrategy?.aggregate_id || null, // Null if no previous aggregate
+      id: new_uuid, // Generate a unique ID for the new aggregate
+      previousAggregate_id: previousVersionId, // Null if no previous aggregate
       version: newVersion, // Increment or initialize the version
       timestamp: new Date().toISOString(), // Ensure timestamp is properly set
       state: 'Open',
@@ -84,9 +94,14 @@ export const sendNewStrategyCreated = async (event) => {
       description: event.description,
     };
 
-    
+    const newActiveVersionInStream = {
+      type: "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
+      id: event.stream_id,
+      active_version: newStrategy.id,
+    } 
     // console.log("Test1 Current state of eventStore - Before:", newStrategy);
     eventStore.push(newStrategy);
+    eventStore.push(newActiveVersionInStream);
     console.log("Opening New Strategy - Current state of eventStore - After:", eventStore);
     return newStrategy;
 
@@ -126,9 +141,88 @@ export async function getStrategyByIdFromEventSource(aggregateId) {
   return strategy;
 }
 
-export const replay = (aggregateId) => {
-  const filteredEvents = eventStore.filter(event => event.aggregate_id === aggregateId);
-  filteredEvents.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  console.log("Aggregate rehydrated is", filteredEvents[0]);
-  return filteredEvents[0];
+export const replayStream = (streamId) => {
+  // Filter events for the given stream ID
+  const filteredEvents = eventStore.filter(event => event.id === streamId);
+  console.log("Replay Stream with events:", filteredEvents);
+
+  // Apply each event to an initial state object to rehydrate the aggregate
+  const aggregate = filteredEvents.reduce((currentAggregate, event) => {
+    switch (event.type) {
+      case 'NEW_STREAM_CREATED':
+        return {
+          ...currentAggregate,
+          id: event.id,
+          radar_id: event.radar_id,
+          name: event.name,
+          timestamp: event.timestamp,
+          state: event.state,
+          active_version: event.active_version || null,
+        };
+
+      case 'STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED':
+        return {
+          ...currentAggregate,
+          active_version: event.active_version,
+        };
+
+      // Add more cases as needed to handle additional event types
+
+      default:
+        console.warn(`Unhandled event type: ${event.type}`);
+        return currentAggregate;
+    }
+  }, {}); // Start with an empty aggregate
+
+  console.log("Replay Stream - Rehydrated aggregate:", aggregate);
+  return aggregate;
+};
+
+
+
+export const replayStrategy = (strategyId) => {
+  // Filter events for the given strategy ID
+  const filteredEvents = eventStore.filter(event => event.id === strategyId);
+  console.log("Replay Strategy with events:", filteredEvents);
+
+  // Apply each event to an initial state object to rehydrate the strategy aggregate
+  const aggregate = filteredEvents.reduce((currentAggregate, event) => {
+    switch (event.type) {
+      case 'NEW_STRATEGY_CREATED':
+        return {
+          ...currentAggregate,
+          id: event.id,
+          stream_id: event.stream_id,
+          previousAggregate_id: event.previousAggregate_id,
+          version: event.version,
+          timestamp: event.timestamp,
+          state: event.state,
+          name: event.name,
+          description: event.description,
+        };
+
+      case 'STRATEGY_CLOSE':
+        return {
+          ...currentAggregate,
+          state: event.state || currentAggregate.name,
+          timestamp: event.timestamp, // Use the latest timestamp
+        };
+
+      case 'STRATEGY_STATE_CHANGED':
+        return {
+          ...currentAggregate,
+          state: event.state,
+          timestamp: event.timestamp, // Use the latest timestamp
+        };
+
+      // Add more cases as needed to handle additional event types
+
+      default:
+        console.warn(`Unhandled event type: ${event.type}`);
+        return currentAggregate;
+    }
+  }, {}); // Start with an empty aggregate
+
+  console.log("Replay Strategy - Rehydrated aggregate:", aggregate);
+  return aggregate;
 };

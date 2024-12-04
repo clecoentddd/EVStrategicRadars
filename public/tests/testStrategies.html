@@ -61,7 +61,7 @@
             const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
             const row = tableBody.insertRow(0); // Insert a new row at the top
             row.insertCell(0).textContent = action;
-            row.insertCell(1).textContent = JSON.stringify(data, null, 2).substring(0, 100) + '...'; // Truncate long responses
+            row.insertCell(1).textContent = JSON.stringify(data, null, 2); // Truncate long responses
             row.insertCell(2).textContent = status;
             row.insertCell(3).textContent = new Date().toLocaleString();
         }
@@ -125,6 +125,25 @@
             }
         });
     </script>
+    <style>
+        #logTable {
+            width: 100%; /* Make the table take full width */
+            border-collapse: collapse; /* Remove gaps between borders */
+            word-wrap: break-word; /* Allow text to wrap */
+        }
+        #logTable th, #logTable td {
+            padding: 10px; /* Add some padding for better readability */
+            text-align: left; /* Align text to the left */
+            border: 1px solid #ddd; /* Add a border to table cells */
+        }
+        #logTable td {
+            white-space: pre-wrap; /* Allow multiline text in cells */
+            word-break: break-word; /* Break long words to fit the cell */
+        }
+        #logTable th {
+            background-color: #f4f4f4; /* Light background for headers */
+        }
+    </style>    
 
 </body>
 </html>
