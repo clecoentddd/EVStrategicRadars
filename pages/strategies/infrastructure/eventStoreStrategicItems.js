@@ -8,8 +8,9 @@ const eventStore = [];
 
 export const sendItemCreated = async (eventPayload) => {
   const event = {
-    type: 'StrategicItemCreated',
-    aggregate_id: uuidv4(), // Generate unique ID for the new item
+    type: 'STRATEGIC_ITEM_CREATED',
+    id: uuidv4(), // Generate unique ID for the new item
+    version_id: eventPayload.version_id,
     version: 1, // Starting version
     timeStamp: new Date().toISOString(),
     state: 'Created',
@@ -26,7 +27,8 @@ export const sendItemCreated = async (eventPayload) => {
 // Handles event updates
 export  const sendItemUpdated = async (eventPayload) => {
   const event = {
-    type: 'StrategicItemUpdated',
+    type: 'STRATEGIC_ITEM_UPDATED',
+    id: eventPayload.id,
     version: eventStore.length + 1, // Increment version for simplicity
     timeStamp: new Date().toISOString(),
     state: 'Updated',
@@ -42,49 +44,80 @@ export  const sendItemUpdated = async (eventPayload) => {
 // Handles event deletions
 export const sendItemDeleted = async (eventPayload) => {
   const event = {
-    type: 'StrategicItemDeleted',
+    type: 'STRATEGIC_ITEM_DELETED',
+    id: eventPayload,
     version: eventStore.length + 1, // Increment version for simplicity
     timeStamp: new Date().toISOString(),
     state: 'Deleted',
-    ...eventPayload,
   };
 
   // Push the event to the store
   eventStore.push(event);
-  console.log('ES: Item Deleted Event:', event);
+  console.log('ES: Item Deleted Event:', replayItem(event.id));
   return event;
 };
 
 // Replay function to build the current state of an aggregate
-export const replayAggregate = async (aggregateId) => {
-    // Initialize an empty state
-    let aggregateState = {};
-  
-    // Iterate through the event store
-    eventStore.forEach(event => {
-      if (event.aggregateId === aggregateId) {
-        // Apply the event to the aggregate state
-        switch (event.type) {
-          case 'StrategicItemCreated':
-          case 'StrategicItemUpdated':
-          case 'StrategicItemDeleted':
-            aggregateState = { ...aggregateState, ...event };
-            break;
-          default:
-            console.warn('Unknown event type:', event.type);
-        }
-      }
-    });
-  
-    // Return the current state of the aggregate
-    return aggregateState;
-  };
+// Replay function to build the current state of a strategic item
+export const replayItem = async (aggregateId) => {
+  // Filter events specific to the given aggregate ID
+  const filteredEvents = eventStore.filter(event => event.id === aggregateId);
+
+  if (filteredEvents.length === 0) {
+    console.log(`No events found for aggregateId: ${aggregateId}`);
+    return { error: 'No events found for the specified aggregate ID' };
+  }
+
+  // Rebuild the aggregate state by applying each event in chronological order
+  const aggregateState = filteredEvents.reduce((currentState, event) => {
+    switch (event.type) {
+      case 'STRATEGIC_ITEM_CREATED':
+        // Initialize the aggregate state
+        return {
+          id: event.id,
+          version_id: event.version_id,
+          version: event.version,
+          timeStamp: event.timeStamp,
+          state: event.state,
+          name: event.name,
+          description: event.description,
+        };
+
+      case 'STRATEGIC_ITEM_UPDATED':
+        // Apply updates to the current state
+        return {
+          ...currentState, // Keep existing fields
+          ...event, // Overwrite only fields present in the event
+          state: 'Updated', // Explicitly mark the state as updated
+          version: Math.max(currentState.version || 1, event.version), // Ensure version is incremented correctly
+          timeStamp: event.timeStamp, // Update timestamp
+        };
+
+      case 'STRATEGIC_ITEM_DELETED':
+        // Mark the item as deleted and finalize the state
+        return {
+          ...currentState, // Keep existing fields
+          state: 'Deleted', // Mark as deleted
+          timeStamp: event.timeStamp, // Update timestamp
+          version: event.version, // Update to the latest version
+        };
+
+      default:
+        console.warn('Unhandled event type:', event.type);
+        return currentState; // No changes for unknown event types
+    }
+  }, {}); // Start with an empty initial state
+
+  console.log('Replay Strategic Item - Rehydrated Aggregate:', aggregateState);
+  return aggregateState;
+};
+
     
 
 export default {
   sendItemCreated,
   sendItemUpdated,
   sendItemDeleted,
-  replayAggregate,
+  replayItem,
   eventStore, // Exporting the store for debugging
 };

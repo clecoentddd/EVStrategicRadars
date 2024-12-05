@@ -5,7 +5,7 @@ export async function CreateStrategyStream(command) {
     console.log('Strategy stream creating with radar data:', command);
     
        
-    const { radar_id, name, description, level, status, timestamp } = command;
+    const { radar_id, name, description } = command;
   
     // Validate inputs
     if (!radar_id || !name ) {
@@ -18,7 +18,8 @@ export async function CreateStrategyStream(command) {
       radar_id: radar_id,
       name: name,
       description: description,
-      type: "STRATEGY_STREAM_CREATED"
+      type: "STRATEGY_STREAM_CREATED",
+      activeVersion: null,
     };
 
     console.log ("Strategy stream about to create", newStrategyStream);

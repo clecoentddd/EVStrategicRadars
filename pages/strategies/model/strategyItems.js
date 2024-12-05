@@ -2,7 +2,7 @@
 import {sendItemCreated, sendItemUpdated, sendItemDeleted} from '../infrastructure/eventStoreStrategicItems';
 
 const validateStrategicItemCreation = (command) => {
-    if (!command.stream_id) throw new Error('Strategy aggregate ID is required.');
+    if (!command.version_id) throw new Error('Strategy version ID is required.');
     if (!command.name) throw new Error('Name is required.');
     if (!command.description) throw new Error('Diagnosis is required.');
     if (!command.period) throw new Error('Overall approach is required.');
@@ -10,7 +10,8 @@ const validateStrategicItemCreation = (command) => {
   };
 
   const validateStrategicItemUpdate = (command) => {
-    if (!command.stream_id) throw new Error('Strategy aggregate ID is required.');
+    console.log("validateStrategicItemUpdate - id is : ", command.id);
+    if (!command.id) throw new Error('Strategy aggregate item ID is required.');
     if (!command.name) throw new Error('Name is required.');
     if (!command.description) throw new Error('Diagnosis is required.');
     if (!command.period) throw new Error('Overall approach is required.');
@@ -34,7 +35,7 @@ const validateStrategicItemCreation = (command) => {
   
   // Command to update an existing Strategic Item
   const updateANewStrategicItem = async (command) => {
-   
+     console.log ("updateANewStrategicItem -> command", command);
      // check basic logic
      validateStrategicItemUpdate(command);
       
@@ -42,6 +43,8 @@ const validateStrategicItemCreation = (command) => {
     let updatedEvent;
 
     updatedEvent = await sendItemUpdated(command);
+
+    console.log ("updateANewStrategicItem - Event after update", updatedEvent);
 
     return updatedEvent
   };

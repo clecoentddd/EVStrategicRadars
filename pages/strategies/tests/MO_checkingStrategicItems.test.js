@@ -1,15 +1,15 @@
 
 
   import { createANewStrategicItem, updateANewStrategicItem, deleteANewStrategicItem } from '../model/strategyItems';
-  import {replayAggregate} from '../infrastructure/eventStoreStrategicItems';
+  import {replayItem} from '../infrastructure/eventStoreStrategicItems';
   
   describe('Strategic Item Functions', () => {
 
     let strategyItem_id;
 
-    it('should create a new strategic item', async () => {
-      const newStratregicVersion = {
-        stream_id: 'some-id-12344555',
+    it('should create a new strategic version for a given strategy', async () => {
+      const newStratregicItem = {
+        version_id: 'some-id-12344555',
         name: 'Test Item',
         period: '1 year',
         description: 'This is a test description',
@@ -22,9 +22,9 @@
 
       let sendItemCreated;
   
-      sendItemCreated = await createANewStrategicItem(newStratregicVersion);
+      sendItemCreated = await createANewStrategicItem(newStratregicItem);
   
-      strategyItem_id = sendItemCreated.aggregate_id;
+      strategyItem_id = sendItemCreated.id;
 
       console.log ("1 test aggregate_id :", strategyItem_id);
 
@@ -38,9 +38,9 @@
 
     
     it('should update an existing strategic item', async () => {
-      const secondStrategyVersion = {
-        stream_id: 'some-id-12344555',
-        aggregate_id: strategyItem_id,
+      const secondStrategyItem = {
+        version_id: 'some-id-12344555',
+        id: strategyItem_id,
         name: 'Updated Name',
         period: '2 years',
         description: "New description",
@@ -53,24 +53,23 @@
 
       console.log ("2 test aggregate_id :", strategyItem_id);
   
-      const sendItemUpdated = await updateANewStrategicItem(secondStrategyVersion);
+      const sendItemUpdated = await updateANewStrategicItem(secondStrategyItem);
   
-      expect(sendItemUpdated.name).toBe(secondStrategyVersion.name);
+      expect(sendItemUpdated.name).toBe(secondStrategyItem.name);
       expect(sendItemUpdated.state).toBe('Updated');
     });
   
     it('should delete a strategic item', async () => {
   
-      console.log ("3 test aggregate_id :", strategyItem_id);
-
       console.log ("test prior to deleted aggregate_id :", strategyItem_id);
       
       const sendItemDeleted = await deleteANewStrategicItem(strategyItem_id);
   
-      const checkedFinalEvent = replayAggregate(strategyItem_id);
+      const checkedFinalEvent = replayItem(strategyItem_id);
       // aggregate is finally
       console.log("Final aggregate is:",checkedFinalEvent );
       expect(sendItemDeleted.state).toBe('Deleted');
       
     });
+
   });
