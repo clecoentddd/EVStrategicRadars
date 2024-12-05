@@ -15,7 +15,7 @@ describe('Strategy Stream Tests', () => {
     expect(savedStream.state).toBe('Open');
 
     const firstVersionCommand = {
-      stream_id: savedStream.stream_id,
+      stream_id: savedStream.id,
       name: 'First Version of Strategy',
       description: 'Description of the first version of the strategy',
       period: '2025',

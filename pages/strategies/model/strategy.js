@@ -18,8 +18,7 @@ export async function CreateStrategyStream(command) {
       radar_id: radar_id,
       name: name,
       description: description,
-      type: "STRATEGY_STREAM_CREATED",
-      activeVersion: null,
+      active_version: null,
     };
 
     console.log ("Strategy stream about to create", newStrategyStream);
@@ -30,7 +29,7 @@ export async function CreateStrategyStream(command) {
     try {
       console.log ("Strategy stream... saving");
       savedStrategyStream = await sendNewStreamCreated( newStrategyStream);
-      console.log ("Strategy stream ... saved... it seems", savedStrategyStream);
+      console.log ("Model CreateStrategyStream saved", savedStrategyStream);
       return { ...savedStrategyStream };
     } catch (error) {
       return { success: false, message: `Error creating strategy stream : ${error.message}` };

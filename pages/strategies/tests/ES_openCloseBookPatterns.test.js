@@ -15,7 +15,6 @@ describe('Event Store', () => {
 
   it('should create a new stream and no initial strategy', async () => {
     const streamCreatedEvent = {
-      type: 'STRATEGY_STREAM_CREATED',
       radar_id: 'some_radar_id',
       name: 'Initial Strategy'
     };

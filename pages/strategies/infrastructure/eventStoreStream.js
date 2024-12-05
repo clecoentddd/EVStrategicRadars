@@ -23,7 +23,7 @@ export function getEventsForStream(streamId) {
 export const sendNewStreamCreated = async (event) => {
   try {
     const timeStamp = new Date().toISOString();
-    if (event.type === 'STRATEGY_STREAM_CREATED') {
+    if (event.radar_id != null) {
       const streamId = uuidv4();
       const streamEvent = {
         type: "NEW_STREAM_CREATED",
@@ -39,6 +39,7 @@ export const sendNewStreamCreated = async (event) => {
       // console.log("Current state of eventStore - Before:", eventStore);
       eventStore.push(streamEvent);
       // console.log("Current state of eventStore - After:", eventStore);
+      console.log("EvenStoreStream: Create a stream -> dump EventStore after event pushed :", eventStore);
       return streamEvent;
     } else {
       throw new Error('Invalid event type');
@@ -59,24 +60,25 @@ export const sendNewStrategyCreated = async (event) => {
 
     const currentStrategy = replayStrategy(currentStream.active_version);
 
-    console.log ("Current Strategy is : ", currentStrategy);
+    console.log("Create a new strategy -> dump EventStore (before) ", eventStore);
 
     // Calculate the new version
     const previousVersion = currentStrategy?.version || 0; // Default to 0 if no previous version
     const newVersion = currentStrategy ? previousVersion + 1 : 1;
     const previousVersionId = currentStrategy?.id || 0 ;
 
-    console.log ("EventStoreStream -> check id of previous version :", previousVersionId);
+    // console.log ("EventStoreStream -> check id of previous version :", previousVersionId);
    
     // Preparing to close the previous strategy if it exists
     if (newVersion > 1) {
       const closeStrategy = {
         type: 'STRATEGY_CLOSED',
+        id: currentStrategy.id,
         timestamp: new Date().toISOString(),
         state: 'Closed',
       };
       eventStore.push(closeStrategy);
-      console.log("Closing version: Current state of eventStore - After:", eventStore);
+      console.log("Create a stream -> dump EventStore after ", eventStore);
     }
     
     // Opening the new strategy
@@ -143,6 +145,8 @@ export async function getStrategyByIdFromEventSource(aggregateId) {
 
 export const replayStream = (streamId) => {
   // Filter events for the given stream ID
+  console.log("Replay Stream id - stream id ", streamId);
+  console.log("Replay Stream id - dump EventStore ", eventStore);
   const filteredEvents = eventStore.filter(event => event.id === streamId);
   console.log("Replay Stream with events:", filteredEvents);
 
@@ -182,7 +186,10 @@ export const replayStream = (streamId) => {
 
 export const replayStrategy = (strategyId) => {
   // Filter events for the given strategy ID
+  console.log("Replay Strategy for id:", strategyId);
+
   const filteredEvents = eventStore.filter(event => event.id === strategyId);
+  
   console.log("Replay Strategy with events:", filteredEvents);
 
   // Apply each event to an initial state object to rehydrate the strategy aggregate

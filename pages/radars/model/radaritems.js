@@ -43,7 +43,7 @@ export async function handleRadarItemCreation(command) {
   // Fetch events to check for duplicates in the given radar_id
   //const events = await fetchAllRadarItemsByRadarId();
   //const existingRadarItems = events
-  //  .filter((event) => event.type === "CREATE_RADAR_ITEM" && event.payload.radar_id === radar_id)
+  //  .filter((event) => event.type === "RADAR_CREATED_ITEM" && event.payload.radar_id === radar_id)
   //  .map((event) => event.payload);
 
   // Check for duplicate radar item name within the radar
@@ -54,7 +54,7 @@ export async function handleRadarItemCreation(command) {
 
   // Create radar item event
   const event = {
-    type: "CREATE_RADAR_ITEM",
+    type: "RADAR_CREATED_ITEM",
     payload: {
       radar_id,
       name,
