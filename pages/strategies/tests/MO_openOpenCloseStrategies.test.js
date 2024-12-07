@@ -1,42 +1,58 @@
 // import { describe, it, expect } from 'jest';
-import { CreateStrategyStream, CreateNewVersionOfStrategy, GetStrategyById } from '../model/strategy';
+import { CreateStream, CreateNewStrategy, GetStrategyById } from '../model/strategy';
+
+let streamId;
+let firstStrategyId;
 
 describe('Strategy Stream Tests', () => {
-  it('should create a new stream and initial strategy', async () => {
+  it('should create a new stream', async () => {
     const streamCommand = {
       radar_id: 'radar-123',
       name: 'Test Strategy Stream',
-      description: 'Description of the test strategy stream',
+      description: 'Description of purpose',
       level: '1',
     };
 
-    const savedStream = await CreateStrategyStream(streamCommand);
+    const savedStream = await CreateStream(streamCommand);
+
+    streamId = savedStream.id;
 
     expect(savedStream.state).toBe('Open');
+    expect (streamId).not.toBeNull();
 
-    const firstVersionCommand = {
-      stream_id: savedStream.id,
+  });
+
+  it('should create a first strategy', async () => {
+
+    const command = {
+      stream_id: streamId,
       name: 'First Version of Strategy',
       description: 'Description of the first version of the strategy',
       period: '2025',
     };
 
-    const firstVersion = await CreateNewVersionOfStrategy(firstVersionCommand);
+    const strategy = await CreateNewStrategy(command);
 
-    expect(firstVersion.state).toBe('Open');
+    expect(strategy.state).toBe('Open');
 
-    const secondVersionCommand = {
-      stream_id: firstVersion.stream_id,
+    firstStrategyId = strategy.id;
+
+  });
+
+  it('should create a second version', async () => {
+    
+    const command = {
+      stream_id: streamId,
       name: 'Second Version of Strategy',
-      description: 'Description of the second version of the strategy',
+      description: 'Description of the purpose V2',
       period: '2026'
     };
 
-    const secondVersion = await CreateNewVersionOfStrategy(secondVersionCommand);
+    const strategy = await CreateNewStrategy(command);
 
-    const previousVersionShouldBeClose = await GetStrategyById(firstVersion.aggregate_id)
+    const previousStrategy = await GetStrategyById(firstStrategyId)
 
-    console.log ("First version should be closed",previousVersionShouldBeClose );
-    expect(secondVersion.state).toBe('Open');
+    expect(strategy.state).toBe('Open');
+    expect(previousStrategy.state).toBe('Closed');
   });
 });

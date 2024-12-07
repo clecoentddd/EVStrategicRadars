@@ -1,6 +1,6 @@
-import { sendNewStreamCreated, sendNewStrategyCreated, getStrategyByIdFromEventSource } from '../infrastructure/eventStoreStream';
+import { sendStreamCreated, sendStrategyCreated, replayStrategy } from '../infrastructure/eventStoreStream';
 
-export async function CreateStrategyStream(command) {
+export async function CreateStream(command) {
     // Implement your strategy creation logic here
     console.log('Strategy stream creating with radar data:', command);
     
@@ -18,7 +18,7 @@ export async function CreateStrategyStream(command) {
       radar_id: radar_id,
       name: name,
       description: description,
-      active_version: null,
+      active_strategy_id: null,
     };
 
     console.log ("Strategy stream about to create", newStrategyStream);
@@ -28,8 +28,8 @@ export async function CreateStrategyStream(command) {
 
     try {
       console.log ("Strategy stream... saving");
-      savedStrategyStream = await sendNewStreamCreated( newStrategyStream);
-      console.log ("Model CreateStrategyStream saved", savedStrategyStream);
+      savedStrategyStream = await sendStreamCreated( newStrategyStream);
+      console.log ("Model CreateStream saved", savedStrategyStream);
       return { ...savedStrategyStream };
     } catch (error) {
       return { success: false, message: `Error creating strategy stream : ${error.message}` };
@@ -38,7 +38,7 @@ export async function CreateStrategyStream(command) {
 
   
 
-export async function CreateNewVersionOfStrategy(command) {
+export async function CreateNewStrategy(command) {
     // Implement your strategy creation logic here
     console.log('Creating new version of strategy with payload:', command);
     // ... other logic to create the strategy
@@ -63,7 +63,7 @@ export async function CreateNewVersionOfStrategy(command) {
 
     try {
       console.log ("Strategy... saving");
-      savedStrategy = await sendNewStrategyCreated( newStrategy );
+      savedStrategy = await sendStrategyCreated( newStrategy );
       console.log ("Strategy... saved... it seems", savedStrategy);
       return { ...savedStrategy };
     } catch (error) {
@@ -74,7 +74,7 @@ export async function CreateNewVersionOfStrategy(command) {
   export async function GetStrategyById(strategy_id) {
     // return aggregate based on id
 
-    const strategyAggregate = await getStrategyByIdFromEventSource(strategy_id);
+    const strategyAggregate = await replayStrategy(strategy_id);
     console.log (" the aggregate is", strategyAggregate);
     return strategyAggregate;
   }
