@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Management</title>
+</head>
+<body>
+    <h1>Strategy Management</h1>
+
+    <!-- Section to select Radar ID -->
+    <section>
+        <h2>Select Radar ID</h2>
+        <form id="selectRadarForm">
+            <input type="text" id="radar_id" placeholder="Radar ID" required><br>
+            <button type="submit">Set Radar</button>
+        </form>
+        <p id="selectedRadar"></p>
+    </section>
+
+    <!-- Section to create a strategy stream -->
+    <section id="strategyStreamSection" style="display: none;">
+        <h2>Create Strategy Stream</h2>
+        <form id="createStrategyForm">
+            <input type="text" id="stream_name" placeholder="Stream Name" required><br>
+            <input type="text" id="stream_description" placeholder="Stream Description"><br>
+            <button type="submit">Create Stream</button>
+        </form>
+    </section>
+
+    <!-- Section to create a new version -->
+    <section id="strategyVersionSection" style="display: none;">
+        <h2>Create New Strategy Version</h2>
+        <form id="createVersionForm">
+            <input type="text" id="version_name" placeholder="Version Name" required><br>
+            <input type="text" id="version_description" placeholder="Version Description"><br>
+            <button type="submit">Create Version</button>
+        </form>
+    </section>
+
+    <!-- Section to add items to a selected version -->
+    <section id="strategyItemSection" style="display: none;">
+        <h2>Add Strategic Item to Version</h2>
+        <form id="createItemForm">
+            <input type="text" id="item_name" placeholder="Item Name" required><br>
+            <input type="text" id="item_description" placeholder="Item Description"><br>
+            <input type="text" id="item_period" placeholder="Item Period" required><br>
+            <button type="submit">Add Item</button>
+        </form>
+    </section>
+
+    <!-- Log Table to display results -->
+    <section>
+        <h2>API Call Logs</h2>
+        <table id="logTable" border="1">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <script>
+        const baseUrl = '/api/'; // Base URL for API calls
+        let selectedRadarId = null;
+        let selectedStreamId = null;
+        let selectedVersionId = null;
+
+        function logToTable(action, data, status) {
+            const tableBody = document.getElementById('logTable').getElementsByTagName('tbody')[0];
+            const row = tableBody.insertRow(0);
+            row.insertCell(0).textContent = action;
+            row.insertCell(1).textContent = JSON.stringify(data, null, 2);
+            row.insertCell(2).textContent = status;
+            row.insertCell(3).textContent = new Date().toLocaleString();
+        }
+
+        // Set radar ID
+        document.getElementById('selectRadarForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            selectedRadarId = document.getElementById('radar_id').value;
+            document.getElementById('selectedRadar').textContent = `Selected Radar ID: ${selectedRadarId}`;
+            document.getElementById('strategyStreamSection').style.display = 'block';
+        });
+
+        // Create strategy stream
+        document.getElementById('createStrategyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                radar_id: selectedRadarId,
+                name: document.getElementById('stream_name').value,
+                description: document.getElementById('stream_description').value,
+            };
+            try {
+                const response = await fetch(`${baseUrl}/strategy-stream`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    selectedStreamId = result.id;
+                    document.getElementById('strategyVersionSection').style.display = 'block';
+                }
+                logToTable('Create Strategy Stream', result, response.ok ? 'Success' : 'Failed');
+            } catch (err) {
+                logToTable('Create Strategy Stream', { error: err.message }, 'Error');
+            }
+        });
+
+        // Create strategy version
+        document.getElementById('createVersionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                stream_id: selectedStreamId,
+                name: document.getElementById('version_name').value,
+                description: document.getElementById('version_description').value,
+            };
+            try {
+                const response = await fetch(`${baseUrl}/strategy-version`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    selectedVersionId = result.id;
+                    document.getElementById('strategyItemSection').style.display = 'block';
+                }
+                logToTable('Create Strategy Version', result, response.ok ? 'Success' : 'Failed');
+            } catch (err) {
+                logToTable('Create Strategy Version', { error: err.message }, 'Error');
+            }
+        });
+
+        // Add item to strategy version
+        document.getElementById('createItemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                strategy_id: selectedVersionId,
+                name: document.getElementById('item_name').value,
+                description: document.getElementById('item_description').value,
+                period: document.getElementById('item_period').value,
+            };
+            try {
+                const response = await fetch(`${baseUrl}/strategy-items`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                logToTable('Add Strategic Item', result, response.ok ? 'Success' : 'Failed');
+            } catch (err) {
+                logToTable('Add Strategic Item', { error: err.message }, 'Error');
+            }
+        });
+    </script>
+    <style>
+        /* Styling for table and layout improvements */
+        #logTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #logTable th, #logTable td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        #logTable th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</body>
+</html>

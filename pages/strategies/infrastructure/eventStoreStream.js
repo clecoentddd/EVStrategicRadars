@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
-
-const eventsDirectory = './events'; // Directory to store event files
+// import { eventsDirectory } from './config'; 
+export const eventsDirectory = './events'; 
 
 // Helper function to read events from a file
 function readEventsFromFile(filePath) {

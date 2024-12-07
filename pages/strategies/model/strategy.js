@@ -1,4 +1,4 @@
-import { sendStreamCreated, sendStrategyCreated, replayStrategy } from '../infrastructure/eventStoreStream';
+import { sendStreamCreated, sendStrategyCreated, replayStrategy } from '../infrastructure/eventStoreStream.js';
 
 export async function CreateStream(command) {
     // Implement your strategy creation logic here

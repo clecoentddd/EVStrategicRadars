@@ -1,26 +1,25 @@
-import { CreateStrategyStream } from '../strategies/model/strategy';
+import { CreateStream } from '../strategies/model/strategy';
+import { getStrategiesFromEventSource } from '../strategies/infrastructure/eventStoreStream.js'
 
 export default async function handler(req, res) {
-    console.log ("API Call createStrategyStream API", req.method);
+    console.log ("API Call CreateStream API", req.method)
     try {
         if (req.method === 'POST') {
             if (req.url.endsWith('/strategy-stream')) {
                 // Handle Create Strategy Stream
-                const result = await CreateStrategyStream(req.body);
+                const result = await CreateStream(req.body);
                 return res.status(200).json(result);
             } else {
                 return res.status(404).json({ message: 'Not Found' });
-            } /*
-        } /*else if (req.method === 'GET') {
-            console.log("API GET Strategy Stream");
-            if (req.url.startsWith('/api/strategy/')) {
-                // Extract the ID from the path
-                const id = req.url.split('/api/strategy/')[1];
-                result = await GetStrategyStreamById(id);
-                return res.status(200).json(result);
+            } 
+        } else if (req.method === 'GET') {
+            if (req.url.endsWith('/strategy-stream')) {
+                // Handle fetching strategies from the event store
+                const strategies = await getStrategiesFromEventSource();
+                return res.status(200).json(strategies);
             } else {
                 return res.status(404).json({ message: 'Not Found' });
-            } */
+            }
         } else {
             res.setHeader('Allow', ['POST', 'GET']);
             return res.status(405).json({ message: `Method ${req.method} Not Allowed` });

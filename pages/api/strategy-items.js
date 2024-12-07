@@ -1,8 +1,8 @@
 import {
-    createANewStrategicItem,
-    updateANewStrategicItem,
-    deleteANewStrategicItem,
-} from '../strategies/model/strategyItems';
+    createStratregicElement,
+    updateStratregicElement,
+    deleteStratregicElement,
+} from '../strategies/model/strategicElements';
 
 export default async function handler(req, res) {
     try {
@@ -14,12 +14,12 @@ export default async function handler(req, res) {
                 if (!id) {
                     // Handle "Create" action
                     console.log('Creating new strategic item...');
-                    const createdItem = await createANewStrategicItem(body);
+                    const createdItem = await createStratregicElement(body);
                     return res.status(201).json({ message: 'Strategic item created successfully', createdItem });
                 } else {
                     // Handle "Update" action
                     console.log('Updating strategic item with ID:', id);
-                    const updatedItem = await updateANewStrategicItem({ ...body, id });
+                    const updatedItem = await updateStratregicElement({ ...body, id });
                     return res.status(200).json({ message: 'Strategic item updated successfully', updatedItem });
                 }
 
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
                     return res.status(400).json({ error: 'Item ID is required for deletion' });
                 }
                 console.log('Deleting strategic item with ID:', id);
-                const deletedItem = await deleteANewStrategicItem(id);
+                const deletedItem = await deleteStratregicElement(id);
                 return res.status(200).json({ message: 'Strategic item deleted successfully', deletedItem });
 
             default:
