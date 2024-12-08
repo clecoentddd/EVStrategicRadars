@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
 import { replayStrategy } from './eventStoreStream';
+import { projectElementToSupabase } from './ProjectionElements';
 
 export const eventsDirectory = './events'; 
 
@@ -17,7 +18,7 @@ function readEventsFromFile(filePath) {
 }
 
 // Helper function to write events to a file
-function writeEventsToFile(event) {
+async function writeEventsToFile(event) {
   console.log ("wtiteEventstoFile: event received", event);
   try {
     const filePath = path.join(eventsDirectory, `${event.stream_id}.json`); 
@@ -38,6 +39,10 @@ function writeEventsToFile(event) {
   } catch (error) {
     console.error(`Error writing events to file ${filePath}:`, error);
   }
+
+  // do projection
+  const projectionResult = await projectElementToSupabase(event);
+  
 }
 
 // Check events directory: it must exist
@@ -48,7 +53,8 @@ if (!fs.existsSync(eventsDirectory)) {
 // Handles event creation
 export const sendItemCreated = async (eventPayload) => {
   const event = {
-    type: 'STRATEGIC_ITEM_CREATED',
+    event: 'STRATEGIC_ELEMENT_CREATED',
+    type: "ELEMENT",
     id: uuidv4(), // Generate unique ID for the new item
     stream_id: eventPayload.stream_id, 
     strategy_id: eventPayload.strategy_id,
@@ -67,7 +73,8 @@ export const sendItemCreated = async (eventPayload) => {
 // Handles event updates
 export const sendItemUpdated = async (eventPayload) => {
   const event = {
-    type: 'STRATEGIC_ITEM_UPDATED',
+    event: 'STRATEGIC_ELEMENT_UPDATED',
+    type: 'STRATEGIC_ELEMENT',
     id: eventPayload.id,
     stream_id: eventPayload.stream_id, // Include stream_id
     version: 2, // Increment version for simplicity (you might want to calculate actual version)
@@ -95,7 +102,8 @@ export const sendItemDeleted = async (eventPayload) => {
   const timeStamp = new Date().toISOString();
   
   const deletedElement = {
-    type: 'STRATEGIC_ITEM_DELETED',
+    event: 'STRATEGIC_ELEMENT_DELETED',
+    type: 'STRATEGIC_ELEMENT',
     id: eventPayload.id,
     stream_id: eventPayload.stream_id, // Include stream_id
     strategy_id: eventPayload.strategy_id,
@@ -130,13 +138,14 @@ export const sendItemDeleted = async (eventPayload) => {
   
     // Rebuild the aggregate state by applying each event in chronological order
     const aggregateState = elementEvents.reduce((currentState, event) => {
-      switch (event.type) {
-        case 'STRATEGIC_ITEM_CREATED':
+      switch (event.event) {
+        case 'STRATEGIC_ELEMENT_CREATED':
           // Initialize the aggregate state
           return { 
             id: event.id, 
             stream_id: event.stream_id, 
-            strategy_id: event.strategy_id, 
+            strategy_id: event.strategy_id,
+            type: event.type, 
             version: event.version, 
             timeStamp: event.timeStamp, 
             state: event.state, 
@@ -145,7 +154,7 @@ export const sendItemDeleted = async (eventPayload) => {
             // Include other properties as needed
           };
   
-        case 'STRATEGIC_ITEM_UPDATED':
+        case 'STRATEGIC_ELEMENT_UPDATED':
           // Apply updates to the current state
           return {
             ...currentState, 
@@ -155,7 +164,7 @@ export const sendItemDeleted = async (eventPayload) => {
             timeStamp: event.timeStamp, 
           };
   
-        case 'STRATEGIC_ITEM_DELETED':
+        case 'STRATEGIC_ELEMENT_DELETED':
           // Mark the item as deleted and finalize the state
           return {
             ...currentState, 

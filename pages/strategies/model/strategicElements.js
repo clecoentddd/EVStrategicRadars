@@ -1,11 +1,10 @@
 // model/StratregicElements.js
-import {sendItemCreated, sendItemUpdated, sendItemDeleted} from '../infrastructure/eventStoreStrategicElements';
+import {sendItemCreated, sendItemUpdated, sendItemDeleted} from '../infrastructure/eventStoreElements';
 
 const validateStratregicElementCreation = (command) => {
     if (!command.strategy_id) throw new Error('Strategy version ID is required.');
     if (!command.name) throw new Error('Name is required.');
-    if (!command.description) throw new Error('Diagnosis is required.');
-    if (!command.period) throw new Error('Overall approach is required.');
+    if (!command.stream_id) throw new Error ('A strategic element must belong to a stream');
 
   };
 
@@ -63,6 +62,20 @@ const validateStratregicElementCreation = (command) => {
 
     return deletedEvent;
   };
+
+  const returningStratregicElement = async (command) => {
+    if (!command.id || ! command.stream_id || !command.strategy_id) throw new Error('Aggregate ID is required.');
   
-  export { createStratregicElement, updateStratregicElement, deleteStratregicElement };
+    // Calls the event store to send the delete event
+    let replayedEvent;
+
+    replayedEvent = await replayedEvent({...command});
+
+    console.log("MODEL replayied event back to front", replayedEvent);
+
+    return replayedEvent;
+  };
+  
+  
+  export { createStratregicElement, updateStratregicElement, deleteStratregicElement, returningStratregicElement, };
   

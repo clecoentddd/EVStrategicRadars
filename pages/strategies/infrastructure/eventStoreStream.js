@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
+import {projectStreamToSupabase} from './ProjectionStreams';
+import {projectStrategyToSupabase} from './ProjectionStrategies';
+
 // import { eventsDirectory } from './config'; 
 export const eventsDirectory = './events'; 
 
@@ -16,12 +19,29 @@ function readEventsFromFile(filePath) {
 }
 
 // Helper function to write events to a file
-function writeEventsToFile(filePath, events) {
+async function writeEventsToFile(filePath, events) {
   try {
     fs.writeFileSync(filePath, JSON.stringify(events, null, 2));
+    
+  console.log("Event stored successfully:");
+
+  // Step 3: Trigger the projection
+  console.log("Projecting event to Supabase:", events);
+
+  if (events.type = "STREAM") {
+    const projectionResult = await projectStreamToSupabase(events);
+  }
+  
+  if (events.type === "STRATEGY") {
+    const projectionResult = await projectStrategyToSupabase(events);
+  }
+
+  console.log("Projection successful:", projectionResult);
+  
   } catch (error) {
     console.error(`Error writing events to file ${filePath}:`, error);
   }
+
 }
 
 // Create the events directory if it doesn't exist
@@ -38,7 +58,8 @@ export const sendStreamCreated = async (event) => {
     console.log ("ES Stream entering creation");
        try {
         const streamEvent = {
-            type: "NEW_STREAM_CREATED",
+            event: "STREAM_CREATED",
+            type: "STREAM",
             id: uuidv4(),
             radar_id: event.radar_id,
             name: event.name,
@@ -84,7 +105,7 @@ export const sendStrategyCreated = async (event) => {
     // Preparing to close the previous strategy if it exists
     if (new_version > 1) {
       const closeStrategy = {
-        type: 'STRATEGY_CLOSED',
+        event: 'STRATEGY_CLOSED',
         id: previous_strategy_id,
         timestamp: new Date().toISOString(),
         state: 'Closed',
@@ -100,10 +121,11 @@ export const sendStrategyCreated = async (event) => {
     // Opening the new strategy
     const new_uuid = uuidv4();
     const newStrategy = {
-      type: "NEW_STRATEGY_CREATED",
+      event: "STRATEGY_CREATED",
+      type: "STRATEGY",
       stream_id: event.stream_id,
       id: new_uuid, 
-      previousAggregate_id: previous_strategy_id, 
+      previous_strategy_id: previous_strategy_id, 
       version: new_version, 
       timestamp: new Date().toISOString(), 
       state: 'Open',
@@ -112,7 +134,8 @@ export const sendStrategyCreated = async (event) => {
     };
 
     const newActiveVersionInStream = {
-      type: "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
+      event: "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
+      type: "STREAM",
       id: event.stream_id,
       active_strategy_id: newStrategy.id,
     };
@@ -188,8 +211,8 @@ export const replayStream = (streamId) => {
 
   // Apply each event to an initial state object to rehydrate the aggregate
   const aggregate = filteredEvents.reduce((currentAggregate, event) => {
-    switch (event.type) {
-      case 'NEW_STREAM_CREATED':
+    switch (event.event) {
+      case 'STREAM_CREATED':
         return {
           ...currentAggregate,
           id: event.id,
@@ -227,12 +250,12 @@ export const replayStrategy = async (strategyId) => {
     // Apply each event to an initial state object to rehydrate the strategy aggregate
     const aggregate = filteredEvents.reduce((currentAggregate, event) => {
       switch (event.type) {
-        case 'NEW_STRATEGY_CREATED':
+        case 'STRATEGY_CREATED':
           return {
             ...currentAggregate,
             id: event.id,
             stream_id: event.stream_id,
-            previousAggregate_id: event.previousAggregate_id,
+            previous_strategy_id: event.previous_strategy_id,
             version: event.version,
             timestamp: event.timestamp,
             state: event.state,

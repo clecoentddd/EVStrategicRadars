@@ -2,6 +2,7 @@ import {
     createStratregicElement,
     updateStratregicElement,
     deleteStratregicElement,
+    returningStratregicElement,
 } from '../strategies/model/strategicElements';
 
 export default async function handler(req, res) {
@@ -28,8 +29,16 @@ export default async function handler(req, res) {
                     return res.status(400).json({ error: 'Item ID is required for deletion' });
                 }
                 console.log('Deleting strategic item with ID:', id);
-                const deletedItem = await deleteStratregicElement(id);
+                const deletedItem = await deleteStratregicElement(body);
                 return res.status(200).json({ message: 'Strategic item deleted successfully', deletedItem });
+            
+                case 'GET':
+                if (!id) {              
+                    return res.status(400).json({ error: 'Item ID is required for deletion' });
+                }
+                console.log('Replaying strategic element with ID:', body);
+                const replayedElement = await returningStratregicElement(body);
+                return res.status(200).json({ message: 'Strategic item replayed successfully', replayedElement })
 
             default:
                 res.setHeader('Allow', ['POST', 'DELETE']);
