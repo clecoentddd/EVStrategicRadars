@@ -14,6 +14,7 @@ const validateStratregicElementCreation = (command) => {
     if (!command.name) throw new Error('Name is required.');
     if (!command.description) throw new Error('Diagnosis is required.');
     if (!command.period) throw new Error('Overall approach is required.');
+    if (!command.stream_id) throw new Error ('Stream id missing in strategy.');
 
   };
   

@@ -1,7 +1,7 @@
 // import { describe, it, expect } from 'jest';
 import { CreateStream, CreateNewStrategy, GetStrategyById } from '../model/strategy';
 import { createStratregicElement, updateStratregicElement, deleteStratregicElement } from '../model/strategicElements';
-import {replayElement} from '../infrastructure/eventStoreStrategicElements';
+import {replayElement} from '../infrastructure/eventStoreElements';
 
 
 describe('Strategy Stream Tests', () => {
@@ -14,7 +14,7 @@ describe('Strategy Stream Tests', () => {
   it('should create the stream first', async () => {
   
     const streamCommand = {
-    radar_id: 'id_radar_1234',
+    radar_id: '9573ace9-48f7-4410-9b21-3e52a3be3e7a',
     name: 'Strategy Stream v1.0',
     description: 'Description of the strategy stream',
     level: '1',
@@ -62,7 +62,7 @@ it('should create a new strategic item for a given strategy', async () => {
       period: '1 year',
       description: 'This is a test description',
       diagnosis: 'Some diagnosis',
-      overallApproach: 'Some approach',
+      overall_approach: 'Some approach',
       setOfCoherentActions: ['Action 1', 'Action 2'],
       proximateObjectives: ['Objective 1', 'Objective 2'],
       tags: ['tag1', 'tag2'],
@@ -90,7 +90,7 @@ it('should create a new strategic item for a given strategy', async () => {
       period: '2 years',
       description: "New description",
       diagnosis: 'Some diagnosis 2',
-      overallApproach: 'Some approach 2',
+      overall_approach: 'Some approach 2',
       setOfCoherentActions: ['Action 3', 'Action 4'],
       proximateObjectives: ['Objectivee4', 'Objective 5'],
       tags: ['tag4', 'tag3'],
