@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export const eventsDirectory = './events';
+export const eventsDirectory = path.resolve(__dirname, '../events');
 
 // Create the events directory if it doesn't exist
 if (!fs.existsSync(eventsDirectory)) {
@@ -10,6 +10,7 @@ if (!fs.existsSync(eventsDirectory)) {
 
 // Helper function to read events from a file
 export function readEventsFromFile(streamId) {
+  console.log ("readEventsFromFile entereing", eventsDirectory );
   const filePath = path.join(eventsDirectory, `${streamId}.json`);
   console.log("readEventsFromFile: Path", filePath);
 

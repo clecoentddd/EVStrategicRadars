@@ -1,0 +1,94 @@
+[
+  {
+    "event": "STREAM_CREATED",
+    "type": "STREAM",
+    "id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
+    "radar_id": "9573ace9-48f7-4410-9b21-3e52a3be3e7a",
+    "name": "Strategy Stream v1.0",
+    "timestamp": "2024-12-11T21:27:02.901Z",
+    "state": "Open",
+    "active_strategy_id": null
+  },
+  {
+    "event": "STRATEGY_CREATED",
+    "type": "STRATEGY",
+    "stream_id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
+    "id": "a18fe481-1a9f-4244-b97d-064857bac924",
+    "previous_strategy_id": null,
+    "version": 1,
+    "timestamp": "2024-12-11T21:27:02.961Z",
+    "state": "Open",
+    "name": "First Version of Strategy for stream v1",
+    "description": "Description of the first version of the strategy"
+  },
+  {
+    "event": "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
+    "type": "STREAM",
+    "id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
+    "active_strategy_id": "a18fe481-1a9f-4244-b97d-064857bac924"
+  },
+  {
+    "event": "STRATEGIC_ELEMENT_CREATED",
+    "type": "ELEMENT",
+    "id": "65b3b1fa-f07e-4dee-917f-6781a14a297c",
+    "stream_id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
+    "strategy_id": "a18fe481-1a9f-4244-b97d-064857bac924",
+    "version": 1,
+    "timeStamp": "2024-12-11T21:27:03.534Z",
+    "state": "Created",
+    "name": "Unbalanaced Risk",
+    "period": "1 year",
+    "description": "This is a test description",
+    "diagnosis": "Some diagnosis",
+    "overall_approach": "Some approach",
+    "setOfCoherentActions": [
+      "Action 1",
+      "Action 2"
+    ],
+    "proximateObjectives": [
+      "Objective 1",
+      "Objective 2"
+    ],
+    "tags": [
+      "tag1",
+      "tag2"
+    ]
+  },
+  {
+    "event": "STRATEGIC_ELEMENT_UPDATED",
+    "type": "STRATEGIC_ELEMENT",
+    "id": "65b3b1fa-f07e-4dee-917f-6781a14a297c",
+    "stream_id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
+    "version": 2,
+    "timeStamp": "2024-12-11T21:27:03.560Z",
+    "state": "Updated",
+    "strategy_id": "a18fe481-1a9f-4244-b97d-064857bac924",
+    "name": "Updated Name",
+    "period": "2 years",
+    "description": "New description",
+    "diagnosis": "Some diagnosis 2",
+    "overall_approach": "Some approach 2",
+    "setOfCoherentActions": [
+      "Action 3",
+      "Action 4"
+    ],
+    "proximateObjectives": [
+      "Objectivee4",
+      "Objective 5"
+    ],
+    "tags": [
+      "tag4",
+      "tag3"
+    ]
+  },
+  {
+    "event": "STRATEGIC_ELEMENT_DELETED",
+    "type": "STRATEGIC_ELEMENT",
+    "id": "65b3b1fa-f07e-4dee-917f-6781a14a297c",
+    "stream_id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
+    "strategy_id": "a18fe481-1a9f-4244-b97d-064857bac924",
+    "version": 3,
+    "timeStamp": "2024-12-11T21:27:03.806Z",
+    "state": "Deleted"
+  }
+]
