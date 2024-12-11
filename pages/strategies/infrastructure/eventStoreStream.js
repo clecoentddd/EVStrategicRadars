@@ -80,6 +80,7 @@ export const sendStrategyCreated = async (event) => {
       type: "STREAM",
       id: currentStream.id,
       active_strategy_id: newStrategy.id,
+      timestamp: new Date().toISOString(),
     };
 
     // Ready to add events to file
@@ -123,6 +124,7 @@ export const replayStream = (streamId) => {
         return {
           ...currentAggregate,
           active_strategy_id: event.active_strategy_id,
+          timestamp: event.timestamp,
         };
 
       default:

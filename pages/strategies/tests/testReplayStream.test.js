@@ -44,7 +44,7 @@ describe('replayStream', () => {
       name: name,
       state: 'Open',
       active_strategy_id: active_strategy_id,
-      timestamp: '2024-12-11T21:27:02.901Z' // to add timestamp when I do the update
+      timestamp: '2024-12-11T21:47:27.552Z' // to add timestamp when I do the update
     });
   });
 });

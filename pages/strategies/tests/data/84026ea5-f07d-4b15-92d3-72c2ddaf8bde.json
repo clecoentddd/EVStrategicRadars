@@ -25,7 +25,8 @@
     "event": "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
     "type": "STREAM",
     "id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
-    "active_strategy_id": "a18fe481-1a9f-4244-b97d-064857bac924"
+    "active_strategy_id": "a18fe481-1a9f-4244-b97d-064857bac924",
+    "timestamp": "2024-12-11T21:47:27.552Z"
   },
   {
     "event": "STRATEGIC_ELEMENT_CREATED",
