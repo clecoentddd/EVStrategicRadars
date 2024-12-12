@@ -123,6 +123,7 @@ export const replayElement = async (element) => {
           state: 'Updated',
           version: Math.max(currentState.version || 1, event.version),
           timeStamp: event.timeStamp,
+          event: event.event
         };
 
       case 'STRATEGIC_ELEMENT_DELETED':
@@ -131,6 +132,8 @@ export const replayElement = async (element) => {
           state: 'Deleted',
           timeStamp: event.timeStamp,
           version: event.version,
+          event: event.event,
+          timeStamp: event.timeStamp,
         };
 
       default:
