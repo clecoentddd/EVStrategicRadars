@@ -111,28 +111,26 @@ export async function GetAllStreamData(stream_id) {
       return { strategies: [], elements: [] }; // No data to return
     }
 
-    // Step 2: Fetch all elements with their corresponding strategy info
-    const elementsWithStrategy = await Promise.all(
-      strategies.map(async (strategy) => {
-        const { data: elementData, error: elementError } = await supabase
-          .from("strategic_elements")
-          .select("*")
-          .eq("strategy_id", strategy.id);
-
-        if (elementError) {
-          console.error("Error fetching elements for strategy:", strategy.id, elementError.message);
-          // Handle or log the error (optional)
-        }
-
-        return { ...strategy, elements: elementData || [] }; // Include element data in each strategy object
-      })
-    );
-
     // Reorder data in the desired format
-    const reorderedData = elementsWithStrategy.flatMap((item) => [
-      item, 
-      ...(item.elements || []) 
-    ]);
+    const reorderedData = [];
+    for (const strategy of strategies) {
+      reorderedData.push(strategy); // Push strategy information
+
+      // Fetch elements for the current strategy
+      const { data: elements, error: elementsError } = await supabase
+        .from("strategic_elements")
+        .select("*")
+        .eq("strategy_id", strategy.id);
+
+      if (elementsError) {
+        console.error("Error fetching elements for strategy:", strategy.id, elementsError.message);
+        // Handle or log the error (optional)
+      }
+
+      if (elements && elements.length > 0) {
+        reorderedData.push(...elements); // Push elements if they exist
+      }
+    }
 
     return { data: reorderedData }; // Return the reordered data as "data" property
   } catch (err) {
