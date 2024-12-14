@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   console.log("Method:", req.method);
   console.log("URL:", req.url);
   console.log("Query Params:", req.query);
-  console.log("Body:", JSON.stringify(req.body, null, 2));
+  // console.log("Body:", JSON.stringify(req.body, null, 2));
 
   try {
     if (req.method === "GET") {

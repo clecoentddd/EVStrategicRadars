@@ -7,7 +7,9 @@ export default async function handler(req, res) {
         if (req.method === 'POST') {
             if (req.url.endsWith('/strategy-stream')) {
                 // Handle Create Strategy Stream
-                const result = await CreateStream(req.body);
+                const { payload } = req.body;
+                console.log ("checking payload before creating stream", payload);
+                const result = await CreateStream(payload);
                 return res.status(200).json(result);
             } else {
                 return res.status(404).json({ message: 'Not Found' });

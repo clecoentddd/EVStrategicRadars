@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
-export const eventsDirectory = path.resolve(__dirname, '../events');
+const eventsDirectory = path.join(process.cwd(), process.env.EVENTS_DIRECTORY || 'pages/strategies/events');
+
+console.log("Path I am using to store streams:", eventsDirectory);
 
 // Create the events directory if it doesn't exist
 if (!fs.existsSync(eventsDirectory)) {

@@ -72,3 +72,72 @@ export async function getStrategicElementById(id) {
     throw err;
   }
 }
+
+export async function getStreamByRadarId(id) { 
+  try {
+    const { data, error } = await supabase
+      .from("strategic_streams")
+      .select("*")
+      .eq("radar_id", id)
+      .single(); // Single ensures we get exactly one row or null
+
+    if (error) {
+      console.error("Error fetching steeam  based on radar_id:", error.message);
+      throw new Error("Failed to fetch stream based on radar_id:", id);
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Unexpected error fetching stream based on radar id:", err.message);
+    throw err;
+  }
+}
+
+export async function GetAllStreamData(stream_id) {
+  try {
+    // Step 1: Fetch all strategies where stream_id matches
+    const { data: strategies, error: strategiesError } = await supabase
+      .from("strategic_strategies")
+      .select("*")
+      .eq("stream_id", stream_id);
+
+    if (strategiesError) {
+      console.error("Error fetching strategies for stream_id:", strategiesError.message);
+      throw new Error("Failed to fetch strategies for stream_id");
+    }
+
+    // If no strategies found, return early
+    if (!strategies || strategies.length === 0) {
+      return { strategies: [], elements: [] }; // No data to return
+    }
+
+    // Step 2: Fetch all elements with their corresponding strategy info
+    const elementsWithStrategy = await Promise.all(
+      strategies.map(async (strategy) => {
+        const { data: elementData, error: elementError } = await supabase
+          .from("strategic_elements")
+          .select("*")
+          .eq("strategy_id", strategy.id);
+
+        if (elementError) {
+          console.error("Error fetching elements for strategy:", strategy.id, elementError.message);
+          // Handle or log the error (optional)
+        }
+
+        return { ...strategy, elements: elementData || [] }; // Include element data in each strategy object
+      })
+    );
+
+    // Reorder data in the desired format
+    const reorderedData = elementsWithStrategy.flatMap((item) => [
+      item, 
+      ...(item.elements || []) 
+    ]);
+
+    return { data: reorderedData }; // Return the reordered data as "data" property
+  } catch (err) {
+    console.error("Unexpected error fetching stream data:", err.message);
+    throw err;
+  }
+}
+

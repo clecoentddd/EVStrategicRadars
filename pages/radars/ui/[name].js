@@ -63,7 +63,7 @@ export default function RadarPage() {
     const fetchRadarItems = async () => {
       try {
         logMessage("Fetching radar items...");
-        const response = await fetch(`/api/radaritems?radar_id=${radar_id}`);
+        const response = await fetch(`/api/radar_items?radar_id=${radar_id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -97,7 +97,7 @@ export default function RadarPage() {
 
     const fetchConfig = async () => {
       try {
-        const response = await fetch('/api/config');
+        const response = await fetch('/api/radar_config');
         const data = await response.json();
 
         // Extract distance and impact options

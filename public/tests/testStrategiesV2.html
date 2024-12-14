@@ -139,26 +139,29 @@
         });
 
         // Add item to strategy version
-        document.getElementById('createItemForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const data = {
-                strategy_id: selectedVersionId,
-                name: document.getElementById('item_name').value,
-                description: document.getElementById('item_description').value,
-                period: document.getElementById('item_period').value,
-            };
-            try {
-                const response = await fetch(`${baseUrl}/strategy-items`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                });
-                const result = await response.json();
-                logToTable('Add Strategic Item', result, response.ok ? 'Success' : 'Failed');
-            } catch (err) {
-                logToTable('Add Strategic Item', { error: err.message }, 'Error');
-            }
+        // Add item to strategy version
+document.getElementById('createItemForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+        stream_id: selectedStreamId, // Pass the stream ID from the selected stream
+        strategy_id: selectedVersionId, // Pass the version ID from the created version
+        name: document.getElementById('item_name').value,
+        description: document.getElementById('item_description').value,
+        period: document.getElementById('item_period').value,
+    };
+    try {
+        const response = await fetch(`${baseUrl}/strategy-items`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
         });
+        const result = await response.json();
+        logToTable('Add Strategic Item', result, response.ok ? 'Success' : 'Failed');
+    } catch (err) {
+        logToTable('Add Strategic Item', { error: err.message }, 'Error');
+    }
+});
+
     </script>
     <style>
         /* Styling for table and layout improvements */

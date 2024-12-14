@@ -14,7 +14,7 @@ export const saveEvent = async (event) => {
     ...event,
     payload: {
       ...event.payload,
-      aggregate_id: uuidv4(), // Generate a unique ID and add it as aggregate_id
+      id: uuidv4(), // Generate a unique ID and add it as aggregate_id
       timestamp: newtimestamp,
     },
   };
@@ -32,7 +32,6 @@ export const saveEvent = async (event) => {
   // Consider additional error handling, such as retrying the operation or notifying an administrator
   }
 
-  if (process.env.NODE_ENV !== 'test') {
   // If the event type is "RADAR_CREATED", project it to Supabase
   if (eventWithId.type === 'RADAR_CREATED') {
     try {
@@ -42,7 +41,6 @@ export const saveEvent = async (event) => {
     //  console.log('saveEvent: Error projecting radar to Supabase:', error);
     }
   }
-}
 
   // Explicitly return the saved event with the aggregate_id
   return eventWithId;

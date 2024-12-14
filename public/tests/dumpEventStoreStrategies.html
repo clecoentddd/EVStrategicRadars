@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Viewer</title>
+</head>
+<body>
+    <h1>Strategy Viewer</h1>
+
+    <label for="filter-id">Filter by ID:</label>
+    <input type="text" id="filter-id" placeholder="Enter ID">
+
+    <label for="filter-type">Filter by Type:</label>
+    <input type="text" id="filter-type" placeholder="Enter Type">
+
+    <button id="apply-filters">Apply Filters</button>
+
+    <button id="fetch-data">Fetch Strategies</button>
+
+    <button id="replayStream">Replay Stream</button> 
+    <button id="replayStrategy">Replay Strategy</button> 
+    <button id="replayElement">Replay Element</button> 
+
+    <h2>Results</h2>
+    <ul id="result-list"></ul>
+
+    <script>
+        let strategies = []; 
+
+        async function fetchStrategies() {
+            try {
+                const response = await fetch('/api/strategy-stream', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch: ${response.statusText}`);
+                }
+
+                strategies = await response.json(); 
+                console.log("Fetched Strategies:", strategies);
+
+                displayResults(strategies); 
+            } catch (error) {
+                console.error('Error fetching strategies:', error);
+            }
+        }
+
+        function displayResults(data) {
+            const resultList = document.getElementById('result-list');
+            resultList.innerHTML = ''; 
+
+            if (data.length === 0) {
+                resultList.innerHTML = '<li>No results found</li>';
+            } else {
+                data.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = JSON.stringify(item, null, 2); 
+                    listItem.addEventListener('click', () => {
+                        // Create a new strategic item with the stream_id from the selected strategy
+                        const newStrategicItem = {
+                            stream_id: item.id, 
+                            // Add other necessary properties here 
+                            name: '', 
+                            description: '', 
+                            // ... other fields 
+                        };
+                        createStrategicItem(newStrategicItem); 
+                    });
+                    resultList.appendChild(listItem);
+                });
+            }
+        }
+
+        async function createStrategicItem(strategicItem) {
+            try {
+                const response = await fetch('/api/strategic-items', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(strategicItem),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to create strategic item: ${response.statusText}`);
+                }
+
+                const createdItem = await response.json();
+                console.log('Created Strategic Item:', createdItem);
+                // Update the UI to reflect the newly created item (optional)
+            } catch (error) {
+                console.error('Error creating strategic item:', error);
+            }
+        }
+
+        // Function to handle replaying a stream
+        async function replayStream(streamId) {
+            try {
+                const response = await fetch(`/api/replay/stream/${streamId}`, { 
+                    method: 'GET', 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to replay Stream: ${response.statusText}`);
+                }
+
+                const replayedStream = await response.json();
+                console.log('Replayed Stream:', replayedStream);
+                // Display the replayed stream data (e.g., in a separate modal or area)
+            } catch (error) {
+                console.error('Error replaying Stream:', error);
+            }
+        }
+
+        // Function to handle replaying a strategy (you'll need to implement the API endpoint)
+        async function replayStrategy(strategyId) {
+            try {
+                const response = await fetch(`/api/replay/strategy/${strategyId}`, { 
+                    method: 'GET', 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to replay Strategy: ${response.statusText}`);
+                }
+
+                const replayedStrategy = await response.json();
+                console.log('Replayed Strategy:', replayedStrategy);
+                // Display the replayed strategy data (e.g., in a separate modal or area)
+            } catch (error) {
+                console.error('Error replaying Strategy:', error);
+            }
+        }
+
+        // Function to handle replaying an element
+        async function replayElement(elementId) {
+            try {
+                const response = await fetch(`/api/strategic-items/${elementId}`, { 
+                    method: 'GET', 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to replay Element: ${response.statusText}`);
+                }
+
+                const replayedElement = await response.json();
+                console.log('Replayed Element:', replayedElement);
+                // Display the replayed element data (e.g., in a separate modal or area)
+            } catch (error) {
+                console.error('Error replaying Element:', error);
+            }
+        }
+
+        // Attach event listeners
+        document.getElementById('fetch-data').addEventListener('click', fetchStrategies);
+        document.getElementById('apply-filters').addEventListener('click', applyFilters);
+        document.getElementById('replayStream').addEventListener('click', () => {
+            const streamId = document.getElementById('filter-id').value; 
+            replayStream(streamId); 
+        });
+        document.getElementById('replayStrategy').addEventListener('click', () => {
+            const strategyId = document.getElementById('filter-id').value; 
+            replayStrategy(strategyId); 
+        });
+        document.getElementById('replayElement').addEventListener('click', () => {
+            const elementId = document.getElementById('filter-id').value; 
+            replayElement(elementId); 
+        }); 
+
+    </script>
+</body>
+</html>

@@ -10,7 +10,7 @@ export default async function radarsHandler(req, res) {
       if (!name || !description || typeof level !== "number") {
         return res.status(400).json({ message: "Invalid input" });
       }
-      console.log("api/radars.js: radarsHandler: Received request body:", req.body);
+      // console.log("api/radars.js: radarsHandler: Received request body:", req.body);
       const command = {
         payload: { name, description, level },
       };
@@ -18,7 +18,7 @@ export default async function radarsHandler(req, res) {
       const result = await handleRadarCreation(command);
 
       if (result.success) {
-        console.log("api/radars.js: result :", result);
+        // console.log("api/radars.js: result :", result);
         return res.status(201).json({ uuid: result.radar.aggregate_id, radar: result.radar });
       } else {
         return res.status(409).json({ message: result.message }); // Conflict for duplicate names

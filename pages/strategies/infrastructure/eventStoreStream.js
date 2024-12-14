@@ -23,6 +23,10 @@ export const sendStreamCreated = async (event) => {
     console.log("sendStreamCreated: appendEventToFile", streamEvent);
 
     appendEventToFile(streamEvent.id, streamEvent);
+
+    // project the new stream
+    await projectStreamToSupabase(streamEvent);
+
     return streamEvent;
   } catch (error) {
     console.error('sendStreamCreated: Error saving to event source:', error);

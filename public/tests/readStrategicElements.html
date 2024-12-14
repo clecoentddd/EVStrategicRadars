@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strategic Elements Viewer</title>
+</head>
+<body>
+  <h1>Strategic Elements Viewer</h1>
+  
+  <div>
+    <h2>Search by Stream ID</h2>
+    <input type="text" id="streamIdInput" placeholder="Enter Stream ID">
+    <button onclick="fetchByStreamId()">Fetch by Stream ID</button>
+    <pre id="streamResults"></pre>
+  </div>
+
+  <div>
+    <h2>Search by Strategy ID</h2>
+    <input type="text" id="strategyIdInput" placeholder="Enter Strategy ID">
+    <button onclick="fetchByStrategyId()">Fetch by Strategy ID</button>
+    <pre id="strategyResults"></pre>
+  </div>
+
+  <div>
+    <h2>Search by Element ID</h2>
+    <input type="text" id="elementIdInput" placeholder="Enter Element ID">
+    <button onclick="fetchByElementId()">Fetch by Element ID</button>
+    <pre id="elementResults"></pre>
+  </div>
+
+  <script>
+    const baseUrl = '/api/read-strategic-elements';
+
+
+    async function fetchByStreamId() {
+      const streamId = document.getElementById('streamIdInput').value;
+      const response = await fetch(`${baseUrl}?stream_id=${streamId}`);
+      const data = await response.json();
+      document.getElementById('streamResults').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function fetchByStrategyId() {
+      const strategyId = document.getElementById('strategyIdInput').value;
+      const response = await fetch(`${baseUrl}?strategy_id=${strategyId}`);
+      const data = await response.json();
+      document.getElementById('strategyResults').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function fetchByElementId() {
+      const elementId = document.getElementById('elementIdInput').value;
+      const response = await fetch(`${baseUrl}?id=${elementId}`);
+      const data = await response.json();
+      document.getElementById('elementResults').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>

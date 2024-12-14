@@ -2,6 +2,8 @@ import {
     getStrategicElementsByStreamId,
     getStrategicElementsByStrategyId,
     getStrategicElementById,
+    getStreamByRadarId,
+    GetAllStreamData,
   } from "../strategies/infrastructure/readModelStrategicElements";
   
   export default async function handler(req, res) {
@@ -11,8 +13,9 @@ import {
       switch (method) {
         case "GET":
           // Check the query parameters to determine which function to call
-          if (query.stream_id) {
-            const streamElements = await getStrategicElementsByStreamId(query.stream_id);
+          console.log ("API call: GET ", query.streamid);
+          if (query.streamid) {
+            const streamElements = await GetAllStreamData(query.streamid);
             res.status(200).json(streamElements);
           } else if (query.strategy_id) {
             const strategyElements = await getStrategicElementsByStrategyId(query.strategy_id);
@@ -20,6 +23,10 @@ import {
           } else if (query.id) {
             const element = await getStrategicElementById(query.id);
             res.status(200).json(element);
+          } else if (query.radar_id) {
+            console.log ("Before calling getStreamByRadarId : ", query.radar_id);
+            const streamElement = await getStreamByRadarId(query.radar_id);
+            res.status(200).json(streamElement);
           } else {
             res.status(400).json({ error: "Missing required query parameters." });
           }

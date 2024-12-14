@@ -3,32 +3,29 @@ import { sendStreamCreated, sendStrategyCreated, replayStrategy } from '../infra
 export async function CreateStream(command) {
     // Implement your strategy creation logic here
     console.log('Strategy stream creating with radar data:', command);
-    
        
-    const { radar_id, name, description } = command;
+    const streamToCreate = {
+      radar_id: command.id,
+      name: command.name,
+      level: command.level,
+      active_strategy_id: null,
+    }
+
+    console.log ("Strategy stream... Stream to create based on radar id ", streamToCreate);
   
     // Validate inputs
-    if (!radar_id || !name ) {
+    if (! streamToCreate.radar_id || !streamToCreate.name ) {
       return { success: false, message: "Missing required fields in event data" };
     }
   
-    // Create the strategy item
-    const newStrategyStream = {
-      // ... other properties based on your needs
-      radar_id: radar_id,
-      name: name,
-      description: description,
-      active_strategy_id: null,
-    };
-
-    console.log ("Strategy stream about to create", newStrategyStream);
+  console.log ("Strategy stream about to create", streamToCreate);
   
     // Save the strategy item (replace with your actual saving logic)
   let savedStrategyStream;
 
     try {
       console.log ("Strategy stream... saving");
-      savedStrategyStream = await sendStreamCreated( newStrategyStream);
+      savedStrategyStream = await sendStreamCreated( streamToCreate);
       console.log ("Model CreateStream saved", savedStrategyStream);
       return { ...savedStrategyStream };
     } catch (error) {
@@ -38,7 +35,7 @@ export async function CreateStream(command) {
 
   
 
-export async function CreateNewStrategy(command) {
+export async function CreateStrategy(command) {
     // Implement your strategy creation logic here
     console.log('Creating new version of strategy with payload:', command);
     // ... other logic to create the strategy

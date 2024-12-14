@@ -16,7 +16,7 @@ export async function projectStreamToSupabase(strategicStream) {
       .eq("id", strategicStream.id);
 
     const existingItem = existingItems?.[0]; // Extract the first matching record
-    console.log("ExistingItem", existingItem);
+    console.log("projectStreamToSupabase : ExistingItem", existingItem);
 
     if (fetchError) {
       console.error("Error fetching strategic stream:", fetchError.message);

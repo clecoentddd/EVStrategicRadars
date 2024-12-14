@@ -1,5 +1,5 @@
 // import { describe, it, expect } from 'jest';
-import { CreateStream, CreateNewStrategy, GetStrategyById } from '../model/strategy';
+import { CreateStream, CreateStrategy, GetStrategyById } from '../model/strategy';
 import { createStratregicElement, updateStratregicElement, deleteStratregicElement } from '../model/strategicElements';
 import {replayElement} from '../infrastructure/eventStoreElements';
 
@@ -13,15 +13,16 @@ describe('Strategy Stream Tests', () => {
 
   it('should create the stream first', async () => {
   
-    const streamCommand = {
-    radar_id: '9573ace9-48f7-4410-9b21-3e52a3be3e7a',
+    const streamToCreate = {
+    id: '9573ace9-48f7-4410-9b21-3e52a3be3e7a',
     name: 'Strategy Stream v1.0',
     description: 'Description of the strategy stream',
     level: '1',
   };
 
-  const savedStream = await CreateStream(streamCommand);
-
+  console.log ("Test: CreateStream for: ", streamToCreate);
+  const savedStream = await CreateStream(streamToCreate);
+  console.log ("Test: Stream saved is: ", savedStream);
   keepStreamId = savedStream.id ;
 });
 
@@ -36,7 +37,7 @@ describe('Strategy Stream Tests', () => {
       period: '2025',
     };
 
-    const savedStrategy = await CreateNewStrategy(strategy);
+    const savedStrategy = await CreateStrategy(strategy);
 
     console.log("Test: savedStrategy is", savedStrategy);
 
@@ -123,5 +124,4 @@ it('should create a new strategic item for a given strategy', async () => {
     expect(sendItemDeleted.id).toBe(keepElementId);
     
   });
-
 });

@@ -18,7 +18,7 @@ export async function projectRadarToSupabase(radar) {
       .from("radars")
       .insert([
         {
-          aggregate_id: radar.aggregate_id,
+          id: radar.id,
           name: radar.name,
           description: radar.description,
           org_level: radar.level,
