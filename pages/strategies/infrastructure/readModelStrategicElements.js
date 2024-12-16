@@ -93,7 +93,7 @@ export async function getStreamByRadarId(id) {
   }
 }
 
-export async function GetAllStreamData(stream_id) {
+export async function getAllStreamData(stream_id) {
   try {
     // Step 1: Fetch all strategies where stream_id matches
     const { data: strategies, error: strategiesError } = await supabase

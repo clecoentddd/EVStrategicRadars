@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { appendEventToFile, readEventsFromFile } from './eslib.js';
-import { replayStrategy } from './eventStoreStream';
+// import { replayStrategy } from './eventStoreStream';
 import { projectElementToSupabase } from './ProjectionElements';
 
 // Handles event creation

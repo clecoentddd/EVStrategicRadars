@@ -9,13 +9,12 @@ const validateStratregicElementCreation = (command) => {
   };
 
   const validateStratregicElementUpdate = (command) => {
-    console.log("validateStratregicElementUpdate - id is : ", command.id);
+    console.log("validateStratregicElementUpdate - id is : ", command);
     if (!command.id) throw new Error('Strategy aggregate item ID is required.');
-    if (!command.name) throw new Error('Name is required.');
-    if (!command.description) throw new Error('Diagnosis is required.');
-    if (!command.period) throw new Error('Overall approach is required.');
+    // if (!command.name) throw new Error('Name is required.');
+    // if (!command.description) throw new Error('Description is required.');
     if (!command.stream_id) throw new Error ('Stream id missing in strategy.');
-
+    if (!command.strategy_id) throw new Error ('Strategy id missing in strategy.');
   };
   
   // Command to create a new Strategic Item

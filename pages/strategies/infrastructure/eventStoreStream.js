@@ -141,8 +141,8 @@ export const replayStream = (streamId) => {
   return aggregate;
 };
 
-export const replayStrategy = async (strategyId) => {
-  const allEvents = await getStrategiesFromEventSource();
+export const replayStrategy = async (streamId, strategyId) => {
+  const allEvents = await getEventsForStream(streamId);
   const filteredEvents = allEvents.filter(event => event.id === strategyId);
 
   const aggregate = filteredEvents.reduce((currentAggregate, event) => {
