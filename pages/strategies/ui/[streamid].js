@@ -17,6 +17,15 @@ export default function StrategyStream() {
     whatWeWillNotDo: '',
   });
 
+  const [expandedElementId, setExpandedElementId] = useState(null);
+
+  const [showCreateElementForm, setShowCreateElementForm] = useState(false);
+
+  const [newElement, setNewElement] = useState({
+    name: '',
+    description: '',
+  });
+
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -53,6 +62,9 @@ export default function StrategyStream() {
     return Object.values(strategies);
   };
 
+  const handleElementExpand = (elementId) => {
+    setExpandedElementId(expandedElementId === elementId ? null : elementId);
+  };
   const handleEditToggle = async (elementId) => {
     if (editableElementId === elementId) {
       // Save the changes
@@ -71,7 +83,6 @@ export default function StrategyStream() {
               proximate_objectives: element.proximate_objectives,
               name: element.name,
               description: element.description,
-              period: element.period,
               tags: element.tags,
             }),
           });
@@ -98,6 +109,52 @@ export default function StrategyStream() {
       [name]: value,
     }));
   };
+
+  const handleCreateElementSubmit = async (e) => {
+    e.preventDefault();
+    const openStrategy = streamData?.data.find(item => item.type === 'STRATEGY' && item.state === "Open");
+    if (!openStrategy) {
+      alert('No open strategy found to add an element to.');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/strategy-items`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          stream_id: streamid,
+          strategy_id: openStrategy.id, // Pass the open strategy ID
+          name: newElement.name,
+          description: newElement.description,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create strategy element');
+      }
+
+      const data = await response.json();
+      alert('Strategy element created successfully!');
+      setShowCreateElementForm(false);
+      setNewElement({ name: '', description: '' });
+      setStreamData((prev) => ({
+        ...prev,
+        data: [...prev.data, data],
+      }));
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
+  const handleCreateElementChange = (e) => {
+    const { name, value } = e.target;
+    setNewElement((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
 
   const handleCreateStrategySubmit = async (e) => {
     e.preventDefault();
@@ -130,95 +187,173 @@ export default function StrategyStream() {
     }
   };
 
+  const handleFieldChange = (elementId, fieldName, value) => {
+    setStreamData((prevData) => {
+      const updatedData = prevData.data.map((item) => {
+        if (item.id === elementId) {
+          // Update the specific field
+          return {
+            ...item,
+            [fieldName]: fieldName === 'tags'
+              ? JSON.stringify(value.split(',').map(tag => tag.trim())) // Handle tags as JSON
+              : value,
+          };
+        }
+        return item; // Leave other elements unchanged
+      });
+  
+      return { ...prevData, data: updatedData }; // Return updated state
+    });
+  };
+  
+
   const renderStrategies = (strategies) => {
-    return strategies.map(strategy => (
+    
+    return strategies.map((strategy) => (
+      
       <div key={strategy.id} className="strategy" style={strategyStyle}>
         <div
           className="strategy-header"
-          style={headerStyle}
+          style={{
+            backgroundColor: strategy.state === "Open" ? '#28a745' : "Gainsboro", // Dynamically set the background color
+            color: strategy.state === "Open" ? "white" : "black",
+            ...strategyHeaderStyle, // Keep existing styles
+          }}
           onClick={() => {
+            console.log("HTML renderStrategies: ", strategy);
             const elementsDiv = document.getElementById(`elements-${strategy.id}`);
             elementsDiv.style.display = elementsDiv.style.display === "none" ? "block" : "none";
           }}
         >
-          <span style={strategyTitleStyle}>{`${strategy.name} (type: ${strategy.type})`}</span>
+          <span style={strategyTitleStyle}>{`${strategy.name} (Status: ${strategy.state})`}</span>
         </div>
         <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
-          {strategy.elements.map(element => (
+          {strategy.elements.map((element) => (
             <div key={element.id} className="element" style={elementStyle}>
-              <div className="element-header" style={elementHeaderStyle}>
-                <span style={elementTitleStyle}>{`${element.name} (type: ${element.type}) - ${element.state}`}</span>
-                <button style={editButtonStyle} onClick={() => handleEditToggle(element.id)}>
-                  {editableElementId === element.id ? "Save" : "Edit"}
-                </button>
+              {/* Element Header */}
+              <div
+                className="element-header"
+                style={{
+                  ...elementHeaderStyle, // Keep existing styles
+                  backgroundColor: strategy.state === "Open" ? '#17a2b8' : "Gainsboro", // Dynamically set the background color
+                }}
+                onClick={() => handleElementExpand(element.id)}
+              >
+                {/* Display the element name instead of ID */}
+                <span style={elementTitleStyle}>
+                {`${element.name} (Status: ${element.state})`}
+                </span>
               </div>
-              <div className="element-details" style={elementDetailsStyle}>
-                <table style={tableStyle}>
-                  <thead>
-                    <tr>
-                      <th style={headerCellStyle}>Diagnosis</th>
-                      <th style={headerCellStyle}>Overall Approach</th>
-                      <th style={headerCellStyle}>Set of Coherent Actions</th>
-                      <th style={headerCellStyle}>Proximate Objectives</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td
-                        contentEditable={editableElementId === element.id}
-                        style={editableElementId === element.id ? editableStyle : cellStyle}
-                        onInput={(e) => {
-                        const updatedDiagnosis = e.target.innerText;
-                        element.diagnosis = updatedDiagnosis; // Temporarily store the edited value
-                        }}
-                    >
-                        {element.diagnosis || "N/A"}
-                    </td>
-                    <td
-                        contentEditable={editableElementId === element.id}
-                        style={editableElementId === element.id ? editableStyle : cellStyle}
-                        onInput={(e) => {
-                        const updatedApproach = e.target.innerText;
-                        element.overall_approach = updatedApproach; // Temporarily store the edited value
-                        }}
-                    >
-                        {element.overall_approach || "N/A"}
-                    </td>
-                    <td
-                        contentEditable={editableElementId === element.id}
-                        style={editableElementId === element.id ? editableStyle : cellStyle}
-                        onInput={(e) => {
-                        const updatedActions = e.target.innerText;
-                        element.set_of_coherent_actions = updatedActions; // Temporarily store the edited value
-                        }}
-                    >
-                        {element.set_of_coherent_actions || "N/A"}
-                    </td>
-                    <td
-                        contentEditable={editableElementId === element.id}
-                        style={editableElementId === element.id ? editableStyle : cellStyle}
-                        onInput={(e) => {
-                        const updatedObjectives = e.target.innerText;
-                        element.proximate_objectives = updatedObjectives; // Temporarily store the edited value
-                        }}
-                    >
-                        {element.proximate_objectives || "N/A"}
-                    </td>
-                </tr>
-                  </tbody>
-                </table>
-                <div style={tagsStyle}>
-                  <strong>Tags:</strong> {element.tags ? JSON.parse(element.tags).join(", ") : "N/A"}
+  
+              {/* Expanded Element Details */}
+              {expandedElementId === element.id && (
+                <div className="element-details" style={elementDetailsStyle}>
+                  {/* Name Field */}
+                  <label>
+                    Name:
+                    <input
+                      type="text"
+                      value={element.name || ''}
+                      onChange={(e) => handleFieldChange(element.id, 'name', e.target.value)}
+                      disabled={editableElementId !== element.id}
+                      style={editableElementId === element.id ? editableStyle : cellStyle}
+                    />
+                  </label>
+  
+                  {/* Description Field */}
+                  <label>
+                    Description:
+                    <textarea
+                      value={element.description || ''}
+                      onChange={(e) => handleFieldChange(element.id, 'description', e.target.value)}
+                      disabled={editableElementId !== element.id}
+                      style={editableElementId === element.id ? editableStyle : cellStyle}
+                    />
+                  </label>
+  
+                      {/* Add the Edit Button Here */}
+                      <button
+                    style={editButtonStyle}
+                    onClick={() => handleEditToggle(element.id)}
+                  >
+                    {editableElementId === element.id ? "Save" : "Edit"}
+                  </button>
+
+                  {/* Existing Table Fields */}
+                  <table style={tableStyle}>
+                    <thead>
+                      <tr>
+                        <th style={headerCellStyle}>Diagnosis</th>
+                        <th style={headerCellStyle}>Overall Approach</th>
+                        <th style={headerCellStyle}>Set of Coherent Actions</th>
+                        <th style={headerCellStyle}>Proximate Objectives</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td
+                          contentEditable={editableElementId === element.id}
+                          onInput={(e) =>
+                            handleFieldChange(element.id, 'diagnosis', e.target.innerText)
+                          }
+                          style={editableElementId === element.id ? editableStyle : cellStyle}
+                        >
+                          {element.diagnosis || "N/A"}
+                        </td>
+                        <td
+                          contentEditable={editableElementId === element.id}
+                          onInput={(e) =>
+                            handleFieldChange(element.id, 'overall_approach', e.target.innerText)
+                          }
+                          style={editableElementId === element.id ? editableStyle : cellStyle}
+                        >
+                          {element.overall_approach || "N/A"}
+                        </td>
+                        <td
+                          contentEditable={editableElementId === element.id}
+                          onInput={(e) =>
+                            handleFieldChange(element.id, 'set_of_coherent_actions', e.target.innerText)
+                          }
+                          style={editableElementId === element.id ? editableStyle : cellStyle}
+                        >
+                          {element.set_of_coherent_actions || "N/A"}
+                        </td>
+                        <td
+                          contentEditable={editableElementId === element.id}
+                          onInput={(e) =>
+                            handleFieldChange(element.id, 'proximate_objectives', e.target.innerText)
+                          }
+                          style={{
+                            ...editableElementId === element.id ? editableStyle : cellStyle,
+                            direction: "ltr", // Ensure proper LTR behavior
+                          }}
+                        >
+                          {element.proximate_objectives || "N/A"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+  
+                  {/* Tags Field (Below Table) */}
+                  <div style={tagsStyle}>
+                    <strong>Tags:</strong>
+                    <input
+                      type="text"
+                      value={element.tags ? JSON.parse(element.tags).join(', ') : ''}
+                      onChange={(e) => handleFieldChange(element.id, 'tags', e.target.value)}
+                      disabled={editableElementId !== element.id}
+                      style={editableElementId === element.id ? editableStyle : cellStyle}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ))}
         </div>
       </div>
     ));
   };
-
-
+  
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', margin: '20px' }}>
@@ -228,6 +363,10 @@ export default function StrategyStream() {
       <button style={createStrategyButtonStyle} onClick={() => setShowCreateStrategyForm(true)}>
         Create Strategy
       </button>
+      <button style={createElementButtonStyle} onClick={() => setShowCreateElementForm(true)}>
+        Create a New Strategy Element
+      </button>
+
 
       {showCreateStrategyForm && (
         <form style={formStyle} onSubmit={handleCreateStrategySubmit}>
@@ -254,6 +393,31 @@ export default function StrategyStream() {
             onChange={handleCreateStrategyChange}
             placeholder="What we will not do"
             rows="3"
+          ></textarea>
+          <button type="submit" style={editButtonStyle}>
+            Save
+          </button>
+        </form>
+      )}
+
+{showCreateElementForm && (
+        <form style={formStyle} onSubmit={handleCreateElementSubmit}>
+          <h3>Create Strategy Element</h3>
+          <input
+            type="text"
+            name="name"
+            value={newElement.name}
+            onChange={handleCreateElementChange}
+            placeholder="Name"
+            required
+          />
+          <textarea
+            name="description"
+            value={newElement.description}
+            onChange={handleCreateElementChange}
+            placeholder="Description"
+            rows="3"
+            required
           ></textarea>
           <button type="submit" style={editButtonStyle}>
             Save
@@ -303,16 +467,12 @@ const createStrategyButtonStyle = {
     marginBottom: '20px',
   };
 
-  const headerStyle = {
-    fontSize: '18px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    backgroundColor: '#f1f1f1',
+  const strategyHeaderStyle = {
+    color: 'white', // Adjust text color for readability
     padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    cursor: 'pointer',
   };
-
+  
   const elementsStyle = {
     display: 'none',
     marginLeft: '20px',
@@ -320,7 +480,7 @@ const createStrategyButtonStyle = {
   };
 
   const strategyTitleStyle = {
-    color: '#004085', // Dark blue for "STRATEGY"
+    color: '#ffffff', // Dark blue for "STRATEGY"
   };
 
   const elementStyle = {
@@ -334,17 +494,18 @@ const createStrategyButtonStyle = {
   const elementHeaderStyle = {
     fontSize: '16px',
     fontWeight: 'normal',
-    backgroundColor: '#e9e9e9',
+    backgroundColor: "FloralWhite",
     padding: '8px',
     border: '1px solid #ddd',
     borderRadius: '4px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    color: 'white',
   };
 
   const elementTitleStyle = {
-    color: '#0056b3', // Blue for "STRATEGIC ELEMENT"
+    color: '#ffffff', // Blue for "STRATEGIC ELEMENT"
   };
 
   const elementDetailsStyle = {
@@ -357,6 +518,7 @@ const createStrategyButtonStyle = {
   };
 
   const editButtonStyle = {
+    marginLeft: '200px',
     padding: '5px 10px',
     fontSize: '14px',
     backgroundColor: '#007bff',
@@ -402,3 +564,14 @@ const createStrategyButtonStyle = {
     fontStyle: 'italic',
     color: '#555',
   };
+
+  const createElementButtonStyle = {
+  margin: '20px 10px',
+  padding: '10px 15px',
+  fontSize: '16px',
+  backgroundColor: '#17a2b8',
+  color: 'white',
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
+};
