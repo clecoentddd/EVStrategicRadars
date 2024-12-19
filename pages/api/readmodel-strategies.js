@@ -4,6 +4,7 @@ import {
     getStrategicElementById,
     getStreamByRadarId,
     getAllStreamData,
+    getStreamDataFromStreamId,
   } from "../strategies/infrastructure/readModelStrategicElements";
   
   export default async function handler(req, res) {
@@ -13,12 +14,15 @@ import {
       switch (method) {
         case "GET":
           // Check the query parameters to determine which function to call
-          console.log ("API call: GET ", query.streamid);
-          if (query.streamid) {
+          console.log ("API call: GET ", query);
+          if (query.stream_id) {
             console.log ("API -> calling getAllstreamData");
-            const streamElements = await getAllStreamData(query.streamid);
+            const streamElements = await getAllStreamData(query.stream_id);
             res.status(200).json(streamElements);
-          } else if (query.strategy_id) {
+          } else if (query.stream_aggregate) {
+            const streamAggregate = await getStreamDataFromStreamId(query.stream_aggregate);
+            res.status(200).json(streamAggregate);
+          }  else if (query.strategy_id) {
             const strategyElements = await getStrategicElementsByStrategyId(query.strategy_id);
             res.status(200).json(strategyElements);
           } else if (query.id) {

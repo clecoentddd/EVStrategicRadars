@@ -12,7 +12,7 @@ if (!fs.existsSync(eventsDirectory)) {
 
 // Helper function to read events from a file
 export function readEventsFromFile(streamId) {
-  console.log ("readEventsFromFile entereing", eventsDirectory );
+  console.log ("readEventsFromFile entering", eventsDirectory );
   const filePath = path.join(eventsDirectory, `${streamId}.json`);
   console.log("readEventsFromFile: Path", filePath);
 

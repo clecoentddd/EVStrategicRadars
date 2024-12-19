@@ -6,6 +6,7 @@ export default function StrategyStream() {
 
   const streamid = Object.keys(router.query)[0];
   const [streamData, setStreamData] = useState(null);
+  const [ radarId, setRadarId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editableElementId, setEditableElementId] = useState(null);
@@ -29,15 +30,33 @@ export default function StrategyStream() {
   useEffect(() => {
     if (!router.isReady) return;
 
+    
     const fetchStreamData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/readmodel-strategies?streamid=${streamid}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
+
+        // Fetch aggregate data and stream data in one go if needed
+        const aggregateResponse = await fetch(`/api/readmodel-strategies?stream_aggregate=${streamid}`);
+        if (!aggregateResponse.ok) {
+          throw new Error(`Failed to fetch aggregate data: ${aggregateResponse.statusText}`);
         }
-        const data = await response.json();
-        setStreamData(data);
+        const aggregateData = await aggregateResponse.json();
+
+        console.log ("Stream Aggregate fetched is", aggregateData.radar_id);
+
+        // Extract radar_id from aggregate data
+        const radarId = aggregateData?.radar_id;
+        console.log("Radar id is", radarId);
+        setRadarId(radarId || null); // Set radarId if found
+
+        // Fetch stream data if needed
+        const streamResponse = await fetch(`/api/readmodel-strategies?stream_id=${streamid}`);
+        if (!streamResponse.ok) {
+          throw new Error(`Failed to fetch stream data: ${streamResponse.statusText}`);
+        }
+        const streamData = await streamResponse.json();
+        setStreamData({ aggregateData, streamData });
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -48,9 +67,14 @@ export default function StrategyStream() {
     fetchStreamData();
   }, [router.isReady, streamid]);
 
-  const organizeData = (data) => {
+  const organizeData = (streamData) => {
     const strategies = {};
-    data.data.forEach(item => {
+    
+    // Assuming streamData contains both 'aggregateData' and 'streamData'
+    const { aggregateData, streamData: actualStreamData } = streamData;
+
+    // We assume 'streamData' here is the actual data you want to organize (not aggregateData)
+    actualStreamData?.data.forEach(item => {
       if (item.type === "STRATEGY") {
         strategies[item.id] = { ...item, elements: [] };
       } else if (item.type === "STRATEGIC_ELEMENT") {
@@ -59,8 +83,17 @@ export default function StrategyStream() {
         }
       }
     });
-    return Object.values(strategies);
+
+    return Object.values(strategies); // Returning the organized strategies
   };
+
+    // Organize data when streamData is updated
+    useEffect(() => {
+      if (streamData) {
+        const organizedStrategies = organizeData(streamData);
+        console.log(organizedStrategies); // Do something with the organized data
+      }
+    }, [streamData]);
 
   const handleElementExpand = (elementId) => {
     setExpandedElementId(expandedElementId === elementId ? null : elementId);
@@ -359,7 +392,17 @@ export default function StrategyStream() {
     <div style={{ fontFamily: 'Arial, sans-serif', margin: '20px' }}>
       <h1>Strategy Stream</h1>
       <p>Stream ID: {streamid}</p>
+      
+            {/* Display Radar ID */}
+            {radarId ? (
+        <div>
+          <h2>Radar ID: {radarId}</h2>
+        </div>
+      ) : (
+        <p>No radar ID found</p>
+      )}
 
+      
       <button style={createStrategyButtonStyle} onClick={() => setShowCreateStrategyForm(true)}>
         Create Strategy
       </button>
@@ -537,6 +580,7 @@ const createStrategyButtonStyle = {
     width: '100%',
     borderCollapse: 'collapse',
     marginBottom: '10px',
+    
   };
 
   const headerCellStyle = {
@@ -556,6 +600,7 @@ const createStrategyButtonStyle = {
   const editableStyle = {
     backgroundColor: '#fff7e6',
     border: '1px dashed #ffa500',
+    tableLayout: 'fixed',
   };
 
   const tagsStyle = {

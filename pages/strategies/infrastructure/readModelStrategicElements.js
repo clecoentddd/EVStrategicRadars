@@ -73,6 +73,26 @@ export async function getStrategicElementById(id) {
   }
 }
 
+export async function getStreamDataFromStreamId(id) {
+  try {
+    const { data, error } = await supabase
+      .from("strategic_streams")
+      .select("*")
+      .eq("id", id)
+      .single(); // Single ensures we get exactly one row or null
+
+    if (error) {
+      console.error("Error fetching strategic stream by id:", error.message);
+      throw new Error("Failed to fetch strategic stream by id.");
+    }
+
+    return data;
+  } catch (err) {
+    console.error("Unexpected error fetching strategic stream by id:", err.message);
+    throw err;
+  }
+}
+
 export async function getStreamByRadarId(id) { 
   try {
     const { data, error } = await supabase

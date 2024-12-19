@@ -7,7 +7,7 @@ import { projectElementToSupabase } from './ProjectionElements';
 export const sendItemCreated = async (eventPayload) => {
   const event = {
     event: 'STRATEGIC_ELEMENT_CREATED',
-    type: "ELEMENT",
+    type: "STRATEGIC_ELEMENT",
     id: uuidv4(), // Generate unique ID for the new item
     stream_id: eventPayload.stream_id,
     strategy_id: eventPayload.strategy_id,
@@ -18,6 +18,8 @@ export const sendItemCreated = async (eventPayload) => {
   };
 
   appendEventToFile(event.stream_id, event);
+
+  await projectElementToSupabase(event);
 
   console.log('ES: Item Created Event:', event);
   return event;
