@@ -6,7 +6,7 @@ export default function StrategyStream() {
 
   const streamid = Object.keys(router.query)[0];
   const [streamData, setStreamData] = useState(null);
-  const [ radarId, setRadarId] = useState(null);
+  const [ streamAggregate, setStreamAggregate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editableElementId, setEditableElementId] = useState(null);
@@ -18,6 +18,12 @@ export default function StrategyStream() {
     whatWeWillNotDo: '',
   });
 
+  async  function viewRadar(name, aggregateId) {
+    // Navigate to the radar details page with the name and aggregate_id as query parameters
+    console.log( "View Radar ", streamAggregate.radar_id);
+    const radarPage = `/radars/ui/${encodeURIComponent(name)}?radar_id=${encodeURIComponent(aggregateId)}`;
+    window.open(radarPage, '_blank');
+  }
   const [expandedElementId, setExpandedElementId] = useState(null);
 
   const [showCreateElementForm, setShowCreateElementForm] = useState(false);
@@ -40,14 +46,13 @@ export default function StrategyStream() {
         if (!aggregateResponse.ok) {
           throw new Error(`Failed to fetch aggregate data: ${aggregateResponse.statusText}`);
         }
-        const aggregateData = await aggregateResponse.json();
+        const aggregateStream= await aggregateResponse.json();
 
-        console.log ("Stream Aggregate fetched is", aggregateData.radar_id);
+        console.log ("Stream Aggregate id fetched is", aggregateStream.radar_id);
+        console.log ("Stream Aggregate name fetched is", aggregateStream.name);
 
         // Extract radar_id from aggregate data
-        const radarId = aggregateData?.radar_id;
-        console.log("Radar id is", radarId);
-        setRadarId(radarId || null); // Set radarId if found
+        setStreamAggregate(aggregateStream || null);
 
         // Fetch stream data if needed
         const streamResponse = await fetch(`/api/readmodel-strategies?stream_id=${streamid}`);
@@ -55,7 +60,7 @@ export default function StrategyStream() {
           throw new Error(`Failed to fetch stream data: ${streamResponse.statusText}`);
         }
         const streamData = await streamResponse.json();
-        setStreamData({ aggregateData, streamData });
+        setStreamData(streamData);
 
       } catch (err) {
         setError(err.message);
@@ -69,12 +74,11 @@ export default function StrategyStream() {
 
   const organizeData = (streamData) => {
     const strategies = {};
-    
     // Assuming streamData contains both 'aggregateData' and 'streamData'
-    const { aggregateData, streamData: actualStreamData } = streamData;
+    //const { streamData: actualStreamData } = streamData;
 
     // We assume 'streamData' here is the actual data you want to organize (not aggregateData)
-    actualStreamData?.data.forEach(item => {
+    streamData?.data.forEach(item => {
       if (item.type === "STRATEGY") {
         strategies[item.id] = { ...item, elements: [] };
       } else if (item.type === "STRATEGIC_ELEMENT") {
@@ -258,7 +262,7 @@ export default function StrategyStream() {
             elementsDiv.style.display = elementsDiv.style.display === "none" ? "block" : "none";
           }}
         >
-          <span style={strategyTitleStyle}>{`${strategy.name} (Status: ${strategy.state})`}</span>
+          <span style={strategyTitleStyle}>{`${strategy.name}  (${strategy.state})`}</span>
         </div>
         <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
           {strategy.elements.map((element) => (
@@ -274,7 +278,7 @@ export default function StrategyStream() {
               >
                 {/* Display the element name instead of ID */}
                 <span style={elementTitleStyle}>
-                {`${element.name} (Status: ${element.state})`}
+                {`${element.name}  (${element.state})`}
                 </span>
               </div>
   
@@ -391,24 +395,31 @@ export default function StrategyStream() {
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', margin: '20px' }}>
       <h1>Strategy Stream</h1>
-      <p>Stream ID: {streamid}</p>
-      
-            {/* Display Radar ID */}
-            {radarId ? (
-        <div>
-          <h2>Radar ID: {radarId}</h2>
-        </div>
-      ) : (
-        <p>No radar ID found</p>
-      )}
+      <p>Stream name: {streamAggregate ? streamAggregate.name : "Loading..."}</p>
 
-      
+                
       <button style={createStrategyButtonStyle} onClick={() => setShowCreateStrategyForm(true)}>
         Create Strategy
       </button>
       <button style={createElementButtonStyle} onClick={() => setShowCreateElementForm(true)}>
         Create a New Strategy Element
       </button>
+      {streamData && streamData.data && streamAggregate && (
+        <button 
+        className="button" 
+        onClick={() => {
+          if (streamAggregate) { 
+            viewRadar(streamAggregate.name, streamAggregate.radar_id); 
+          } else {
+            console.error("streamAggregate is undefined"); 
+          }
+        }} 
+        style={radarLinkButtonStyle}
+      >
+        View radar
+      </button>
+      )}
+
 
 
       {showCreateStrategyForm && (
@@ -572,9 +583,16 @@ const createStrategyButtonStyle = {
     transition: 'background-color 0.3s',
   };
 
-  const createButtonStyle = {
+  const radarLinkButtonStyle = {
+    margin: '20px 0',
+    padding: '10px 15px',
+    fontSize: '16px',
+    backgroundColor: '#ffffff',
     color: 'blue',
-  }
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  };
 
   const tableStyle = {
     width: '100%',
