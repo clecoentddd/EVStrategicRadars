@@ -10,8 +10,8 @@ export async function projectRadarToSupabase(radar) {
    // console.log("Projection: Radar to project to Supabase:", radar);
 
     // Ensure radar has all the expected properties
-    const { name, description, level, aggregate_id } = radar;
-    //bconsole.log("Extracted values:", { name, description, level, aggregate_id });
+    const { name, description, level, id } = radar;
+    //bconsole.log("Extracted values:", { name, description, level, id });
 
     // Proceed with the Supabase insertion
     const { data, error } = await supabase

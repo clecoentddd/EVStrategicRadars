@@ -209,7 +209,7 @@
 
       // go to to the radar items page
     async  function viewRadar(name, aggregateId) {
-      // Navigate to the radar details page with the name and aggregate_id as query parameters
+      // Navigate to the radar details page with the name and id as query parameters
       const radarPage = `/radars/ui/${encodeURIComponent(name)}?radar_id=${encodeURIComponent(aggregateId)}`;
       window.location.href = radarPage;
     }

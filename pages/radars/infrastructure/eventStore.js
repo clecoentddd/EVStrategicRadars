@@ -7,14 +7,14 @@ const eventStore = []; // In-memory event storage
 export const saveEvent = async (event) => {
 
 
-  // Add aggregate_id (UUID) to the event payload
+  // Add id (UUID) to the event payload
 
   const newtimestamp = new Date().getTime();
   const eventWithId = {
     ...event,
     payload: {
       ...event.payload,
-      id: uuidv4(), // Generate a unique ID and add it as aggregate_id
+      id: uuidv4(), // Generate a unique ID and add it as id
       timestamp: newtimestamp,
     },
   };
@@ -36,13 +36,13 @@ export const saveEvent = async (event) => {
   if (eventWithId.type === 'RADAR_CREATED') {
     try {
       // Project the event to Supabase
-      await projectRadarToSupabase(eventWithId.payload); // Pass the payload with aggregate_id
+      await projectRadarToSupabase(eventWithId.payload); // Pass the payload with id
     } catch (error) {
     //  console.log('saveEvent: Error projecting radar to Supabase:', error);
     }
   }
 
-  // Explicitly return the saved event with the aggregate_id
+  // Explicitly return the saved event with the id
   return eventWithId;
 };
 
@@ -58,7 +58,7 @@ export const clearEventStore = async () => {
 
 export async function getRadarByIdFromEventSource(aggregateId) {
   const events = await getEvents();
-  const radarEvents = events.filter(event => event.payload.aggregate_id === aggregateId);
+  const radarEvents = events.filter(event => event.payload.id === aggregateId);
 
   // Sort events by timestamp in descending order
   radarEvents.sort((a, b) => b.payload.timestamp - a.payload.timestamp);

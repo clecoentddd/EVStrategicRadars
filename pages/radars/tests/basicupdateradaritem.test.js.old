@@ -1,0 +1,97 @@
+import { request } from 'http'; // Use the native `http` module
+import { expect } from '@jest/globals'; // Use Jest's expect function for assertions
+import { v4 as uuidv4 } from 'uuid'; // To generate a unique UUID for the radar
+
+// Helper function for HTTP requests
+const makeRequest = (url, method, body = null) => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+    };
+
+    const req = request(url, options, (res) => {
+      let data = '';
+      res.on('data', chunk => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            resolve(JSON.parse(data)); // Parse the JSON response
+          } catch (error) {
+            reject(new Error(`Error parsing response JSON: ${error.message}`));
+          }
+        } else {
+          reject(new Error(`Request failed with status ${res.statusCode}: ${data}`));
+        }
+      });
+    });
+
+    req.on('error', (e) => {
+      reject(new Error(`Request failed: ${e.message}`));
+    });
+
+    // If there's a body, write it to the request
+    if (body) {
+      try {
+        req.write(JSON.stringify(body));
+      } catch (error) {
+        reject(new Error(`Error stringifying body: ${error.message}`));
+      }
+    }
+
+    req.end();
+  });
+};
+
+// Actual test using Jest
+test('Radar item name update test', async () => {
+  // Initialize test state
+  const state = {
+    radarItems: {},
+  };
+
+  try {
+    // Step 1: Given a new radar ID and item creation
+    const radarId = uuidv4(); // Generate a unique radar ID for the test
+    const item = {
+      name: "Old Name",
+      description: "A practice radar item for testing update",
+      category: "category1",
+      distance: "dist2"
+      type: "opportunity",
+      tolerance: "medium",
+      impact: "high",
+      distance: "short",
+      radar_id: radarId, // Using the generated radar_id
+    };
+
+    // Create the radar item via POST request
+    const createdItem = await makeRequest('http://localhost:3000/api/radar-items', 'POST', item);
+    
+    state.radarItems["Old Name"] = createdItem;
+
+    // Then: The created radar item should have the expected radar_id
+    expect(state.radarItems["Old Name"].radar_id).toBe(item.radar_id);
+
+    // Step 2: Update the name of the radar item
+    const updatedItem = { ...createdItem, name: "New Name" };
+
+    console.log ("Test -> trying a PUT...", updatedItem.id);
+    
+    const updateResponse = await makeRequest(`http://localhost:3000/api/radar-items/${createdItem.id}`, 'PUT', updatedItem);
+    
+    // Log update response for debugging
+    console.log('Update response:', updateResponse);
+
+    // Step 3: Fetch the updated radar item and check if the name was updated
+    const fetchedItem = await makeRequest(`http://localhost:3000/api/radar-items/${createdItem.id}`, 'GET');
+    expect(fetchedItem.name).toBe("New Name"); // Ensure the name was updated to the new value
+
+  } catch (err) {
+    // Catch any errors and log them
+    console.error('Error occurred:', err); 
+    throw err; // Re-throw the error for Jest to handle
+  }
+});

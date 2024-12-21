@@ -17,7 +17,7 @@
       const zoom_in = document.getElementById("zoom_in").value || null;
 
       // Make the API request to create the radar item
-      const response = await fetch("/api/radaritems", {
+      const response = await fetch("/api/radar-items", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +31,7 @@
         // If the creation is successful, display the response details
         const data = await response.json();
         resultDiv.innerHTML = `<p>Radar item created successfully!</p>
-                               <p><strong>Radar Item ID:</strong> ${data.aggregate_id}</p>
+                               <p><strong>Radar Item ID:</strong> ${data.id}</p>
                                <p><strong>Name:</strong> ${data.name}</p>
                                <p><strong>Type:</strong> ${data.type}</p>
                                <p><strong>Category:</strong> ${data.category}</p>

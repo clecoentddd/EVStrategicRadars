@@ -43,9 +43,9 @@
   const resultDiv = document.getElementById("result");
 
   if (response.ok) {
-    // Extract and parse aggregate_id and other values
+    // Extract and parse id and other values
     const resultHTML = Object.entries(result).map(([key, value]) => {
-      if (key === "aggregate_id") {
+      if (key === "id") {
         return `<p><strong>${key}:</strong> ${value}</p>`;
       }
       return `<p><strong>${key}:</strong> ${
@@ -78,7 +78,7 @@
           listItem.innerHTML = `
             <strong>${radar.name}</strong> - ${radar.description} 
             (Level: ${radar.org_level}) 
-            <br/><small>Aggregate ID: ${radar.aggregate_id}</small>
+            <br/><small>Aggregate ID: ${radar.id}</small>
           `;
           radarList.appendChild(listItem);
         });

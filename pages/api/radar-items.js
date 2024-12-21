@@ -12,18 +12,18 @@ export default async function handler(req, res) {
   console.log("Incoming Request:");
   console.log("Method:", req.method);
   console.log("URL:", req.url);
-  console.log("Query Params:", req.query);
+  //console.log("Query Params:", req.query);
   // console.log("Body:", JSON.stringify(req.body, null, 2));
 
   try {
     if (req.method === "GET") {
-      const { radar_id, aggregate_id } = req.query; // Extract radar_id and aggregate_id
+      const { radar_id, id } = req.query; // Extract radar_id and id
 
-      if (aggregate_id) {
+      if (id) {
         // Handle the new GET API for fetching radar item aggregate
         try {
-          console.log("API Fetching radar item aggregate for:", aggregate_id);
-          const radarItem = await getRadarItem(aggregate_id); // Call the model method
+          console.log("API Fetching radar item aggregate for:", id);
+          const radarItem = await getRadarItem(id); // Call the model method
           console.log ("API -> ready to return aggregate :",radarItem);
 
           if (radarItem) {
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
           return res.status(500).json({ message: "Internal Server Error" });
         }
       } else {
-        return res.status(400).json({ message: "Either radar_id or aggregate_id is required." });
+        return res.status(400).json({ message: "Either radar_id or id is required." });
       }
       
     } else if (req.method === "POST") {
@@ -78,23 +78,23 @@ export default async function handler(req, res) {
     } else if (req.method === "PUT" || req.method === "PATCH") {
       // Handle radar item update logic
       console.log("In the PUT Command", req.query);
-      const { aggregate_id } = req.query; // Extract aggregate_id from query params
-      console.log ("What aggregate?", aggregate_id);
+      const { id } = req.query; // Extract id from query params
+      console.log ("What aggregate?", id);
 
-      if (!aggregate_id) {
+      if (!id) {
         return res.status(400).json({ error: 'Aggregate ID is required' });
       }
     
-      // Use the aggregate_id in your logic
-      console.log(aggregate_id); // This will print the aggregate_id, e.g., '1b03ea3c-9052-45cb-b9d0-f47065eb853f'
+      // Use the id in your logic
+      console.log(id); // This will print the id, e.g., '1b03ea3c-9052-45cb-b9d0-f47065eb853f'
     
       const command = {
         ...req.body, // Directly spread the fields from req.body into the command object
-        aggregate_id: aggregate_id // Add aggregate_id to the command
+        id: id // Add id to the command
       };
       
       console.log ("API -< req.query is", req.query);
-      console.log ("API -> aggregate is:", aggregate_id);
+      console.log ("API -> aggregate is:", id);
       console.log ("API -> PUT or PATCH updating the item for aggregate", command);
 
       if (!command) {

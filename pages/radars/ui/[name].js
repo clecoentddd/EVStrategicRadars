@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import RadarChart from '../../../components/RadarChart';
+import styles from './radarchart.module.css'; // Import CSS Modules
 
 
 export default function RadarPage() {
@@ -42,7 +43,7 @@ export default function RadarPage() {
         setError(null);
         logMessage("Fetching radar data...");
 
-        const response = await fetch(`/api/radars?aggregate_id=${radar_id}`);
+        const response = await fetch(`/api/radars?id=${radar_id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -63,7 +64,7 @@ export default function RadarPage() {
     const fetchRadarItems = async () => {
       try {
         logMessage("Fetching radar items...");
-        const response = await fetch(`/api/radar_items?radar_id=${radar_id}`);
+        const response = await fetch(`/api/radar-items?radar_id=${radar_id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -87,7 +88,7 @@ export default function RadarPage() {
         const radars = await response.json();
 
         if (response.ok) {
-          setZoomInOptions(radars.filter((radarItem) => radarItem.aggregate_id !== radar_id));
+          setZoomInOptions(radars.filter((radarItem) => radarItem.id !== radar_id));
         }
       } catch (err) {
         setError('Error fetching radar options for zoom-in');
@@ -149,12 +150,12 @@ export default function RadarPage() {
     try {
       logMessage("Entering handleEdit...");
       setEditMode(true);
-      setCurrentEditingId(item.aggregate_id); // Set the current editing item ID
+      setCurrentEditingId(item.id); // Set the current editing item ID
       setShowForm(true); // Show the form for editing
   
       // Fetch the latest data for the selected aggregate
-      logMessage(`Fetching radar item with aggregate_id: ${item.aggregate_id}`);
-      const response = await fetch(`/api/radaritems?aggregate_id=${item.aggregate_id}`);
+      logMessage(`Fetching radar item with id: ${item.id}`);
+      const response = await fetch(`/api/radar-items?id=${item.id}`);
   
       // Log the response status
       logMessage(`Response status: ${response.status}`);
@@ -206,7 +207,7 @@ export default function RadarPage() {
     try {
       logMessage("Entering handleSave...");
       const method = editMode ? 'PUT' : 'POST';
-      const url = editMode ? `/api/radaritems?aggregate_id=${currentEditingId}` : `/api/radaritems`;
+      const url = editMode ? `/api/radar-items?id=${currentEditingId}` : `/api/radar-items`;
   
       // Wrap the data inside command.payload
       const command = {
@@ -225,7 +226,7 @@ export default function RadarPage() {
       });
       logMessage(`HTML Payload being sent: ${JSON.stringify(command)}`);
 
-      logMessage(`Error saving radar item 0: ${response.status}`);
+      console.log("Error saving radar item 0:",response.status);
   
       if (!response.ok) {
         const errorText = await response.text();
@@ -248,7 +249,7 @@ export default function RadarPage() {
   if (editMode) {
     // Replace the updated item in the list
     return prevRadarItems.map(item =>
-      item.aggregate_id === currentEditingId ? radarItem : item
+      item.id === currentEditingId ? radarItem : item
     );
   } else {
     // Add the new item to the list
@@ -282,19 +283,20 @@ logMessage("Error saving radar item");
   if (!radar) return <p>No radar found</p>;
 
   return (
-    <div>
-      <div>
-      <a href="/radars.html" style={{ position: "absolute", top: "10px", left: "10px" }}>
-        <button style={{ backgroundColor: "lightblue", color: "white", padding: "5px 10px", borderRadius: "5px", cursor: "pointer",border: "none" }}>
-          Radars
-        </button>
-      </a>
-      <h1> ............. Radar - {radar.name}</h1>
-      </div>
-      <p><strong>Aggregate ID:</strong> {radar.aggregate_id}</p>
-      <p><strong>Description:</strong> {radar.description}</p>
-      <p><strong>Level:</strong> {radar.org_level}</p>
-
+    <div>    
+      
+      <div className={styles.radarContainer}> 
+      <header className={styles.radarHeader}>
+        <h1 className={styles.radarTitle}>Radar - {radar.name}</h1>
+        <a href="/radars.html" className={styles.radarBackButton}>Radars</a>
+      </header>
+      <section className={styles.radarInfo}>
+        <p><strong>Aggregate ID:</strong> {radar.id}</p>
+        <p><strong>Description:</strong> {radar.description}</p>
+        <p><strong>Level:</strong> {radar.org_level}</p>
+      </section>
+    </div>
+      
       <h2>Radar Chart</h2>
       <RadarChart items={radarItems} radius={200} />
 
@@ -413,7 +415,7 @@ logMessage("Error saving radar item");
                 required
               >
                 {zoomInOptions.map(option => (
-                  <option key={option.aggregate_id} value={option.aggregate_id}>
+                  <option key={option.id} value={option.id}>
                     {option.name}
                   </option>
                 ))}
@@ -434,7 +436,7 @@ logMessage("Error saving radar item");
           <li>No radar items yet</li>
         ) : (
           radarItems.map((item) => (
-            <li key={item.aggregate_id} style={{ padding: "10px", border: "1px solid #ccc", marginBottom: "10px" }}>
+            <li key={item.id} style={{ padding: "10px", border: "1px solid #ccc", marginBottom: "10px" }}>
               <h3>{item.name}</h3>
               <p><strong>Description:</strong> {item.description}</p>
               <button

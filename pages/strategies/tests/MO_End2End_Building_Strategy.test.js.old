@@ -1,5 +1,5 @@
 // import { describe, it, expect } from 'jest';
-import { CreateStream, CreateNewStrategy, GetStrategyById } from '../model/strategy';
+import { CreateStream, CreateStrategy, GetStrategyById } from '../model/strategy';
 import { createStratregicElement, updateStratregicElement, deleteStratregicElement } from '../model/strategicElements';
 import {replayElement} from '../infrastructure/eventStoreElements';
 
@@ -37,7 +37,7 @@ describe('Strategy Stream Tests', () => {
       period: '2025',
     };
 
-    const firstVersion = await CreateNewStrategy(firstVersionCommand);
+    const firstVersion = await CreateStrategy(firstVersionCommand);
 
     strategyVersionV1Id = firstVersion.id;
 
@@ -69,7 +69,7 @@ describe('Strategy Stream Tests', () => {
       period: '2026'
     };
 
-    const secondVersion = await CreateNewStrategy(secondVersionCommand);
+    const secondVersion = await CreateStrategy(secondVersionCommand);
 
     console.log ("Test Second version is from await", secondVersion);
 
@@ -110,7 +110,7 @@ it('should create a new strategic item for a given strategy', async () => {
 
     strategyItem_id = sendItemCreated.id;
 
-    console.log ("1 test aggregate_id :", strategyItem_id);
+    console.log ("1 test id :", strategyItem_id);
 
     console.log('test Saved Item  getting is:', sendItemCreated);
 
@@ -135,7 +135,7 @@ it('should create a new strategic item for a given strategy', async () => {
       tags: ['tag4', 'tag3'],
     };
 
-    console.log ("2 test aggregate_id :", strategyItem_id);
+    console.log ("2 test id :", strategyItem_id);
 
     const sendItemUpdated = await updateStratregicElement(secondStrategyItem);
 
@@ -145,7 +145,7 @@ it('should create a new strategic item for a given strategy', async () => {
 
   it('should delete a strategic item', async () => {
 
-    console.log ("test prior to deleted aggregate_id :", strategyItem_id);
+    console.log ("test prior to deleted id :", strategyItem_id);
     
     const sendItemDeleted = await deleteStratregicElement(strategyItem_id);
 

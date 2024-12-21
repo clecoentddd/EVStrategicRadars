@@ -19,7 +19,7 @@ export default function StrategyStream() {
   });
 
   async  function viewRadar(name, aggregateId) {
-    // Navigate to the radar details page with the name and aggregate_id as query parameters
+    // Navigate to the radar details page with the name and id as query parameters
     console.log( "View Radar ", streamAggregate.radar_id);
     const radarPage = `/radars/ui/${encodeURIComponent(name)}?radar_id=${encodeURIComponent(aggregateId)}`;
     window.open(radarPage, '_blank');
@@ -252,7 +252,7 @@ export default function StrategyStream() {
         <div
           className="strategy-header"
           style={{
-            backgroundColor: strategy.state === "Open" ? '#28a745' : "Gainsboro", // Dynamically set the background color
+            backgroundColor: strategy.state === "Open" ? "Purple" : "Gainsboro", // Dynamically set the background color
             color: strategy.state === "Open" ? "white" : "black",
             ...strategyHeaderStyle, // Keep existing styles
           }}
@@ -272,7 +272,7 @@ export default function StrategyStream() {
                 className="element-header"
                 style={{
                   ...elementHeaderStyle, // Keep existing styles
-                  backgroundColor: strategy.state === "Open" ? '#17a2b8' : "Gainsboro", // Dynamically set the background color
+                  backgroundColor: strategy.state === "Open" ? "Plum" : "Gainsboro", // Dynamically set the background color
                 }}
                 onClick={() => handleElementExpand(element.id)}
               >
@@ -286,7 +286,7 @@ export default function StrategyStream() {
               {expandedElementId === element.id && (
                 <div className="element-details" style={elementDetailsStyle}>
                   {/* Name Field */}
-                  <label>
+                  <label style={labelElementStyle} >
                     Name:
                     <input
                       type="text"
@@ -402,7 +402,7 @@ export default function StrategyStream() {
         Create Strategy
       </button>
       <button style={createElementButtonStyle} onClick={() => setShowCreateElementForm(true)}>
-        Create a New Strategy Element
+        Create a Strategy Element
       </button>
       {streamData && streamData.data && streamAggregate && (
         <button 
@@ -494,22 +494,30 @@ export default function StrategyStream() {
 
 
 // Add your styles here
+
 const createStrategyButtonStyle = {
     margin: '20px 0',
     padding: '10px 15px',
     fontSize: '16px',
-    backgroundColor: '#28a745',
+    backgroundColor: 'Purple',
     color: 'white',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
   };
 
+  const labelElementStyle = {
+    margin: '20px 0px',
+    padding: '10px 15px',
+    marginRight: '5px',
+    fontSize: '16px',
+  };
+
   const formStyle = {
     display: 'flex',
     flexDirection: 'column',
     gap: '10px',
-    padding: '20px',
+    padding: '0px',
     backgroundColor: '#f9f9f9',
     border: '1px solid #ddd',
     borderRadius: '4px',
@@ -529,7 +537,7 @@ const createStrategyButtonStyle = {
   
   const elementsStyle = {
     display: 'none',
-    marginLeft: '20px',
+    marginLeft: '10px',
     marginTop: '10px',
   };
 
@@ -548,14 +556,14 @@ const createStrategyButtonStyle = {
   const elementHeaderStyle = {
     fontSize: '16px',
     fontWeight: 'normal',
-    backgroundColor: "FloralWhite",
+    backgroundColor: "Lavender",
     padding: '8px',
     border: '1px solid #ddd',
     borderRadius: '4px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    color: 'white',
+    color: 'black',
   };
 
   const elementTitleStyle = {
@@ -564,7 +572,7 @@ const createStrategyButtonStyle = {
 
   const elementDetailsStyle = {
     marginTop: '10px',
-    marginLeft: '20px',
+    marginLeft: '0px',
     padding: '10px',
     backgroundColor: '#f9f9f9',
     border: '1px solid #ddd',
@@ -575,7 +583,7 @@ const createStrategyButtonStyle = {
     marginLeft: '200px',
     padding: '5px 10px',
     fontSize: '14px',
-    backgroundColor: '#007bff',
+    backgroundColor: 'Purple',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
@@ -598,26 +606,26 @@ const createStrategyButtonStyle = {
     width: '100%',
     borderCollapse: 'collapse',
     marginBottom: '10px',
-    
-  };
+    marginTop: '10px',
+      };
 
   const headerCellStyle = {
-    backgroundColor: '#004085',
+    backgroundColor: 'Thistle',
     color: 'white',
     padding: '8px',
     textAlign: 'left',
-    border: '1px solid #004085',
+    border: '1px solidrgb(187, 95, 201)',
   };
 
   const cellStyle = {
     padding: '8px',
-    border: '1px solid #004085',
+    border: '1px solidrgb(173, 110, 160)',
     verticalAlign: 'top',
   };
 
   const editableStyle = {
     backgroundColor: '#fff7e6',
-    border: '1px dashed #ffa500',
+    border: '1px dashedrgb(198, 97, 168)',
     tableLayout: 'fixed',
   };
 
@@ -629,10 +637,10 @@ const createStrategyButtonStyle = {
   };
 
   const createElementButtonStyle = {
-  margin: '20px 10px',
+  margin: '10px 10px',
   padding: '10px 15px',
   fontSize: '16px',
-  backgroundColor: '#17a2b8',
+  backgroundColor: 'Plum',
   color: 'white',
   border: 'none',
   borderRadius: '5px',

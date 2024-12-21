@@ -13,15 +13,15 @@ export default async function handler(req, res) {
                 return res.status(404).json({ message: 'Not Found' });
             }
         }         if (req.method === 'GET') {
-            // Extract aggregate_id from query parameters
-            const { aggregate_id } = req.query;  // req.query will contain all query parameters
+            // Extract id from query parameters
+            const { strategy_id, stream_id } = req.query;  // req.query will contain all query parameters
             
-            if (!aggregate_id) {
-                return res.status(400).json({ message: 'aggregate_id is required' });
+            if (!strategy_id || (!stream_id)) {
+                return res.status(400).json({ message: 'strategy_id / stream_id are both required' });
             }
 
-            // Assuming you have a function to get items by aggregate_id
-            const result = await GetStrategyById(aggregate_id); // Your logic to fetch the radar items by aggregate_id
+            // Assuming you have a function to get items by id
+            const result = await GetStrategyById(stream_id, strategy_id); // Your logic to fetch the radar items by id
 
             if (result) {
                 return res.status(200).json(result);

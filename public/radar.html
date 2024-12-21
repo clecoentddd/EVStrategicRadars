@@ -31,7 +31,7 @@
 
       try {
         // Fetch radar details using the API
-        const response = await fetch(`/api/radars?aggregate_id=${encodeURIComponent(aggregateId)}`);
+        const response = await fetch(`/api/radars?id=${encodeURIComponent(aggregateId)}`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

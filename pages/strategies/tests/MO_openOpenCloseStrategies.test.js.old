@@ -1,5 +1,5 @@
 // import { describe, it, expect } from 'jest';
-import { CreateStream, CreateNewStrategy, GetStrategyById } from '../model/strategy';
+import { CreateStream, CreateStrategy, GetStrategyById } from '../model/strategy';
 
 let streamId;
 let firstStrategyId;
@@ -31,7 +31,7 @@ describe('Strategy Stream Tests', () => {
       period: '2025',
     };
 
-    const strategy = await CreateNewStrategy(command);
+    const strategy = await CreateStrategy(command);
 
     expect(strategy.state).toBe('Open');
 
@@ -48,7 +48,7 @@ describe('Strategy Stream Tests', () => {
       period: '2026'
     };
 
-    const strategy = await CreateNewStrategy(command);
+    const strategy = await CreateStrategy(command);
 
     const previousStrategy = await GetStrategyById(firstStrategyId)
 

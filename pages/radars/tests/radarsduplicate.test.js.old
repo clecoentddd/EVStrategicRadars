@@ -33,7 +33,7 @@ describe("Radar Creation Tests", () => {
 
     // Check if the radar was successfully created
     expect(result.success).toBe(true);
-    expect(result.radar).toHaveProperty("aggregate_id"); // Updated to reflect aggregate_id
+    expect(result.radar).toHaveProperty("id"); // Updated to reflect id
     expect(result.radar.name).toBe(radarName);
     expect(result.radar.description).toBe("Top radar of the company");
     expect(result.radar.level).toBe(1);
@@ -43,7 +43,7 @@ describe("Radar Creation Tests", () => {
     expect(events.length).toBe(1); // Check if only one event exists
     expect(events[0].type).toBe("RADAR_CREATED");
     expect(events[0].payload.name).toBe(radarName);
-    expect(events[0].payload.aggregate_id).toBe(result.radar.aggregate_id); // Ensure the event has the correct uuid
+    expect(events[0].payload.id).toBe(result.radar.id); // Ensure the event has the correct uuid
     // Debugging: Log values to verify UUIDs
   });
 

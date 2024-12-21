@@ -6,15 +6,15 @@ const radarItemEvents = []; // In-memory storage for radar item events
 // Save Radar Item Event (with event name)
 export const saveRadarItemEvent = async (event) => {
   try {
-    // Generate a unique aggregate_id (if not provided)
-    const aggregate_id = event.payload.aggregate_id || uuidv4();
+    // Generate a unique id (if not provided)
+    const id = event.payload.id || uuidv4();
     const distance = event.payload.distance
     
     console.log("EVENTSTORE event is ", distance);
     console.log("EVENTSTORE event is ", event);
 
-    // Add the generated aggregate_id to the event payload if it's not already there
-    event.payload.aggregate_id = aggregate_id;
+    // Add the generated id to the event payload if it's not already there
+    event.payload.id = id;
 
     // Add the event name to the event payload
     event.event_name = event.type || 'Unknown';  // Set event name dynamically based on type (e.g., radarItemCreated, radarItemUpdated)
@@ -48,14 +48,14 @@ export const saveRadarItemEvent = async (event) => {
 };
 
 // Fetch all Radar Item Events (for a given radar_id)
-export const getRadarItemEvents= async (aggregate_id) => {
+export const getRadarItemEvents= async (id) => {
   // Filter radar item events by radar_id (if passed)
 
-  console.log("ES: get all events for aggregate_id", aggregate_id)
+  console.log("ES: get all events for id", id)
 
-  const filteredEvents = radarItemEvents.filter((event) => event.payload.aggregate_id === aggregate_id);
+  const filteredEvents = radarItemEvents.filter((event) => event.payload.id === id);
 
-  console.log("Fetching Radar Item Events for radar_id:", aggregate_id);
+  console.log("Fetching Radar Item Events for radar_id:", id);
   console.log("Filtered Events:", filteredEvents);
 
   return [...filteredEvents];  // Return a copy of the filtered events
@@ -68,13 +68,13 @@ export const clearRadarItemEventStore = async () => {
 };
 
 // Replay events to get the last state of the radar item based on the most recent event
-export const replayRadarItemState = async (aggregate_id) => {
+export const replayRadarItemState = async (id) => {
   try {
-    // Fetch events for the given aggregate_id
-    const events = await getRadarItemEvents(aggregate_id);
+    // Fetch events for the given id
+    const events = await getRadarItemEvents(id);
 
     if (!events || events.length === 0) {
-      return { success: false, message: `No events found for aggregate_id: ${aggregate_id}` };
+      return { success: false, message: `No events found for id: ${id}` };
     }
 
     console.log("ES: Events to replay", events);
@@ -90,7 +90,7 @@ export const replayRadarItemState = async (aggregate_id) => {
     // Hydrate the aggregate using the latest event's payload
     const hydratedAggregate = {
       ...latestEvent.payload, // Use the payload of the latest event to construct the state
-      aggregate_id,           // Ensure the aggregate_id is part of the state
+      id,           // Ensure the id is part of the state
     };
 
     console.log("Hydrated Radar Item Aggregate:", hydratedAggregate);

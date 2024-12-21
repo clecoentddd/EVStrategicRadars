@@ -14,11 +14,11 @@ export async function projectRadarItemToSupabase(radarItem) {
 
     console.log('Event to supabase', radarItem);
 
-    // Check if the radar item already exists based on aggregate_id
+    // Check if the radar item already exists based on id
     const { data: existingItem, error: fetchError } = await supabase
       .from("radar_items")
       .select("*")
-      .eq("aggregate_id", radarItem.aggregate_id)
+      .eq("id", radarItem.id)
       .single(); // Use single to fetch one row (if exists)
 
     console.log ("Projection -> exist or not", existingItem);
@@ -43,7 +43,7 @@ export async function projectRadarItemToSupabase(radarItem) {
           zoom_in: radarItem.zoom_in || null, // Optional field
           updated_at: new Date().toISOString(), // Update time
         })
-        .eq("aggregate_id", radarItem.aggregate_id); // Match by aggregate_id
+        .eq("id", radarItem.id); // Match by id
 
       if (error) {
         console.log("Error updating radar item in Supabase:", error.message);
@@ -58,7 +58,7 @@ export async function projectRadarItemToSupabase(radarItem) {
         .from("radar_items")
         .insert([
           {
-            aggregate_id: radarItem.aggregate_id,
+            id: radarItem.id,
             radar_id: radarItem.radar_id,
             name: radarItem.name,
             description: radarItem.description,
