@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid"; // UUID generator for creating radar item id
 import { projectRadarItemToSupabase } from './radarItemsProjection'; // Import projection function
+import {appendEventToFile, readEventsFromFile} from './eslib';
 
 const radarItemEvents = []; // In-memory storage for radar item events
 
@@ -7,34 +8,30 @@ const radarItemEvents = []; // In-memory storage for radar item events
 export const saveRadarItemEvent = async (event) => {
   try {
     // Generate a unique id (if not provided)
-    const id = event.payload.id || uuidv4();
-    const distance = event.payload.distance
-    
-    console.log("EVENTSTORE event is ", distance);
     console.log("EVENTSTORE event is ", event);
-
-    // Add the generated id to the event payload if it's not already there
-    event.payload.id = id;
-
-    // Add the event name to the event payload
-    event.event_name = event.type || 'Unknown';  // Set event name dynamically based on type (e.g., radarItemCreated, radarItemUpdated)
-
+    if (event.event === "RADAR_ITEM_CREATED") {
+    event.payload.id = uuidv4();
+  };
+    
+    
+  console.log("EVENTSTORE event is ", event.payload.id);
     // Add timestamp
-    event.timestamp = new Date().getTime();
+    event.payload.timestamp = new Date().getTime();
 
     console.log("Current Radar Item Events in Memory - Timestamp:", event.timestamp);
 
     // Save the event in memory
-    radarItemEvents.push(event);
+    // radarItemEvents.push(event);
+    const eventReturned = appendEventToFile(event.payload.radar_id, event);
 
-    console.log("Radar Item Event saved:", event);
+    console.log("Radar Item Event saved:", eventReturned);
     console.log("Current Radar Item Events in Memory:", radarItemEvents);
 
     // Project the radar item to Supabase - don't wait
-    const projectionResult = projectRadarItemToSupabase(event.payload); // Pass the payload to the projection function
+    //const projectionResult = projectRadarItemToSupabase(event.payload); // Pass the payload to the projection function
     
     const aggregate = {
-      ...eventvent.payload, // Use the payload of the latest event to construct the state
+      ...event.payload, // Use the payload of the latest event to construct the state
     };
 
     console.log ("ES: Aggregate created or saved is" , aggregate)
@@ -48,18 +45,44 @@ export const saveRadarItemEvent = async (event) => {
 };
 
 // Fetch all Radar Item Events (for a given radar_id)
-export const getRadarItemEvents= async (id) => {
-  // Filter radar item events by radar_id (if passed)
+export const getRadarItemEvents = async (radar_id, id) => {
+  console.log("ES: get all events for id", id);
 
-  console.log("ES: get all events for id", id)
+  const events = readEventsFromFile(radar_id);
 
-  const filteredEvents = radarItemEvents.filter((event) => event.payload.id === id);
+  console.log("getRadarItemEvents events are", events);
 
-  console.log("Fetching Radar Item Events for radar_id:", id);
+  //const filteredEvents = events.filter(
+  //  (event) => event.type === 'RADAR_ITEM' && event.payload.id === id
+  //);
+  const filteredEvents = events.filter((event) => {
+    // Log each event being checked
+    console.log("Checking event:", event);
+  
+    // Log whether the event matches the type condition
+    const isRadarItem = event.payload.aggregate_type === 'RADAR_ITEM';
+    console.log(`Event type === 'RADAR_ITEM':`, isRadarItem);
+  
+    // Log whether the event matches the payload ID condition
+    const isMatchingId = event.payload?.id === id; // Add optional chaining to prevent errors
+    console.log(`Event payload.id === id (${id}):`, isMatchingId);
+  
+    // Log the final result of the filter condition for the event
+    const shouldInclude = isRadarItem && isMatchingId;
+    console.log(`Should include event:`, shouldInclude);
+  
+    return shouldInclude;
+  });
+  
+  // Log the filtered events for further inspection
+  console.log("Filtered events:", filteredEvents);
+  
+  console.log("Fetching Radar Item Events for radar_id:", radar_id);
   console.log("Filtered Events:", filteredEvents);
 
-  return [...filteredEvents];  // Return a copy of the filtered events
+  return filteredEvents;
 };
+
 
 // Clear all Radar Item Events (for testing purposes or resetting the event store)
 export const clearRadarItemEventStore = async () => {
@@ -68,10 +91,10 @@ export const clearRadarItemEventStore = async () => {
 };
 
 // Replay events to get the last state of the radar item based on the most recent event
-export const replayRadarItemState = async (id) => {
+export const replayRadarItemState = async (radar_id, id) => {
   try {
     // Fetch events for the given id
-    const events = await getRadarItemEvents(id);
+    const events = await getRadarItemEvents(radar_id, id);
 
     if (!events || events.length === 0) {
       return { success: false, message: `No events found for id: ${id}` };
@@ -80,10 +103,21 @@ export const replayRadarItemState = async (id) => {
     console.log("ES: Events to replay", events);
 
     // Identify the latest event based on timestamp or sequence
-    const latestEvent = events.reduce((latest, current) => {
+   // const latestEvent = events.reduce((latest, current) => {
       // Assuming 'timestamp' is the property representing the event time
-      return current.timestamp > latest.timestamp ? current : latest;
-    }, events[0]); // Initial value is the first event
+    //  return current.timestamp > latest.timestamp ? current : latest;
+    // }, events[0]); // Initial value is the first event
+
+    const latestEvent = events.reduce((latest, current) => {
+      console.log('Current event:', current);
+      console.log('Latest event so far:', latest);
+      console.log('Comparing timestamps:', current.payload.timestamp, '>', latest.payload.timestamp);
+    
+      return current.payload.timestamp > latest.payload.timestamp ? current : latest;
+    }, events[0]);
+    
+    console.log('Final latest event:', latestEvent);
+    
  
     console.log("Latest Event for Hydration:", latestEvent);
 

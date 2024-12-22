@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
 import { projectRadarToSupabase } from './radarProjection';
 import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents'
+import { appendEventToFile, readEventsFromFile } from './eslib.js';
 
 const eventStore = []; // In-memory event storage
 
@@ -60,6 +61,7 @@ export async function getRadarByIdFromEventSource(aggregateId) {
   const events = await getEvents();
   const radarEvents = events.filter(event => event.payload.id === aggregateId);
 
+  console.log ("getRadarByIdFromEventSource: should be a replay", aggregateId);
   // Sort events by timestamp in descending order
   radarEvents.sort((a, b) => b.payload.timestamp - a.payload.timestamp);
 
@@ -69,5 +71,10 @@ export async function getRadarByIdFromEventSource(aggregateId) {
   // Reconstruct the radar state from the latest event
   const radar = latestEvent ? { ...latestEvent.payload } : {};
 
+  // temp fix
+  radar.name = "To implement name";
+  radar.descriptiion = "To implement description";
+  radar.id = "uuid_of_radar";
+  
   return radar;
 }

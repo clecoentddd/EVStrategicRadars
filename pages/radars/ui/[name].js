@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import RadarChart from '../../../components/RadarChart';
-import styles from './radarchart.module.css'; // Import CSS Modules
+import styles from './name.module.css'; // Import CSS Modules
+
 
 
 export default function RadarPage() {
@@ -33,9 +34,55 @@ export default function RadarPage() {
   const [logs, setLogs] = useState([]); // State to manage logs
   const router = useRouter();
   const { name, radar_id } = router.query;
-
+  
   useEffect(() => {
-    if (!radar_id) return;
+   
+    // Scroll behavior for navbar
+    let prevScrollpos = window.scrollY;
+    const handleScroll = async () => {
+      const currentScrollPos = window.scrollY;
+      const navbar = document.getElementById('navbar');
+      if (navbar) {
+        if (prevScrollpos > currentScrollPos) {
+          navbar.style.top = '0';
+        } else {
+          navbar.style.top = '-50px';
+        }
+        prevScrollpos = currentScrollPos;
+      }
+    };
+
+  // Attach event listener for scroll
+    window.addEventListener('scroll', handleScroll);
+
+  //Clean up the event listener
+   return () => {
+     window.removeEventListener('scroll', handleScroll);
+   }
+   // Keep your dependency array intact if you have specific dependencies
+}, []);
+
+useEffect(() => {
+
+  if (!radar_id) return;
+
+    /*const fetchRadarById = async () => {
+      try {
+        const response = await fetch(`/api/radar_events?id=${radar_id}`);
+        const data = await response.json();
+
+        console.log("Get radar property from ES:", response.text);
+        if (response.ok) {
+          setRadar(data); // Store radar data, including name and description
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError('Failed to fetch radar details - fetchRadarById');
+      } finally {
+        setLoadingRadar(false);
+      }
+    };*/
 
     const fetchRadar = async () => {
       try {
@@ -130,6 +177,7 @@ export default function RadarPage() {
     logMessage(`2 Impact options retrieved successfully`);
     fetchConfig();
     fetchRadar();
+    /*fetchRadarById();*/
     fetchRadarItems();
     fetchZoomInOptions();
   }, [radar_id]);
@@ -148,73 +196,75 @@ export default function RadarPage() {
 
   const handleEdit = async (item) => {
     try {
-      logMessage("Entering handleEdit...");
+      console.log("handleEdit: Entering handleEdit...with item : ", item);
       setEditMode(true);
       setCurrentEditingId(item.id); // Set the current editing item ID
       setShowForm(true); // Show the form for editing
   
       // Fetch the latest data for the selected aggregate
-      logMessage(`Fetching radar item with id: ${item.id}`);
-      const response = await fetch(`/api/radar-items?id=${item.id}`);
-  
+      console.log("handleEdit: Fetching radar item with id:", item.id);
+      //const response = await fetch(`/api/radar-items?id=${item.id}`);
+      const response = await fetch(`/api/radar-items?radar_id=${item.radar_id}&id=${item.id}`, {
+        method: 'GET',
+      });
       // Log the response status
-      logMessage(`Response status: ${response.status}`);
+      console.log("handleEdit: Response status: ", response.status);
   
       if (!response.ok) {
         const errorText = await response.text(); // Get the raw error text
         setError(`Failed to fetch radar item: ${errorText}`);
-        logMessage(`Failed to fetch radar item: ${errorText}`);
+        console.log("handleEdit: Failed to fetch radar item: ", errorText);
         return;
       }
   
       // Get the raw response text
       const rawResponseText = await response.text(); // Read response as raw text
-      logMessage(`Raw Response Text: ${rawResponseText}`);
+      console.log("handleEdit: Raw Response Text: ", rawResponseText);
   
       // Parse the raw response text as JSON
       const radarItem = JSON.parse(rawResponseText); // Safely parse JSON from text
   
-      logMessage(`Parsed Radar Item: ${JSON.stringify(radarItem)}`);
-      logMessage (`radar item is : ${radarItem.name}`);
+      console.log("Parsed Radar Item: ", JSON.stringify(radarItem));
+      console.log ("HTLM radar item name is :", radarItem.name);
   
       // Check if the response indicates success
       if (radarItem.success === false) {
         setError(radarItem.message); // Show the message from the response
-        logMessage(`Error: ${radarItem.message}`);
+        console.log("Error: ", radarItem.message);
         return;
       }
   
-      logMessage("Fetched radar item data successfully");
+      console.log("Fetched radar item data successfully");
   
       // Populate the form with the fetched data
+      const fetchedItem = radarItem;
+
       setFormData({
-        name: radarItem.name || '',
-        description: radarItem.description || '',
-        category: radarItem.category || '',
-        type: radarItem.type || '',
-        distance: radarItem.distance || '',
-        impact: radarItem.impact || '',
-        tolerance: radarItem.tolerance || '',
-        zoom_in: radarItem.zoom_in || '',
+        name: fetchedItem.name || '',
+        description: fetchedItem.description || '',
+        category: fetchedItem.category || '',
+        type: fetchedItem.type || '',
+        distance: fetchedItem.distance || '',
+        impact: fetchedItem.impact || '',
+        tolerance: fetchedItem.tolerance || '',
+        zoom_in: fetchedItem.zoom_in || '',
       });
     } catch (error) {
       setError('Error fetching radar item for edit');
-      logMessage(`Error during radar item fetch: ${error.message}`);
+      console.log("Error during radar item fetch: ", error.message);
     }
   };
 
   const handleSave = async () => {
     try {
-      logMessage("Entering handleSave...");
+      console.log("handleSave: Entering handleSave...");
       const method = editMode ? 'PUT' : 'POST';
       const url = editMode ? `/api/radar-items?id=${currentEditingId}` : `/api/radar-items`;
   
       // Wrap the data inside command.payload
       const command = {
-        payload: {
           radar_id, // Include radar_id in the payload
           ...formData,
-        },
       };
   
       const response = await fetch(url, {
@@ -224,25 +274,25 @@ export default function RadarPage() {
         },
         body: JSON.stringify(command), // Send the command structure
       });
-      logMessage(`HTML Payload being sent: ${JSON.stringify(command)}`);
+      console.log("handleSave: HTML Payload being sent: ", JSON.stringify(command));
 
-      console.log("Error saving radar item 0:",response.status);
+      console.log("handleSave: Error saving radar item 0:",response.status);
   
       if (!response.ok) {
         const errorText = await response.text();
-        logMessage(`Error saving radar item 1: ${errorText}`);
+        console.log("handleSave: Error saving radar item 1: ",errorText);
         return;
       }
   
       // Get the raw response text
       const rawResponseText = await response.text(); // Read response as raw text
-      logMessage(`Raw Response Text: ${rawResponseText}`);
+      console.log("handleSave: Raw Response Text: ", rawResponseText);
   
       // Parse the raw response text as JSON
       const radarItem = JSON.parse(rawResponseText); // Safely parse JSON from text
   
-      logMessage(`Parsed Radar Item: ${JSON.stringify(radarItem)}`);
-      logMessage (`radar item is : ${radarItem.name}`);
+      console.log("handleSave: Parsed Radar Item: ", JSON.stringify(radarItem));
+      console.log ("handleSave: radar item is : ", radarItem.name);
   
  // Update the radarItems state in both edit and save (create) modes
  setRadarItems(prevRadarItems => {
@@ -272,11 +322,12 @@ setFormData({
   zoom_in: '',
 });
 
-logMessage("Radar item saved successfully");
+console.log("Radar item saved successfully");
 } catch (err) {
-logMessage("Error saving radar item");
+console.log("Error saving radar item");
 }
 };
+
 
   if (loadingRadar || loadingItems) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -284,19 +335,28 @@ logMessage("Error saving radar item");
 
   return (
     <div>    
-      
-      <div className={styles.radarContainer}> 
-      <header className={styles.radarHeader}>
-        <h1 className={styles.radarTitle}>Radar - {radar.name}</h1>
-        <a href="/radars.html" className={styles.radarBackButton}>Radars</a>
-      </header>
-      <section className={styles.radarInfo}>
-        <p><strong>Aggregate ID:</strong> {radar.id}</p>
-        <p><strong>Description:</strong> {radar.description}</p>
-        <p><strong>Level:</strong> {radar.org_level}</p>
-      </section>
-    </div>
-      
+
+      {/* Add the sidepanel code here */}
+      <div id="navbar" className={styles.navbar}>
+        <a href="#Radars">1. Engage</a>
+        <a href="#Detect, Assess and Respond">2. Detect, Assess and Respond</a>
+        <a href="#Strategize">3. Strategize</a>
+      </div>
+
+      <div className={styles.container}>
+      {loadingRadar && <p>Loading radar details...</p>}
+      {error && <p className={styles.error}>{error}</p>}
+      {!loadingRadar && radar && (
+        <>
+          {/* Display Radar Name and Description */}
+          <div className={styles.radarDetails}>
+            <h1 className={styles.radarName}>{radar.name}</h1>
+            <p className={styles.radarDescription}>{radar.description}</p>
+          </div>
+        </>
+      )}
+      </div>
+         
       <h2>Radar Chart</h2>
       <RadarChart items={radarItems} radius={200} />
 
@@ -309,127 +369,165 @@ logMessage("Error saving radar item");
       </button>
 
       {showForm && (
-        <div style={{ marginTop: '20px' }}>
-          <h3>{editMode ? "Edit Radar Item" : "Create Radar Item"}</h3>
-          <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-            <label>
-              Name:
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-              Description:
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-            <label>
-                Category
-                <select name="category" value={formData.category} onChange={handleInputChange}>
-                  <option value="">Select Category</option>
-                  {categoryOptions.length > 0 ? (
-                    categoryOptions.map((option) => (
-                      <option key={option._id} value={option.name}>
-                        {option.label}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading options...</option>
-                  )}
-                </select>
-              </label>
-              <label>
-                Distance
-                <select name="distance" value={formData.distance} onChange={handleInputChange}>
-                  <option value="">Select Distance</option>
-                  {distanceOptions.length > 0 ? (
-                    distanceOptions.map((option) => (
-                      <option key={option._id} value={option.name}>
-                        {option.label}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading options...</option>
-                  )}
-                </select>
-              </label>
-            <label>
-                Type
-                <select name="type" value={formData.type} onChange={handleInputChange}>
-                  <option value="">Select Type</option>
-                  {typeOptions.length > 0 ? (
-                    typeOptions.map((option) => (
-                      <option key={option._id} value={option.name}>
-                        {option.label}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading options...</option>
-                  )}
-                </select>
-              </label>
-            <label>
-                Impact
-                <select name="impact" value={formData.impact} onChange={handleInputChange}>
-                  <option value="">Select Impact</option>
-                  {impactOptions.length > 0 ? (
-                    impactOptions.map((option) => (
-                      <option key={option._id} value={option.name}>
-                        {option.label}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading options...</option>
-                  )}
-                </select>
-              </label>
-              <label>
-                Tolerance
-                <select name="tolerance" value={formData.tolerance} onChange={handleInputChange}>
-                  <option value="">Select Tolerance</option>
-                  {toleranceOptions.length > 0 ? (
-                    toleranceOptions.map((option) => (
-                      <option key={option._id} value={option.name}>
-                        {option.label}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading options...</option>
-                  )}
-                </select>
-              </label>
-            <label>
-              Zoom In:
-              <select
-                name="zoom_in"
-                value={formData.zoom_in}
-                onChange={handleInputChange}
-                required
-              >
-                {zoomInOptions.map(option => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button
-              type="submit"
-              style={{ padding: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", marginTop: "10px" }}
-            >
-              Save
-            </button>
-          </form>
+  <div className={styles.showForm}> 
+    <h3>{editMode ? "Edit Radar Item" : "Create Radar Item"}</h3>
+    <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+      <div className={styles.formRow}> 
+        <div className={styles.column} style={{ flex: 2 }}> 
+          <label htmlFor="name" className={styles.label}>
+            Name
+          </label>
+          <input 
+            type="text" 
+            name="name" 
+            value={formData.name} 
+            onChange={handleInputChange} 
+            required 
+            className={styles.inputField} 
+          />
+          <label htmlFor="description" className={styles.label}>
+            What have you detected 
+          </label>
+          <textarea 
+            name="description" 
+            value={formData.description} 
+            onChange={handleInputChange} 
+            required 
+            className={styles.textArea} 
+          />
+          <label htmlFor="assessAndDecide" className={styles.label}>
+            What is your assessment
+          </label>
+          <textarea 
+            name="assessment" 
+            value={formData.assessment} 
+            onChange={handleInputChange} 
+            required 
+            className={styles.textArea} 
+          />
+          <label htmlFor="decisiveness" className={styles.label}>
+            What decisions could you take
+          </label>
+          <textarea 
+            name="decisiveness" 
+            value={formData.decisiveness} 
+            onChange={handleInputChange} 
+            required 
+            className={styles.textArea} 
+          />
         </div>
-      )}
+        <div className={styles.column} style={{ flex: 1 }}> 
+          <label htmlFor="category" className={styles.label}>
+            Category
+          </label>
+          <select 
+            name="category" 
+            value={formData.category} 
+            onChange={handleInputChange} 
+            className={styles.inputField} 
+          > 
+            <option value="">Select Category</option>
+            {categoryOptions.length > 0 ? (
+              categoryOptions.map((option) => (
+                <option key={option._id} value={option.name}>
+                  {option.label}
+                </option>
+              ))
+            ) : (
+              <option disabled>Loading options...</option>
+            )}
+          </select>
+          <label htmlFor="zoom_in" className={styles.label}>
+            Zoom In
+          </label>
+          <select
+            name="zoom_in"
+            value={formData.zoom_in}
+            onChange={handleInputChange}
+            required
+            className={styles.inputField}
+          >
+            <option value="">Select a "zoom-in" radar</option>
+            {zoomInOptions.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="distance" className={styles.label}>
+            Distance
+          </label>
+          <select
+            name="distance"
+            value={formData.distance}
+            onChange={handleInputChange}
+            className={styles.inputField}
+          >
+            <option value="">Select Distance</option>
+            {distanceOptions.length > 0 ? (
+              distanceOptions.map((option) => (
+                <option key={option._id} value={option.name}>
+                  {option.label}
+                </option>
+              ))
+            ) : (
+              <option disabled>Loading options...</option>
+            )}
+          </select>
+          <label htmlFor="impact" className={styles.label}>
+            Impact
+          </label>
+          <select
+            name="impact"
+            value={formData.impact}
+            onChange={handleInputChange}
+            className={styles.inputField}
+          >
+            <option value="">Select Impact</option>
+            {impactOptions.length > 0 ? (
+              impactOptions.map((option) => (
+                <option key={option._id} value={option.name}>
+                  {option.label}
+                </option>
+              ))
+            ) : (
+              <option disabled>Loading options...</option>
+            )}
+          </select>
+          <label htmlFor="tolerance" className={styles.label}>
+            Tolerance
+          </label>
+          <select
+            name="tolerance"
+            value={formData.tolerance}
+            onChange={handleInputChange}
+            className={styles.inputField}
+          >
+            <option value="">Select Tolerance</option>
+            {toleranceOptions.length > 0 ? (
+              toleranceOptions.map((option) => (
+                <option key={option._id} value={option.name}>
+                  {option.label}
+                </option>
+              ))
+            ) : (
+              <option disabled>Loading options...</option>
+            )}
+          </select>
+        </div>
+      </div>
+      <button
+        type="submit"
+        className={styles.saveButton}
+      >
+        Save
+      </button>
+    </form>
+  </div>
+)}
+
+
+
 
       <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
         {radarItems.length === 0 ? (

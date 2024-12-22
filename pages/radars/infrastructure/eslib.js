@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 const eventsDirectory = path.join(process.cwd(), process.env.EVENTS_DIRECTORY || 'pages/radars/events');
 
@@ -11,9 +12,9 @@ if (!fs.existsSync(eventsDirectory)) {
 }
 
 // Helper function to read events from a file
-export function readEventsFromFile(streamId) {
+export function readEventsFromFile(radarId) {
   console.log ("readEventsFromFile entering", eventsDirectory );
-  const filePath = path.join(eventsDirectory, `${streamId}.json`);
+  const filePath = path.join(eventsDirectory, `${radarId}.json`);
   console.log("readEventsFromFile: Path", filePath);
 
   try {
@@ -47,6 +48,10 @@ export function getEventsForRadar(radarId) {
 export function appendEventToFile(radarId, event) {
   const filePath = path.join(eventsDirectory, `${radarId}.json`);
 
+  // Adding an id to the event
+  const eventId = uuidv4(); 
+  event.eventStoreId = eventId; // Add eventId to the event object
+
   // Check if the file exists
   if (!fs.existsSync(filePath)) {
     console.log(`File does not exist. Creating a new file: ${filePath}`);
@@ -56,7 +61,25 @@ export function appendEventToFile(radarId, event) {
   const currentEvents = readEventsFromFile(radarId);
   currentEvents.push(event);
   writeEventsToFile(radarId, currentEvents);
+
+  // Check and return the event
+  const newEventStored = readEventByEventStoreId(radarId, eventId);
+  console.log("Read event back from eventStore",newEventStored );
+  return newEventStored
 }
+
+export function readEventByEventStoreId(radarId, eventStoreId) {
+  const filePath = path.join(eventsDirectory, `${radarId}.json`);
+  try {
+    const events = readEventsFromFile(radarId);
+    console.log("Reading all events from file", events);
+    return events.find(event => event.eventStoreId === eventStoreId); 
+  } catch (error) {
+    console.error(`Error reading event by ID: ${error}`);
+    return null; 
+  }
+}
+
 
 // Clear all events in the event store
 export function clearEventStore() {
