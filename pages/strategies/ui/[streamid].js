@@ -5,7 +5,9 @@ export default function StrategyStream() {
   const router = useRouter();
 
   const streamid = Object.keys(router.query)[0];
-  const [streamData, setStreamData] = useState(null);
+  const [streamData, setStreamData] = useState({
+    data: [], // Initialize data as an empty array
+  });
   const [ streamAggregate, setStreamAggregate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -218,7 +220,7 @@ export default function StrategyStream() {
       setNewStrategy({ name: '', description: '', whatWeWillNotDo: '' });
       setStreamData((prev) => ({
         ...prev,
-        data: [...prev.data, data], // Append the new strategy to the streamData
+        data: prev.data ? [...prev.data, data] : [data], // Conditionally use spread
       }));
     } catch (err) {
       alert(`Error: ${err.message}`);
