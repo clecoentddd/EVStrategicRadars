@@ -9,7 +9,9 @@ const makeRequest = (url, method, body = null) => {
       method,
       headers: { 'Content-Type': 'application/json' },
     };
-
+    console.log ("Request ready to be sent it - METHOD: ", method);
+    console.log ("Request ready to be sent it - BODY: ", body);
+    console.log ("Request ready to be sent it - URL: ", url);
     const req = request(url, options, (res) => {
       let data = '';
       res.on('data', chunk => {
@@ -55,11 +57,12 @@ test('Radar item name update test', async () => {
   try {
     // Step 1: Given a new radar ID and item creation
     const radarId = uuidv4(); // Generate a unique radar ID for the test
+
     const item = {
       name: "Old Name",
       description: "A practice radar item for testing update",
       category: "category1",
-      distance: "dist2"
+      distance: "dist2",
       type: "opportunity",
       tolerance: "medium",
       impact: "high",
@@ -70,23 +73,43 @@ test('Radar item name update test', async () => {
     // Create the radar item via POST request
     const createdItem = await makeRequest('http://localhost:3000/api/radar-items', 'POST', item);
     
-    state.radarItems["Old Name"] = createdItem;
-
+    console.log("radar Item returns by api is", createdItem);
+    
+    
     // Then: The created radar item should have the expected radar_id
-    expect(state.radarItems["Old Name"].radar_id).toBe(item.radar_id);
+    expect(createdItem.radar_id).toBe(radarId);
 
     // Step 2: Update the name of the radar item
-    const updatedItem = { ...createdItem, name: "New Name" };
+    createdItem.name = "New Name";
+    createdItem.type = 'risk';
 
-    console.log ("Test -> trying a PUT...", updatedItem.id);
+    // update the item properly
+    const itemToUpdate = {
+      id: createdItem.id,
+      name: "New Name",
+      description: "Updated practice radar item for testing update",
+      category: "category2",
+      distance: "dist2",
+      type: "risk",
+      tolerance: "medium",
+      impact: "high",
+      distance: "short",
+      radar_id: radarId, // Using the generated radar_id
+    };
+
+    console.log ("Test -> trying a PUT...", itemToUpdate);
     
-    const updateResponse = await makeRequest(`http://localhost:3000/api/radar-items/${createdItem.id}`, 'PUT', updatedItem);
-    
+    const updateResponse = await makeRequest(`http://localhost:3000/api/radar-items?${itemToUpdate.id}`, 'PUT', itemToUpdate);
+  
     // Log update response for debugging
     console.log('Update response:', updateResponse);
 
     // Step 3: Fetch the updated radar item and check if the name was updated
-    const fetchedItem = await makeRequest(`http://localhost:3000/api/radar-items/${createdItem.id}`, 'GET');
+    const fetchedItem = await makeRequest(
+      `http://localhost:3000/api/radar-items?radar_id=${itemToUpdate.radar_id}&id=${itemToUpdate.id}`,
+      'GET'
+    );
+    // const fetchedItem = await makeRequest(`http://localhost:3000/api/radar-items?${radarId}/${itemToUpdate.payload.id}`, 'GET', itemToUpdate.payload.rada_id);
     expect(fetchedItem.name).toBe("New Name"); // Ensure the name was updated to the new value
 
   } catch (err) {
@@ -94,4 +117,4 @@ test('Radar item name update test', async () => {
     console.error('Error occurred:', err); 
     throw err; // Re-throw the error for Jest to handle
   }
-});
+},20000);

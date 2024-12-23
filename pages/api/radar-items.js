@@ -16,14 +16,16 @@ export default async function handler(req, res) {
   // console.log("Body:", JSON.stringify(req.body, null, 2));
 
   try {
+    console.log("Entering API handler for radar_items.js", req.query);
     if (req.method === "GET") {
+      console.log("GET for", req.body);
       const { radar_id, id } = req.query; // Extract radar_id and id
 
       if (id) {
         // Handle the new GET API for fetching radar item aggregate
         try {
           console.log("API Fetching radar item aggregate for:", id);
-          const radarItem = await getRadarItem(id); // Call the model method
+          const radarItem = await getRadarItem(radar_id, id); // Call the model method
           console.log ("API -> ready to return aggregate :",radarItem);
 
           if (radarItem) {
@@ -77,30 +79,24 @@ export default async function handler(req, res) {
       }
     } else if (req.method === "PUT" || req.method === "PATCH") {
       // Handle radar item update logic
-      console.log("In the PUT Command", req.query);
-      const { id } = req.query; // Extract id from query params
-      console.log ("What aggregate?", id);
-
-      if (!id) {
-        return res.status(400).json({ error: 'Aggregate ID is required' });
+      
+      const command = {
+        ...req.query,
+        ...req.body,
+      };
+      console.log ("API PUT the radar item to update: ", command )
+  
+      if (!command.id) {
+        return res.status(400).json({ error: 'Radar item ID is required' });
       }
     
-      // Use the id in your logic
-      console.log(id); // This will print the id, e.g., '1b03ea3c-9052-45cb-b9d0-f47065eb853f'
-    
-      const command = {
-        ...req.body, // Directly spread the fields from req.body into the command object
-        id: id // Add id to the command
-      };
-      
-      console.log ("API -< req.query is", req.query);
-      console.log ("API -> aggregate is:", id);
+      console.log ("API -> req.query is", req.query);
       console.log ("API -> PUT or PATCH updating the item for aggregate", command);
 
       if (!command) {
         return res.status(400).json({ message: "Payload is required" });
       }
-      console.log ("API -> updatig the item")
+      console.log ("API -> updating the item")
       const radarItem = await updateRadarItem(command);
 
       if (radarItem) {

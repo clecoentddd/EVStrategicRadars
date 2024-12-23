@@ -14,10 +14,10 @@ export function subscribeToIntegrationEvents(callback) {
 
 // strategy.js
 //import { subscribeToIntegrationEvents } from './pushAndSubEvents';
-import { CreateStream } from '../strategies/model/strategy';
+import { interfaceCreateStream } from '../strategies/infrastructure/pubAndSubInterface';
 
 // Ensure subscription happens early in the application lifecycle
 subscribeToIntegrationEvents((eventData) => {
-  console.log ("PubAndSub subscribeToIntegrationEvents...", eventData.payload)
-  CreateStream(eventData.payload);
+  console.log ("PubAndSub subscribeToIntegrationEvents...", eventData)
+  interfaceCreateStream(eventData);
 });

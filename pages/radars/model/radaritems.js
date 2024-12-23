@@ -32,12 +32,12 @@ export async function getRadarItem(radar_id, id) {
 export async function handleRadarItemCreation(command) {
   console.log ("Model -> creating a new item", command);
 
-  const { radar_id, name, description, type, category, distance, impact, tolerance, zoom_in } = command;
+  const { radar_id, name, detect, assess, respond, type, category, distance, impact, tolerance, zoom_in } = command;
 
   console.log("Getting here with radar id", radar_id);
   // Validate inputs to ensure mandatory fields are provided
   if (!radar_id || !name || !type || !category || !distance|| !impact || !tolerance) {
-    console.log ("Model -> fields missing", tolerance, type, name, distance, impact);
+    console.log ("Model -> fields missing", radar_id, tolerance, type, name, distance, impact);
     return { success: false, message: "Mandatory fields are missing" };
   }
 
@@ -60,7 +60,9 @@ export async function handleRadarItemCreation(command) {
       aggregate_type: "RADAR_ITEM",
       radar_id: radar_id,
       name: name,
-      description: description,
+      detect: detect,
+      assess: assess,
+      respond: respond,
       type: type,
       category: category,
       distance: distance,
@@ -84,7 +86,7 @@ export async function handleRadarItemCreation(command) {
 
 export async function updateRadarItem(command) {
   console.log ("MODEL -> updating", command);
-  const { id, radar_id, name, description, type, category, distance,impact, tolerance, zoom_in } = command;
+  const { id, radar_id, name, detect, assess, respond, type, category, distance,impact, tolerance, zoom_in } = command;
 
   console.log ("MODEL 345-> updating radar item id", command.id);
   console.log ("MODEL 345 -> new name is", command.name);
@@ -101,7 +103,9 @@ export async function updateRadarItem(command) {
       id : id,
       radar_id : radar_id,
       name : name,
-      description : description,
+      detect: detect,
+      assess: assess,
+      respond: respond,
       type : type,
       category :category,
       distance: distance,

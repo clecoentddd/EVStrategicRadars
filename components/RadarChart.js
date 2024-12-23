@@ -231,11 +231,11 @@ const getSizeByTolerance = (tolerance) => {
   console.log(`Getting size for tolerance: ${tolerance}`);
   switch (tolerance) {
     case 'Low':
-      return 7;
+      return 15;
     case 'Medium':
       return 10;
     case 'High':
-      return 15;
+      return 7;
     default:
       return 10;
   }

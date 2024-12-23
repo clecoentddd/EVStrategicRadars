@@ -1,11 +1,11 @@
 import { sendStreamCreated, sendStrategyCreated, replayStrategy } from '../infrastructure/eventStoreStream.js';
 
-export async function CreateStream(command) {
+export async function createStream(command) {
     // Implement your strategy creation logic here
     console.log('Strategy stream creating with radar data:', command);
        
     const streamToCreate = {
-      radar_id: command.id,
+      radar_id: command.radarId,
       name: command.name,
       level: command.level,
       active_strategy_id: null,
@@ -26,7 +26,7 @@ export async function CreateStream(command) {
     try {
       console.log ("Strategy stream... saving");
       savedStrategyStream = await sendStreamCreated( streamToCreate);
-      console.log ("Model CreateStream saved", savedStrategyStream);
+      console.log ("Model createStream saved", savedStrategyStream);
       return { ...savedStrategyStream };
     } catch (error) {
       return { success: false, message: `Error creating strategy stream : ${error.message}` };
@@ -68,10 +68,10 @@ export async function CreateStrategy(command) {
     }
   }
 
-  export async function GetStrategyById(strategy_id) {
+  export async function GetStrategyById(stream_id, strategy_id) {
     // return aggregate based on id
 
-    const strategyAggregate = await replayStrategy(strategy_id);
+    const strategyAggregate = await replayStrategy(stream_id, strategy_id);
     console.log (" the aggregate is", strategyAggregate);
     return strategyAggregate;
   }

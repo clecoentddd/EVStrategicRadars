@@ -4,7 +4,6 @@ import RadarChart from '../../../components/RadarChart';
 import styles from './name.module.css'; // Import CSS Modules
 
 
-
 export default function RadarPage() {
   const [radar, setRadar] = useState(null);
   const [radarItems, setRadarItems] = useState([]);
@@ -14,7 +13,9 @@ export default function RadarPage() {
   const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
     name: '',
-    description: '',
+    detect: '',
+    assess: '',
+    respond: '',
     category: '',
     type: '',
     distance: '',
@@ -34,6 +35,7 @@ export default function RadarPage() {
   const [logs, setLogs] = useState([]); // State to manage logs
   const router = useRouter();
   const { name, radar_id } = router.query;
+  
   
   useEffect(() => {
    
@@ -62,51 +64,34 @@ export default function RadarPage() {
    // Keep your dependency array intact if you have specific dependencies
 }, []);
 
+
 useEffect(() => {
 
   if (!radar_id) return;
 
-    /*const fetchRadarById = async () => {
-      try {
-        const response = await fetch(`/api/radar_events?id=${radar_id}`);
-        const data = await response.json();
+  const fetchRadar = async () => {
+    try {
+      setLoadingRadar(true);
+      setError(null);
+      logMessage("Fetching radar data...");
 
-        console.log("Get radar property from ES:", response.text);
-        if (response.ok) {
-          setRadar(data); // Store radar data, including name and description
-        } else {
-          setError(data.message);
-        }
-      } catch (err) {
-        setError('Failed to fetch radar details - fetchRadarById');
-      } finally {
-        setLoadingRadar(false);
+      const response = await fetch(`/api/radars?id=${radar_id}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setRadar(data);
+        logMessage("Radar data fetched successfully");
+      } else {
+        setError(data.message);
+        logMessage(`Error fetching radar data: ${data.message}`);
       }
-    };*/
-
-    const fetchRadar = async () => {
-      try {
-        setLoadingRadar(true);
-        setError(null);
-        logMessage("Fetching radar data...");
-
-        const response = await fetch(`/api/radars?id=${radar_id}`);
-        const data = await response.json();
-
-        if (response.ok) {
-          setRadar(data);
-          logMessage("Radar data fetched successfully");
-        } else {
-          setError(data.message);
-          logMessage(`Error fetching radar data: ${data.message}`);
-        }
-      } catch (err) {
-        setError('Error fetching radar');
-        logMessage("Error fetching radar data");
-      } finally {
-        setLoadingRadar(false); // Set loading to false after fetching radar
-      }
-    };
+    } catch (err) {
+      setError('Error fetching radar');
+      logMessage("Error fetching radar data");
+    } finally {
+      setLoadingRadar(false); // Set loading to false after fetching radar
+    }
+  };
 
     const fetchRadarItems = async () => {
       try {
@@ -194,6 +179,33 @@ useEffect(() => {
     });
   };
 
+  const goToStrategize = async () => {
+    console.log("goToStrategize -> radar_id is: ", radar_id);
+    try {
+      const response = await fetch(`/api/readmodel-strategies?radar_id=${radar_id}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch streams: ${response.status}`);
+      }
+  
+      const stream = await response.json(); // Response is an object
+      console.log("API Response:", stream);
+  
+      // Check for active_strategy_id in the response
+      const streamID = stream.id;
+  
+      if (streamID) {
+        // Navigate to the strategy page
+        //navigate( `/strategies/ui/streamid?${encodeURIComponent(streamID)}`);
+        window.location.href = `/strategies/ui/streamid?${encodeURIComponent(streamID)}`;
+      } else {
+        alert('No active stream found for this radar.');
+      }
+    } catch (error) {
+      console.error('Error fetching stream:', error.message);
+      alert('Failed to fetch strategies. Please try again later.');
+    }
+  };
+
   const handleEdit = async (item) => {
     try {
       console.log("handleEdit: Entering handleEdit...with item : ", item);
@@ -234,14 +246,17 @@ useEffect(() => {
         return;
       }
   
-      console.log("Fetched radar item data successfully");
-  
-      // Populate the form with the fetched data
+           // Populate the form with the fetched data
       const fetchedItem = radarItem;
+
+      console.log("Fetched radar item data successfully Type is:", fetchedItem.type);
+  
 
       setFormData({
         name: fetchedItem.name || '',
-        description: fetchedItem.description || '',
+        detect: fetchedItem.detect || '',
+        assess: fetchedItem.assess || '',
+        respond: fetchedItem.respond || '',
         category: fetchedItem.category || '',
         type: fetchedItem.type || '',
         distance: fetchedItem.distance || '',
@@ -266,7 +281,7 @@ useEffect(() => {
           radar_id, // Include radar_id in the payload
           ...formData,
       };
-  
+      
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -313,7 +328,9 @@ setEditMode(false);
 setCurrentEditingId(null);
 setFormData({
   name: '',
-  description: '',
+  detect: '',
+  assess: '',
+  respond: '',
   category: '',
   type: '',
   distance: '',
@@ -340,7 +357,7 @@ console.log("Error saving radar item");
       <div id="navbar" className={styles.navbar}>
         <a href="#Radars">1. Engage</a>
         <a href="#Detect, Assess and Respond">2. Detect, Assess and Respond</a>
-        <a href="#Strategize">3. Strategize</a>
+        <a href="#Strategize" onClick={(e) => { e.preventDefault(); goToStrategize(); }}>3. Strategize</a>
       </div>
 
       <div className={styles.container}>
@@ -351,7 +368,7 @@ console.log("Error saving radar item");
           {/* Display Radar Name and Description */}
           <div className={styles.radarDetails}>
             <h1 className={styles.radarName}>{radar.name}</h1>
-            <p className={styles.radarDescription}>{radar.description}</p>
+            <p className={styles.detect}>{radar.detect}</p>
           </div>
         </>
       )}
@@ -378,41 +395,38 @@ console.log("Error saving radar item");
             Name
           </label>
           <input 
-            type="text" 
             name="name" 
             value={formData.name} 
             onChange={handleInputChange} 
             required 
             className={styles.inputField} 
           />
-          <label htmlFor="description" className={styles.label}>
+          <label htmlFor="detect" className={styles.label}>
             What have you detected 
           </label>
           <textarea 
-            name="description" 
-            value={formData.description} 
+            name="detect" 
+            value={formData.detect} 
             onChange={handleInputChange} 
             required 
             className={styles.textArea} 
           />
-          <label htmlFor="assessAndDecide" className={styles.label}>
+          <label htmlFor="assess" className={styles.label}>
             What is your assessment
           </label>
           <textarea 
-            name="assessment" 
-            value={formData.assessment} 
+            name="assess" 
+            value={formData.assess} 
             onChange={handleInputChange} 
-            required 
             className={styles.textArea} 
           />
-          <label htmlFor="decisiveness" className={styles.label}>
+          <label htmlFor="respond" className={styles.label}>
             What decisions could you take
           </label>
           <textarea 
-            name="decisiveness" 
-            value={formData.decisiveness} 
+            name="respond" 
+            value={formData.respond} 
             onChange={handleInputChange} 
-            required 
             className={styles.textArea} 
           />
         </div>
@@ -423,12 +437,34 @@ console.log("Error saving radar item");
           <select 
             name="category" 
             value={formData.category} 
-            onChange={handleInputChange} 
+            onChange={handleInputChange}
+            required 
             className={styles.inputField} 
           > 
             <option value="">Select Category</option>
             {categoryOptions.length > 0 ? (
               categoryOptions.map((option) => (
+                <option key={option._id} value={option.name}>
+                  {option.label}
+                </option>
+              ))
+            ) : (
+              <option disabled>Loading options...</option>
+            )}
+          </select>
+          <label htmlFor="type" className={styles.label}>
+            Type
+          </label>
+          <select 
+            name="type" 
+            value={formData.type} 
+            onChange={handleInputChange}
+            required 
+            className={styles.inputField} 
+          > 
+            <option value="">Select type</option>
+            {typeOptions.length > 0 ? (
+              typeOptions.map((option) => (
                 <option key={option._id} value={option.name}>
                   {option.label}
                 </option>
@@ -444,7 +480,6 @@ console.log("Error saving radar item");
             name="zoom_in"
             value={formData.zoom_in}
             onChange={handleInputChange}
-            required
             className={styles.inputField}
           >
             <option value="">Select a "zoom-in" radar</option>
@@ -536,7 +571,7 @@ console.log("Error saving radar item");
           radarItems.map((item) => (
             <li key={item.id} style={{ padding: "10px", border: "1px solid #ccc", marginBottom: "10px" }}>
               <h3>{item.name}</h3>
-              <p><strong>Description:</strong> {item.description}</p>
+              <p><strong>Detect</strong> {item.detect}</p>
               <button
                 onClick={() => handleEdit(item)}
                 style={{ padding: "5px 10px", backgroundColor: "#FFA500", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}

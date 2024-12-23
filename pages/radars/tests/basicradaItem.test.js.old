@@ -44,7 +44,6 @@ const makeRequest = (url, method, body = null) => {
   });
 };
 
-// Actual test using Jest
 test('Radar item creation test', async () => {
   // Initialize test state
   const state = {
@@ -57,7 +56,7 @@ test('Radar item creation test', async () => {
       name: "Practice",
       description: "A practice radar item",
       category: "category1",
-      distance: "dist1"
+      distance: "dist1",
       type: "opportunity", // Assuming the type is "opportunity"
       tolerance: "medium",
       impact: "high",
@@ -67,13 +66,14 @@ test('Radar item creation test', async () => {
 
     // Ensure that the POST request to create the radar item is awaited
     const createdItem = await makeRequest('http://localhost:3000/api/radar-items', 'POST', item);
-    state.radarItems["Practice"] = createdItem;
+    
+    console.log("CreatedItem is", createdItem);
 
     // Then: The created radar item should have the expected radar_id
-    expect(state.radarItems["Practice"].radar_id).toBe(item.radar_id); // Using Jest's expect for assertion
+    expect(createdItem.radar_id).toBe(item.radar_id); // Using Jest's expect for assertion
 
   } catch (err) {
     // Catch any errors from async operations and fail the test
     expect(err).toBeNull(); // Fail the test if there's an error
   }
-});
+}, 15000);

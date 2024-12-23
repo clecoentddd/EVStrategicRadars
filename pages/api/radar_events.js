@@ -1,5 +1,5 @@
-import { getEvents } from "../radars/infrastructure/eventStore";
-import { getRadarById } from "../radars/infrastructure/eventStore"; // Import getRadarById
+import { getEvents } from "../radars/infrastructure/eventStoreRadars";
+import { getRadarByIdFromEventSource } from "../radars/infrastructure/eventStoreRadars"; // Import getRadarById
 
 export default async function handler(req, res) {
   if (req.method === "GET") {

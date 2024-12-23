@@ -6,8 +6,8 @@ console.log('RadarTest URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
 console.log('RadarTest Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 import { handleRadarCreation } from "../model/radars"; // Import the function
-import { clearEventStore } from "../infrastructure/eventStore"; // Import the helper to clear events
-import { getEvents } from "../infrastructure/eventStore"; 
+import { clearEventStore } from "../infrastructure/eventStoreRadars"; // Import the helper to clear events
+import { getEvents } from "../infrastructure/eventStoreRadars"; 
 import { getStrategiesFromEventSource , getNumberofEventsInEventSource } from '../../strategies/infrastructure/eventStoreStream'
 
 const radarName = "Radar1"; // Change the radar name here for all tests
@@ -31,9 +31,11 @@ describe("Radar Creation Tests", () => {
     // Call the function directly without the API
     const result = await handleRadarCreation(command);
 
+    console.log ("HandleCreation - result event is", result);
+
     // Check if the radar was successfully created
     expect(result.success).toBe(true);
-    expect(result.radar).toHaveProperty("id"); // Updated to reflect id
+    expect(result.radar).toHaveProperty("radarId"); // Updated to reflect id
     expect(result.radar.name).toBe(radarName);
     expect(result.radar.description).toBe("Top radar of the company");
     expect(result.radar.level).toBe(1);
@@ -41,9 +43,9 @@ describe("Radar Creation Tests", () => {
     // Validate the event is saved correctly
     const events = await getEvents();
     expect(events.length).toBe(1); // Check if only one event exists
-    expect(events[0].type).toBe("RADAR_CREATED");
+    expect(events[0].eventType).toBe("RADAR_CREATED");
     expect(events[0].payload.name).toBe(radarName);
-    expect(events[0].payload.id).toBe(result.radar.id); // Ensure the event has the correct uuid
+    expect(events[0].payload.radarId).toBe(result.radar.id); // Ensure the event has the correct uuid
     // Debugging: Log values to verify UUIDs
   });
 

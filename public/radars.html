@@ -4,70 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Radars</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      line-height: 1.6;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .container {
-      margin: auto;
-      max-width: 800px;
-    }
-    .button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      margin: 5px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    .button:disabled {
-      background-color: grey;
-      cursor: not-allowed;
-    }
-    .button.green {
-      background-color: #28a745;
-    }
-    .button.red {
-      background-color: #dc3545;
-    }
-    .button.grey {
-      background-color: grey;
-    }
-    .radar-item {
-      margin: 15px 0;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    .radar-item h3 {
-      margin: 0;
-    }
-    .level-separator {
-      margin-top: 20px;
-      border-bottom: 2px solid #333;
-    }
-    #create-form {
-      display: none;
-      margin-top: 20px;
-    }
-    #radar-list {
-      margin-top: 20px;
-    }
-    #result-message {
-      margin: 15px 0;
-      padding: 10px;
-      color: white;
-      background-color: green;
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="radars.module.css">
 </head>
 <body>
   <div class="container">
@@ -76,17 +13,26 @@
     <button id="create-radar-button" class="button">Create Radar</button>
 
     <!-- Create Radar Form -->
-    <div id="create-form">
+    <div id="create-form" class="create-form-container"> 
       <h2>Create Radar</h2>
       <form onsubmit="event.preventDefault(); saveRadar();">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" required><br><br>
-        <label for="description">Description:</label><br>
-        <input type="text" id="description" required><br><br>
-        <label for="level">Level:</label><br>
-        <input type="number" id="level" required><br><br>
-        <button type="submit" class="button">Save</button>
-        <button type="button" class="button" onclick="cancelCreateRadar()">Cancel</button>
+        <div class="form-group"> 
+          <label for="name">Name</label><br>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group"> 
+          <label for="level">Level</label><br>
+          <input type="number" id="level" min="1" required style="width: 50px;">
+        </div>
+        <div class="level-separator"></div> 
+        <div class="form-group">
+          <label for="description">Purpose</label><br>
+          <textarea id="description" required rows="5" class="description-textarea"></textarea>
+      </div>
+        <div class="button-group"> 
+          <button type="submit" class="button">Save</button>
+          <button type="button" class="button" onclick="cancelCreateRadar()">Cancel</button>
+        </div>
       </form>
     </div>
 
@@ -111,11 +57,11 @@
         const radars = await response.json();
         let currentLevel = null;
 
-        radars.sort((a, b) => a.org_level - b.org_level); // Sort by level
+        radars.sort((a, b) => a.level - b.level); // Sort by level
 
         radars.forEach(radar => {
-          if (currentLevel !== radar.org_level) {
-            currentLevel = radar.org_level;
+          if (currentLevel !== radar.level) {
+            currentLevel = radar.level;
             const levelSeparator = document.createElement("div");
             levelSeparator.className = "level-separator";
             levelSeparator.innerHTML = `<h2>Level ${currentLevel}</h2>`;
@@ -127,12 +73,11 @@
           listItem.innerHTML = `
             <h3>${radar.name}</h3>
             <p>${radar.description}</p>
-            <p><strong>Level:</strong> ${radar.org_level}</p>
             <p><small>id: ${radar.id}</small></p>
             <button class="button" onclick="viewRadar('${radar.name}', '${radar.id}')">View</button>
             <button class="button" onclick="alert('API to be implemented')">Update</button>
             <button class="button" onclick="alert('API to be implemented')">Delete</button>
-            <button class="button green" onclick="viewStream('${radar.id}')">View Strategies</button>
+            <button class="button violet" onclick="viewStream('${radar.id}')">View Strategies</button>
           `;
           radarList.appendChild(listItem);
         });
@@ -175,7 +120,7 @@
       toggleCreateForm(false);
     }
 
-    async function saveRadar() {
+    async function saveRadar1() {
       const name = document.getElementById("name").value;
       const description = document.getElementById("description").value;
       const level = parseInt(document.getElementById("level").value, 10);
@@ -186,7 +131,7 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ name, description, level }),
+          body: JSON.stringify({ result }),
         });
 
         const result = await response.json();
@@ -194,7 +139,7 @@
 
         if (response.ok) {
           resultMessage.style.display = "block";
-          resultMessage.innerHTML = `Radar created successfully! Data: ${JSON.stringify(result)}`;
+          resultMessage.innerHTML = `New radar created successfully! Data: ${JSON.stringify(result.radar)}`;
           toggleCreateForm(false);
           fetchRadars();
         } else {
@@ -206,6 +151,64 @@
         console.error("Error saving radar:", error.message);
       }
     }
+
+  async function saveRadar() {
+    const name = document.getElementById("name").value;
+    const description = document.getElementById("description").value;
+    const level = parseInt(document.getElementById("level").value, 10);
+
+   try {
+    const response = await fetch("/api/radars", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, description, level }),
+    });
+
+    const result = await response.json();
+    const resultMessage = document.getElementById("result-message");
+
+    console.log("SaveRadar: getting from API", result);
+    if (response.ok) {
+      // Add radar using API response
+      addRadarToList(result.radar);
+      resultMessage.style.display = "block";
+      resultMessage.innerHTML = `Radar created successfully!`;
+      toggleCreateForm(false);
+    } else {
+      resultMessage.style.display = "block";
+      resultMessage.style.backgroundColor = "red";
+      resultMessage.innerHTML = `Error: ${result.message}`;
+    }
+  } catch (error) {
+    console.error("Error saving radar:", error.message);
+    alert(`Failed to save radar: ${error.message}`);
+  }
+}
+
+function addRadarToList(radar) {
+  const radarList = document.getElementById("radar-list");
+  
+  // Create a new radar item
+  const listItem = document.createElement("div");
+  listItem.className = "radar-item";
+  listItem.innerHTML = `
+    <div class="radar-item">
+      <h3>${radar.name}</h3>
+      <p>${radar.description}</p>
+      <p><strong>Level</strong> ${radar.level}</p>
+      <p><small>id: ${radar.id}</small></p>
+    </div>
+    <button class="button" onclick="viewRadar('${radar.name}', '${radar.radarId}')">View</button>
+    <button class="button" onclick="alert('API to be implemented')">Update</button>
+    <button class="button" onclick="alert('API to be implemented')">Delete</button>
+    <button class="button green" onclick="viewStream('${radar.radarId}')">View Strategies</button>
+  `;
+  
+  // Append to the radar list
+  radarList.appendChild(listItem);
+}
 
       // go to to the radar items page
     async  function viewRadar(name, aggregateId) {

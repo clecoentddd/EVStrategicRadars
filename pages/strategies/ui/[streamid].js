@@ -74,10 +74,8 @@ export default function StrategyStream() {
 
   const organizeData = (streamData) => {
     const strategies = {};
-    // Assuming streamData contains both 'aggregateData' and 'streamData'
-    //const { streamData: actualStreamData } = streamData;
-
-    // We assume 'streamData' here is the actual data you want to organize (not aggregateData)
+    
+    
     streamData?.data.forEach(item => {
       if (item.type === "STRATEGY") {
         strategies[item.id] = { ...item, elements: [] };
@@ -93,9 +91,12 @@ export default function StrategyStream() {
 
     // Organize data when streamData is updated
     useEffect(() => {
-      if (streamData) {
+      if (streamData && streamData.data && Array.isArray(streamData.data)) {
         const organizedStrategies = organizeData(streamData);
         console.log(organizedStrategies); // Do something with the organized data
+      } else
+      {
+        console.log("No strategies defined yet."); 
       }
     }, [streamData]);
 
@@ -481,12 +482,16 @@ export default function StrategyStream() {
 
       {loading && <p>Loading stream data...</p>}
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      {streamData && (
-        <div>
-          <h2>Stream Details</h2>
-          {renderStrategies(organizeData(streamData))}
-        </div>
-      )}
+      {streamData && streamData.data && Array.isArray(streamData.data) ? (
+      <div>
+        <h2>Stream Details</h2>
+        {renderStrategies(organizeData(streamData))} 
+      </div>
+    ) : (
+      <div style={{ color: 'red' }}>
+        No strategies defined yet.
+      </div>
+    )}
 
     </div>
   );

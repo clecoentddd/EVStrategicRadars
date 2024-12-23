@@ -1,4 +1,4 @@
-import { getValueDistanceOptions } from '../radars/model/configdata';
+import { getValueDistanceOptions } from '../radars/model/config';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
