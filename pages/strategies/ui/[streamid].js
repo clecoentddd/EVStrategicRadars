@@ -309,9 +309,9 @@ export default function StrategyStream() {
                       onChange={(e) => handleFieldChange(element.id, "description", e.target.value)}
                       disabled={editableElementId !== element.id}
                       className={
-                        editableElementId === element.id
-                          ? "table-cell table-cell-editable" // Editable-specific styles
-                          : "table-cell" // Default cell styles
+                         editableElementId === element.id
+                          ? `${styles.descriptionCell} ${styles.descriptionCellEditable}` // Editable-specific styles
+                          : styles.descriptionCell // Default cell styles
                       }
                     />
                   </label>
@@ -341,8 +341,8 @@ export default function StrategyStream() {
           key={field}
           className={
             editableElementId === element.id
-              ? "table-cell table-cell-editable" // Add editable-specific class
-              : "table-cell" // Default cell class
+              ? `${styles.tableCell} ${styles.tableCellEditable}`
+              : styles.tableCell // Default cell class
           }
         
         >
