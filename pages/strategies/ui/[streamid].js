@@ -293,7 +293,11 @@ export default function StrategyStream() {
                       value={element.name || ""}
                       onChange={(e) => handleFieldChange(element.id, "name", e.target.value)}
                       disabled={editableElementId !== element.id}
-                      style={editableElementId === element.id ? editableStyle : cellStyle}
+                      className={
+                        editableElementId === element.id
+                          ? "table-cell table-cell-editable" // Editable-specific styles
+                          : "table-cell" // Default cell styles
+                      }
                     />
                   </label>
   
@@ -304,7 +308,11 @@ export default function StrategyStream() {
                       value={element.description || ""}
                       onChange={(e) => handleFieldChange(element.id, "description", e.target.value)}
                       disabled={editableElementId !== element.id}
-                      style={editableElementId === element.id ? editableStyle : cellStyle}
+                      className={
+                        editableElementId === element.id
+                          ? "table-cell table-cell-editable" // Editable-specific styles
+                          : "table-cell" // Default cell styles
+                      }
                     />
                   </label>
   
@@ -317,13 +325,13 @@ export default function StrategyStream() {
                   </button>
   
                   {/* Table Fields */}
-                  <table style={tableStyle}>
+                  <table className={styles.tableStyle}>
   <thead>
     <tr>
-      <th style={headerCellStyle}>Diagnosis</th>
-      <th style={headerCellStyle}>Overall Approach</th>
-      <th style={headerCellStyle}>Set of Coherent Actions</th>
-      <th style={headerCellStyle}>Proximate Objectives</th>
+      <th className={styles.headerCells}>Diagnosis</th>
+      <th className={styles.headerCells}>Overall Approach</th>
+      <th className={styles.headerCells}>Set of Coherent Actions</th>
+      <th className={styles.headerCells}>Proximate Objectives</th>
     </tr>
   </thead>
   <tbody>
@@ -331,11 +339,12 @@ export default function StrategyStream() {
       {["diagnosis", "overall_approach", "set_of_coherent_actions", "proximate_objectives"].map((field) => (
         <td
           key={field}
-          style={
+          className={
             editableElementId === element.id
-              ? { ...cellStyle, ...editableStyle } // Merge common cell styles with editable-specific styles
-              : cellStyle
+              ? "table-cell table-cell-editable" // Add editable-specific class
+              : "table-cell" // Default cell class
           }
+        
         >
           {editableElementId === element.id ? (
             <textarea
@@ -351,8 +360,8 @@ export default function StrategyStream() {
       ))}
     </tr>
   </tbody>
-</table>
-
+</table
+>
                   {/* Tags Field (Below Table) */}
                   <div style={tagsStyle}>
                     <strong>Tags:</strong>
@@ -361,7 +370,12 @@ export default function StrategyStream() {
                       value={element.tags ? JSON.parse(element.tags).join(', ') : ''}
                       onChange={(e) => handleFieldChange(element.id, 'tags', e.target.value)}
                       disabled={editableElementId !== element.id}
-                      style={editableElementId === element.id ? editableStyle : cellStyle}
+                      // style={editableElementId === element.id ? editableStyle : cellStyle}
+                      className={
+                        editableElementId === element.id
+                          ? "table-cell table-cell-editable" // Editable-specific styles
+                          : "table-cell" // Default cell styles
+                      }
                     />
                   </div>
                 </div>
@@ -586,35 +600,6 @@ const createStrategyButtonStyle = {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
-  };
-
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginBottom: '10px',
-    marginTop: '10px',
-      };
-
-  const headerCellStyle = {
-    backgroundColor: 'Thistle',
-    color: 'white',
-    padding: '8px',
-    textAlign: 'left',
-    border: '1px solidrgb(187, 95, 201)',
-  };
-
-  const cellStyle = {
-    padding: '8px',
-    border: '1px solidrgb(173, 110, 160)',
-    verticalAlign: 'top',
-    tableLayout: 'fixed',
-  };
-
-  const editableStyle = {
-    padding: '8px',
-    backgroundColor: 'Lavender',
-    border: '1px dashedrgb(198, 97, 168)',
-    tableLayout: 'fixed',
   };
 
   const tagsStyle = {

@@ -1,25 +1,55 @@
  
   .textArea {
     width: 100%; 
-    padding-left: 20px;
     min-height: 300px; 
-    border: 1px solid #ccc;
-    border-radius: 1px;
-    padding: 0px; 
+    border: 3px solid #ccc;
+    border-radius: 1px; 
     resize: vertical; 
   }
 
   .headerCells {
-    background-color: 'Thistle';
-    color: 'black';
-    padding: '8px';
-    text-align: 'center';
-    border: '1px solidrgb(187, 95, 201)';
+    background-color: Thistle;
+    color: black;
+    padding: 8px;
+    text-align: center;
+    border: 1px Thistle;
   };
 
-  .cellStyle  {
-    padding: '8px';
-    border: '1px solidrgb(173, 110, 160)';
-    vertical-align: 'top';
-    table-layout: 'auto';
+.cellStyle  {
+    padding: 8px;
+    border: 1px thistle;
+    vertical-align: top;
+    table-layout: auto;
+    background-color: aquamarine;
   };
+
+  /* TableStyles.css */
+.table-cell {
+    padding: 40px;
+    border: 1px solid #d62a2a;
+    vertical-align: top;
+    transition: background-color 0.2s; /* Smooth transition for hover or edit styles */
+  }
+  
+  .table-cell-editable {
+    background-color: #d60eaa; /* Example background for editable cells */
+    border: 2px solid plum; /* Highlight border for editable cells */
+  }
+  
+  .table-cell:hover {
+    background-color: #c61d1d; /* Optional hover effect */
+  }
+  
+  .tableStyle  {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    margin-top: 10px;
+      }
+
+.editableStyle  {
+        padding: 8px;
+        background-color: rgb(37, 37, 160);
+        border : 1px dashedrgb(198, 97, 168);
+        table-layout: 'fixed';
+      };
