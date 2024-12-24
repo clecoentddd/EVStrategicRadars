@@ -18,10 +18,10 @@ export async function projectRadarToSupabase(radar) {
       .from("radars")
       .insert([
         {
-          id: radar.id,
+          id: radar.radarId,
           name: radar.name,
           description: radar.description,
-          org_level: radar.level,
+          level: radar.level,
           created_at: new Date().toISOString(), // Set creation time
           updated_at: new Date().toISOString(), // Set creation time
         }

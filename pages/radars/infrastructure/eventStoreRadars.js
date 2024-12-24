@@ -1,50 +1,59 @@
 import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
-import { projectRadarToSupabase } from './radarProjection';
-import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents'
+import { projectRadarToSupabase } from './radarProjection.js';
+import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js'
 import { appendEventToFile, readEventsFromFile } from './eslib.js';
 
 const eventStore = []; // In-memory event storage
 
-export const saveEvent = async (event) => {
+export const sendRadarCreated = async (event) => {
 
 
   // Add id (UUID) to the event payload
 
   const newtimestamp = new Date().getTime();
-  const eventWithId = {
-    ...event,
+
+  console.log("EVENTSTORE event is ", event);
+  
+  const radarToCreate = {
+  eventType: "RADAR_CREATED",
+  timestamp: newtimestamp,
+  aggregateType: "RADAR",
     payload: {
-      ...event.payload,
-      id: uuidv4(), // Generate a unique ID and add it as id
-      timestamp: newtimestamp,
-    },
+    level: event.level,
+    name: event.name,
+    description: event.description,
+    radarId : uuidv4(),
+    }
   };
 
-  //console.log("ES1234 Event to be pushed:", eventWithId);
 
-  eventStore.push(eventWithId); // Push the new event with the ID into the event store
+  console.log ("eventstoreRadars.js publishing events 1", radarToCreate);
+
+  //eventStore.push(eventWithId); // Push the new event with the ID into the event store
+  const radarCreated = appendEventToFile(radarToCreate.payload.radarId, radarToCreate);
 
   // Publish integration event
-  console.log ("eventstore.js publishing events");
+  console.log ("eventstore.js publishing events", radarCreated);
   try {
-    publishIntegrationEvent(eventWithId);
+    publishIntegrationEvent(radarCreated);
   } catch (error) {
   console.error('Error publishing event:', error);
   // Consider additional error handling, such as retrying the operation or notifying an administrator
   }
 
   // If the event type is "RADAR_CREATED", project it to Supabase
-  if (eventWithId.type === 'RADAR_CREATED') {
+  if (radarCreated.eventType === 'RADAR_CREATED') {
     try {
       // Project the event to Supabase
-      await projectRadarToSupabase(eventWithId.payload); // Pass the payload with id
+      console.log("Projection radar to supase", radarCreated.eventType);
+      await projectRadarToSupabase(radarCreated.payload); // Pass the payload with id
     } catch (error) {
-    //  console.log('saveEvent: Error projecting radar to Supabase:', error);
+      console.log('saveEvent: Error projecting radar to Supabase:', error);
     }
   }
 
   // Explicitly return the saved event with the id
-  return eventWithId;
+  return radarCreated;
 };
 
 export const getEvents = async () => {
@@ -58,7 +67,8 @@ export const clearEventStore = async () => {
 };
 
 export async function getRadarByIdFromEventSource(aggregateId) {
-  const events = await getEvents();
+  // Get all events
+  const events = await readEventsFromFile();
   const radarEvents = events.filter(event => event.payload.id === aggregateId);
 
   console.log ("getRadarByIdFromEventSource: should be a replay", aggregateId);
@@ -70,11 +80,6 @@ export async function getRadarByIdFromEventSource(aggregateId) {
 
   // Reconstruct the radar state from the latest event
   const radar = latestEvent ? { ...latestEvent.payload } : {};
-
-  // temp fix
-  radar.name = "To implement name";
-  radar.descriptiion = "To implement description";
-  radar.id = "uuid_of_radar";
   
   return radar;
 }

@@ -28,7 +28,7 @@ export const saveRadarItemEvent = async (event) => {
     console.log("Current Radar Item Events in Memory:", radarItemEvents);
 
     // Project the radar item to Supabase - don't wait
-    //const projectionResult = projectRadarItemToSupabase(event.payload); // Pass the payload to the projection function
+    const projectionResult = projectRadarItemToSupabase(event.payload); // Pass the payload to the projection function
     
     const aggregate = {
       ...event.payload, // Use the payload of the latest event to construct the state

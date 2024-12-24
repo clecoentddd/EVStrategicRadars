@@ -1,0 +1,25 @@
+ 
+  .textArea {
+    width: 100%; 
+    padding-left: 20px;
+    min-height: 300px; 
+    border: 1px solid #ccc;
+    border-radius: 1px;
+    padding: 0px; 
+    resize: vertical; 
+  }
+
+  .headerCells {
+    background-color: 'Thistle';
+    color: 'black';
+    padding: '8px';
+    text-align: 'center';
+    border: '1px solidrgb(187, 95, 201)';
+  };
+
+  .cellStyle  {
+    padding: '8px';
+    border: '1px solidrgb(173, 110, 160)';
+    vertical-align: 'top';
+    table-layout: 'auto';
+  };
