@@ -2,7 +2,7 @@
   .textArea {
     width: 100%; 
     min-height: 300px; 
-    border: 3px solid #ccc;
+    border: 3px solid lavender;
     border-radius: 1px; 
     resize: vertical; 
   }
@@ -24,35 +24,29 @@
   };
 
   /* TableStyles.css */
-.table-cell {
-    padding: 40px;
-    border: 1px solid #d62a2a;
-    vertical-align: top;
-    transition: background-color 0.2s; /* Smooth transition for hover or edit styles */
-  }
 
   .nameCellEditable {
     background-color: #f1eff0; /* Example background for editable cells */
     border: 2px solid plum; /* Highlight border for editable cells */
-    width: 150px;
-    vertical-align: top;
+    width: 100%;
+    text-align: top;
     padding: 40px;
   }
 
   .nameCell {
-    padding: 40px;
+    padding: 10px;
     border: 1px solid plum;
-    text-align: top left;
-    width: 150px;
-    height: 25%;
+    text-align: top;
+    width: 200px;
+    height: 80px;
     transition: background-color 0.2s; /* Smooth transition for hover or edit styles */
   }
   
   .descriptionCellEditable {
     background-color: #f1eff0; /* Example background for editable cells */
     border: 2px solid plum; /* Highlight border for editable cells */
-    width: 200px;
-    height: 25%;
+    width: 300px;
+    height: 80px;
     text-align: top ;
   }
 
@@ -61,6 +55,7 @@
     border: 1px solid plum;
     vertical-align: top;
     width: 300px;
+    height: 80px;
     transition: background-color 0.2s; /* Smooth transition for hover or edit styles */
     text-align: top ;
   }
@@ -76,6 +71,7 @@
 
   .tableCell {
     border-collapse: collapse;
+    min-height: 200px;
     margin-bottom: 10px;
     margin-top: 10px;
     border: 1px solid plum;
@@ -84,7 +80,7 @@
     }
   
   .tableCell:hover {
-    background-color: #c61d1d; /* Optional hover effect */
+    background-color: lavender; /* Optional hover effect */
   }
   
   .tableStyle  {
@@ -101,3 +97,37 @@
         border : 1px dashedrgb(198, 97, 168);
         table-layout: 'fixed';
       };
+
+/* table related buttons */
+
+.rowButtonsEditCancelSave {
+    display: flex; /* Use flexbox for better layout control */
+    flex-direction: column; /* Stack the table and buttons vertically */
+    align-items: center; /* Center the content horizontally */
+    margin-top: 40px; 
+    padding: 40px;
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+  }
+  
+  
+  .saveButton {
+    background-color: purple;
+    color: white;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+  
+  .cancelButton {
+    background-color: plum;
+    color: white;
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+  
+  .editButton {
+    background-color: purple;
+    color: white;
+    margin-left: 20px;
+    margin-top: 20px;
+  }

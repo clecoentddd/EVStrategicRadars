@@ -13,6 +13,7 @@ export default function StrategyStream() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editableElementId, setEditableElementId] = useState(null);
+  const [tempData, setTempData] = useState(null);
 
   const [showCreateStrategyForm, setShowCreateStrategyForm] = useState(false);
   const [newStrategy, setNewStrategy] = useState({
@@ -23,7 +24,21 @@ export default function StrategyStream() {
 
   const [columnContent, setColumnContent] = useState('This is the content for the fourth column.'); 
 
-  const handleFieldChange = (elementId, fieldName, value) => {
+  const handleEditClick = (id) => {
+    setEditableElementId(id);
+
+    // Save the original data of the row being edited
+    const currentRow = streamData.data.find((item) => item.id === id);
+    setTempData({ ...currentRow });
+  };
+
+  const handleCancelClick = () => {
+
+      setEditableElementId(null); // Exit edit mode
+      setTempData(null); // Discard temporary edits
+  };
+
+  const handleFieldChange1 = (elementId, fieldName, value) => {
     setStreamData((prevData) => {
       const updatedData = prevData.data.map((item) => {
         if (item.id === elementId) {
@@ -42,6 +57,14 @@ export default function StrategyStream() {
     });
   };
 
+  const handleFieldChange = (fieldName, value) => {
+  setTempData((prev) => ({
+    ...prev,
+    [fieldName]: fieldName === "tags"
+      ? JSON.stringify(value.split(",").map((tag) => tag.trim())) // Handle tags
+      : value,
+  }));
+};
   async  function viewRadar(name, aggregateId) {
     // Navigate to the radar details page with the name and id as query parameters
     console.log( "View Radar ", streamAggregate.radar_id);
@@ -165,6 +188,55 @@ export default function StrategyStream() {
     }
   };  
 
+  const handleSaveClick = async () => {
+    if (editableElementId && tempData) {
+      // Create updatedData outside of setStreamData
+      const updatedData = streamData.data.map((item) =>
+        item.id === editableElementId ? { ...tempData } : item
+      );
+  
+      // Update state with updatedData
+      setStreamData((prevData) => ({
+        ...prevData,
+        data: updatedData,
+      }));
+  
+      // Make the API call using updatedData
+      try {
+        const response = await fetch(`/api/strategy-items?elementid=${editableElementId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            stream_id: tempData.stream_id,
+            strategy_id: tempData.strategy_id,
+            diagnosis: tempData.diagnosis,
+            overall_approach: tempData.overall_approach,
+            set_of_coherent_actions: tempData.set_of_coherent_actions,
+            proximate_objectives: tempData.proximate_objectives,
+            name: tempData.name,
+            description: tempData.description,
+            tags: tempData.tags,
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to save changes');
+        }
+  
+        alert('Changes saved successfully!');
+      } catch (err) {
+        alert(`Error: ${err.message}`);
+      }
+  
+      // Exit edit mode and clear temporary data
+      setEditableElementId(null);
+      setTempData(null);
+    }
+  };
+  
+  
+  
+  
   const handleCreateStrategyChange = (e) => {
     const { name, value } = e.target;
     setNewStrategy((prev) => ({
@@ -250,8 +322,7 @@ export default function StrategyStream() {
     }
   };
 
-   
-
+ 
   const renderStrategies = (strategies) => {
     return strategies.map((strategy) => (
       <div key={strategy.id} className="strategy" style={strategyStyle}>
@@ -287,96 +358,98 @@ export default function StrategyStream() {
                 <div className="element-details" style={elementDetailsStyle}>
                   {/* Name Field */}
                   <label style={labelElementStyle}>
-                    Name:
+                    Name
                     <input
                       type="text"
-                      value={element.name || ""}
-                      onChange={(e) => handleFieldChange(element.id, "name", e.target.value)}
+                      value={tempData?.name || element.name || ""}
+                      onChange={(e) => handleFieldChange("name", e.target.value)}
                       disabled={editableElementId !== element.id}
                       className={
                         editableElementId === element.id
-                          ? "table-cell table-cell-editable" // Editable-specific styles
-                          : "table-cell" // Default cell styles
+                          ? `${styles.nameCell} ${styles.nameCellEditable}` // Editable-specific styles
+                          : styles.nameCell // Default cell styles
                       }
                     />
                   </label>
-  
+
                   {/* Description Field */}
                   <label>
-                    Description:
+                    Description
                     <textarea
-                      value={element.description || ""}
-                      onChange={(e) => handleFieldChange(element.id, "description", e.target.value)}
+                      value={tempData?.description || element.description || ""}
+                      onChange={(e) => handleFieldChange("description", e.target.value)}
                       disabled={editableElementId !== element.id}
                       className={
-                         editableElementId === element.id
+                        editableElementId === element.id
                           ? `${styles.descriptionCell} ${styles.descriptionCellEditable}` // Editable-specific styles
                           : styles.descriptionCell // Default cell styles
                       }
                     />
                   </label>
-  
-                  {/* Edit Button */}
-                  <button
-                    style={editButtonStyle}
-                    onClick={() => handleEditToggle(element.id)}
-                  >
-                    {editableElementId === element.id ? "Save" : "Edit"}
-                  </button>
-  
+   
                   {/* Table Fields */}
                   <table className={styles.tableStyle}>
-  <thead>
-    <tr>
-      <th className={styles.headerCells}>Diagnosis</th>
-      <th className={styles.headerCells}>Overall Approach</th>
-      <th className={styles.headerCells}>Set of Coherent Actions</th>
-      <th className={styles.headerCells}>Proximate Objectives</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      {["diagnosis", "overall_approach", "set_of_coherent_actions", "proximate_objectives"].map((field) => (
-        <td
-          key={field}
-          className={
-            editableElementId === element.id
-              ? `${styles.tableCell} ${styles.tableCellEditable}`
-              : styles.tableCell // Default cell class
-          }
-        
-        >
-          {editableElementId === element.id ? (
-            <textarea
-              value={element[field] || ""}
-              onChange={(e) => handleFieldChange(element.id, field, e.target.value)}
-              className={styles.textArea}
-              autoFocus
-            />
-          ) : (
-            element[field] || "N/A"
-          )}
-        </td>
-      ))}
-    </tr>
-  </tbody>
-</table
->
+                    <thead>
+                      <tr>
+                        <th className={styles.headerCells}>Diagnosis</th>
+                        <th className={styles.headerCells}>Overall Approach</th>
+                        <th className={styles.headerCells}>Set of Coherent Actions</th>
+                        <th className={styles.headerCells}>Proximate Objectives</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        {["diagnosis", "overall_approach", "set_of_coherent_actions", "proximate_objectives"].map((field) => (
+                          <td
+                            key={field}
+                            className={
+                              editableElementId === element.id
+                                ? `${styles.tableCell} ${styles.tableCellEditable}`
+                                : styles.tableCell // Default cell class
+                            }
+                          
+                          >
+                            {editableElementId === element.id ? (
+                              <textarea
+                                value={tempData[field] || ""}
+                                onChange={(e) => handleFieldChange(field, e.target.value)}
+                                className={styles.textArea}
+                                autoFocus
+                              />
+                            ) : (
+                              element[field] || "N/A"
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table
+                  >
                   {/* Tags Field (Below Table) */}
                   <div style={tagsStyle}>
                     <strong>Tags:</strong>
                     <input
                       type="text"
-                      value={element.tags ? JSON.parse(element.tags).join(', ') : ''}
-                      onChange={(e) => handleFieldChange(element.id, 'tags', e.target.value)}
+                      value={tempData?.tags ? JSON.parse(tempData.tags).join(", ") : element.tags ? JSON.parse(element.tags).join(", ") : ""}
+                      onChange={(e) => handleFieldChange("tags", e.target.value)}
                       disabled={editableElementId !== element.id}
-                      // style={editableElementId === element.id ? editableStyle : cellStyle}
                       className={
                         editableElementId === element.id
                           ? "table-cell table-cell-editable" // Editable-specific styles
                           : "table-cell" // Default cell styles
                       }
                     />
+                  </div>
+                  <div className={styles.rowButtonsEditCancelSave}>
+                    {/* Edit Button */}
+                    {editableElementId === element.id ? (
+                    <>
+                    <button className={styles.saveButton} onClick={handleSaveClick}>Save</button>
+                    <button className={styles.cancelButton} onClick={handleCancelClick}>Cancel</button>
+                    </>
+                    ) : (
+                    <button className={styles.editButton} onClick={() => handleEditClick(element.id)}>Edit</button>
+                    )}
                   </div>
                 </div>
               )}
@@ -445,7 +518,7 @@ export default function StrategyStream() {
             rows="3"
           ></textarea>
           <button type="submit" style={editButtonStyle}>
-            Save
+            Create
           </button>
         </form>
       )}
@@ -470,7 +543,7 @@ export default function StrategyStream() {
             required
           ></textarea>
           <button type="submit" style={editButtonStyle}>
-            Save
+            Create
           </button>
         </form>
       )}
