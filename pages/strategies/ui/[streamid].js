@@ -22,14 +22,55 @@ export default function StrategyStream() {
     whatWeWillNotDo: '',
   });
 
-  const [columnContent, setColumnContent] = useState('This is the content for the fourth column.'); 
+  const [availableTags, setAvailableTags] = useState([]); // Tags fetched from API
+  const [selectedTags, setSelectedTags] = useState([]);  // Tags selected by the user
 
-  const handleEditClick = (id) => {
+  const [radarItems, setRadarItems] = useState([]); 
+  const [selectedRadarItemId, setSelectedRadarItemId] = useState('')
+  
+
+  const handleEditClick = async (id) => {
     setEditableElementId(id);
 
     // Save the original data of the row being edited
     const currentRow = streamData.data.find((item) => item.id === id);
     setTempData({ ...currentRow });
+
+      // Fetch available tags when entering edit mode
+      try {
+        const response = await fetch(`/api/radar-items?radar_id=${id}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json', // Indicate you expect JSON
+          },
+        });
+    
+        // Check if the response is OK (status code 200-299)
+        if (!response.ok) {
+          throw new Error(`Failed to fetch radar items: ${response.statusText}`);
+        }
+    
+        console.log("get radar items", response.text);
+        const data = await response.json();
+    
+        // Validate the structure of the returned data (example below)
+            // Validate that the data is an array of objects with 'name' and 'id'
+    if (
+      !Array.isArray(data) ||
+      !data.every(item => item && typeof item.name === 'string' && typeof item.id === 'string')
+    ) {
+      throw new Error('Invalid data format received from API');
+    }
+
+    // Map to extract `name` and `id` for further use
+    const tags = data.map(({ name, id }) => ({ name, id }));
+
+    setAvailableTags(tags); // Update available tags with name and id
+  } catch (error) {
+
+        console.error('Error fetching radar items:', error.message);
+        alert('Could not fetch radar items. Please try again later.');
+      }
   };
 
   const handleCancelClick = () => {
@@ -38,33 +79,26 @@ export default function StrategyStream() {
       setTempData(null); // Discard temporary edits
   };
 
-  const handleFieldChange1 = (elementId, fieldName, value) => {
-    setStreamData((prevData) => {
-      const updatedData = prevData.data.map((item) => {
-        if (item.id === elementId) {
-          // Update the specific field
-          return {
-            ...item,
-            [fieldName]: fieldName === 'tags'
-              ? JSON.stringify(value.split(',').map(tag => tag.trim())) // Handle tags as JSON
-              : value,
-          };
-        }
-        return item; // Leave other elements unchanged
-      });
-  
-      return { ...prevData, data: updatedData }; // Return updated state
-    });
+ 
+  const handleFieldChange = (fieldName, value) => {
+    setTempData((prev) => ({
+      ...prev,
+      [fieldName]: fieldName === "tags"
+        ? 
+          // Try to parse the input as a JSON array 
+          // If parsing fails, assume it's an empty array
+          (() => {
+            try {
+              return JSON.parse(value); 
+            } catch (error) {
+              console.error("Error parsing tags:", error); 
+              return []; 
+            }
+          })()
+        : value, 
+    }));
   };
 
-  const handleFieldChange = (fieldName, value) => {
-  setTempData((prev) => ({
-    ...prev,
-    [fieldName]: fieldName === "tags"
-      ? JSON.stringify(value.split(",").map((tag) => tag.trim())) // Handle tags
-      : value,
-  }));
-};
   async  function viewRadar(name, aggregateId) {
     // Navigate to the radar details page with the name and id as query parameters
     console.log( "View Radar ", streamAggregate.radar_id);
@@ -136,6 +170,7 @@ export default function StrategyStream() {
     return Object.values(strategies); // Returning the organized strategies
   };
 
+
     // Organize data when streamData is updated
     useEffect(() => {
       if (streamData && streamData.data && Array.isArray(streamData.data)) {
@@ -146,6 +181,9 @@ export default function StrategyStream() {
         console.log("No strategies defined yet."); 
       }
     }, [streamData]);
+
+
+   
 
   const handleElementExpand = (elementId) => {
     console.log("handleElementExpand - 1");
@@ -235,6 +273,32 @@ export default function StrategyStream() {
   };
   
   
+    const handleTagSelect = (selectedTag) => {
+      // Check if element.tags is a string and parse it if it is
+      const element = streamData.data.find((item) => item.id === editableElementId); // Get the current element
+
+      console.log("Selected tags are:", selectedTag);
+      const existingTags = 
+        element.tags && 
+        typeof element.tags === 'string' && 
+        element.tags.trim() !== '' 
+          ? JSON.parse(element.tags) 
+          : []; 
+  
+    // Check if the selected tag already exists
+    const existingTagIndex = existingTags.findIndex((tag) => tag.id === selectedTag.id);
+  
+    if (existingTagIndex === -1) { 
+      // If the tag doesn't exist, add it to the array
+      existingTags.push(selectedTag); 
+    }
+  
+    // Update the state with the new tags
+    setTempData({ 
+      ...tempData, 
+      tags: JSON.stringify(existingTags) 
+    });
+  };
   
   
   const handleCreateStrategyChange = (e) => {
@@ -353,7 +417,7 @@ export default function StrategyStream() {
               >
                 <span style={elementTitleStyle}>{`${element.name} (${element.state})`}</span>
               </div>
-  
+              
               {expandedElementId === element.id && (
                 <div className="element-details" style={elementDetailsStyle}>
                   {/* Name Field */}
@@ -426,20 +490,53 @@ export default function StrategyStream() {
                   </table
                   >
                   {/* Tags Field (Below Table) */}
-                  <div style={tagsStyle}>
-                    <strong>Tags:</strong>
-                    <input
-                      type="text"
-                      value={tempData?.tags ? JSON.parse(tempData.tags).join(", ") : element.tags ? JSON.parse(element.tags).join(", ") : ""}
-                      onChange={(e) => handleFieldChange("tags", e.target.value)}
-                      disabled={editableElementId !== element.id}
-                      className={
-                        editableElementId === element.id
-                          ? "table-cell table-cell-editable" // Editable-specific styles
-                          : "table-cell" // Default cell styles
-                      }
-                    />
-                  </div>
+          
+{/* Tags Field (Below Table) */}
+
+<div style={tagsStyle}>
+  <strong>Tags</strong>
+
+  <div> {/* Outer div for consistent styling */}
+    {editableElementId === element.id ? (
+      // Editable mode: Dropdown to select tags
+      <select
+        disabled={editableElementId !== element.id}
+        multiple
+        //value={element.tags?.map((tag) => tag.id) || []} 
+        onChange={(e) => {
+          const selectedTagIds = Array.from(e.target.selectedOptions).map((option) => option.value);
+          const selectedTags = availableTags.filter((tag) => selectedTagIds.includes(tag.id));
+          handleTagSelect(selectedTags); 
+        }}
+      >
+        <option value="">Select a tag</option>
+        {availableTags.map(({ name, id }) => ( 
+          <option key={id} value={id}>
+            {name} 
+          </option>
+        ))}
+      </select>
+    ) : (
+      // Read-only mode: Display tags as a comma-separated string
+      <span>
+        {element.tags && 
+          typeof element.tags === 'string' && 
+          <span>
+            {JSON.parse(element.tags) 
+              .map((tag) => `${tag.name} (${tag.id}), `) 
+              .join("")} 
+          </span>
+        }
+        {(!element.tags || 
+          typeof element.tags !== 'string' || 
+          element.tags.trim() === '') && (
+            <span>No tags</span>
+          )
+        }
+      </span>
+    )}
+  </div> 
+</div>         
                   <div className={styles.rowButtonsEditCancelSave}>
                     {/* Edit Button */}
                     {editableElementId === element.id ? (
