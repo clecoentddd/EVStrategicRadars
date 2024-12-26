@@ -492,51 +492,89 @@ export default function StrategyStream() {
                   {/* Tags Field (Below Table) */}
           
 {/* Tags Field (Below Table) */}
+{/* Tags Field (Below Table) */}
+
+{/* Tags Field (Below Table) */}
 
 <div style={tagsStyle}>
   <strong>Tags</strong>
 
-  <div> {/* Outer div for consistent styling */}
+  <div>
     {editableElementId === element.id ? (
-      // Editable mode: Dropdown to select tags
-      <select
-        disabled={editableElementId !== element.id}
-        multiple
-        //value={element.tags?.map((tag) => tag.id) || []} 
-        onChange={(e) => {
-          const selectedTagIds = Array.from(e.target.selectedOptions).map((option) => option.value);
-          const selectedTags = availableTags.filter((tag) => selectedTagIds.includes(tag.id));
-          handleTagSelect(selectedTags); 
-        }}
-      >
-        <option value="">Select a tag</option>
-        {availableTags.map(({ name, id }) => ( 
-          <option key={id} value={id}>
-            {name} 
-          </option>
-        ))}
-      </select>
+      // Editable mode: Display existing tags with the option to delete
+      <div>
+        <ul style={{ listStyleType: "none", padding: 0 }}>
+          {(Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).map((tag, index) => (
+            <li key={index} style={{ marginBottom: "5px" }}>
+              {tag.name} ({tag.id})
+              <button
+                type="button"
+                style={{ marginLeft: "10px", color: "red", cursor: "pointer" }}
+                onClick={() => {
+                  // Remove only the selected tag
+                  const updatedTags = (Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).filter((t) => t.id !== tag.id);
+
+                  setTempData((prev) => ({
+                    ...prev,
+                    tags: updatedTags,
+                  }));
+                }}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+        <select
+          disabled={editableElementId !== element.id}
+          multiple
+          value={
+            Array.isArray(tempData?.tags)
+              ? tempData.tags.map((tag) => tag.id)
+              : (tempData?.tags?.length > 0 ? JSON.parse(tempData.tags).map((tag) => tag.id) : [])
+          }
+          onChange={(e) => {
+            const selectedTagIds = Array.from(e.target.selectedOptions).map((option) => option.value);
+            const selectedTags = availableTags.filter((tag) => selectedTagIds.includes(tag.id));
+
+            // Combine existing tags with newly selected tags, removing duplicates
+            const combinedTags = [...new Set([...tempData?.tags || [], ...selectedTags])]; 
+
+            setTempData((prev) => ({
+              ...prev,
+              tags: combinedTags,
+            }));
+          }}
+        >
+          <option value="">Select a tag</option>
+          {availableTags.map(({ name, id }) => (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          ))}
+        </select>
+      </div>
     ) : (
       // Read-only mode: Display tags as a comma-separated string
-      <span>
+      <div>
         {element.tags && 
-          typeof element.tags === 'string' && 
-          <span>
-            {JSON.parse(element.tags) 
-              .map((tag) => `${tag.name} (${tag.id}), `) 
-              .join("")} 
-          </span>
-        }
+          (Array.isArray(element.tags) 
+            ? element.tags.map((tag) => `${tag.name} (${tag.id}), `).join("") 
+            : JSON.parse(element.tags).map((tag) => `${tag.name} (${tag.id}), `).join(""))} 
+
         {(!element.tags || 
-          typeof element.tags !== 'string' || 
-          element.tags.trim() === '') && (
+          (Array.isArray(element.tags) && element.tags.length === 0) || 
+          (typeof element.tags === 'string' && JSON.parse(element.tags).length === 0)) && (
             <span>No tags</span>
           )
         }
-      </span>
+      </div>
     )}
-  </div> 
-</div>         
+  </div>
+</div>
+
+
+   
                   <div className={styles.rowButtonsEditCancelSave}>
                     {/* Edit Button */}
                     {editableElementId === element.id ? (
