@@ -1,5 +1,5 @@
 import { fetchAllRadars } from '../radars/infrastructure/radarsDB'; // Fetch radars from Supabase
-import { getEvents } from '../radars/infrastructure/eventStore'; // Fetch event logs from the event store
+import { getEvents } from '../radars/infrastructure/eventStoreRadars'; // Fetch event logs from the event store
 
 export default async function syncStatusHandler(req, res) {
   console.log("Calling syncStatusHandler API", req, res);
@@ -15,7 +15,7 @@ export default async function syncStatusHandler(req, res) {
     // Extract radar names from both sources for comparison
     const radarNames = radars.map((r) => r.name);
     const eventNames = events
-      .filter((e) => e.type === 'RADAR_CREATED') // Only consider radar creation events
+      .filter((e) => e.eventType === 'RADAR_CREATED') // Only consider radar creation events
       .map((e) => e.payload.name);
 
     // Check if radars are up-to-date
