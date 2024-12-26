@@ -135,32 +135,42 @@
   /* TAGS */
   .tagsContainer {
     margin: 10px 0;
+    display: flex; /* Add flexbox for horizontal layout */
+    flex-wrap: wrap; /* Allow tags to wrap to the next line */
+    gap: 5px; /* Add spacing between tags */ 
   }
+  
   
   .tagsList {
     list-style-type: none;
-    padding: 0;
+    padding: 5px;
+    padding-left: 10px;
     margin: 0;
   }
   
   .tagItem {
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
+    background-color: violet; /* Light gray background */
+    color: #333; /* Dark text color for readability */
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 0.9em;
+    display: inline-block;
+    position: relative;
   }
   
   .removeTagButton {
-    margin-left: 10px;
-    color: red;
+    margin-left: 0px;
+    color: black;
     background: none;
     border: none;
     cursor: pointer;
+    right: 10px;
   }
   
   .tagsDropdown {
     margin-top: 10px;
     padding: 5px;
-    width: 100%;
+    width: 200px;
   }
   
   .tagsDropdownDisabled {
@@ -177,11 +187,11 @@
   }
   
   .tagReadonly {
-    background-color: #ae2525; /* Light gray background */
+    background-color: violet; /* Light gray background */
     color: #333; /* Dark text color for readability */
     padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 2em;
+    border-radius: 10px;
+    font-size: 0.9em;
     display: inline-block;
   }
     

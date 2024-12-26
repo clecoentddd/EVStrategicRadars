@@ -502,10 +502,10 @@ export default function StrategyStream() {
         <ul className={styles.tagsList}>
           {(Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).map((tag, index) => (
             <li key={index} className={styles.tagItem}>
-              {tag.name} ({tag.id})
+              {tag.name}
               <button
                 type="button"
-                 className={styles.removeTagButton}
+                className={styles.removeTagButton}
                 onClick={() => {
                   // Remove only the selected tag
                   const updatedTags = (Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).filter((t) => t.id !== tag.id);
@@ -516,7 +516,7 @@ export default function StrategyStream() {
                   }));
                 }}
               >
-                Remove
+                X
               </button>
             </li>
           ))}
@@ -528,14 +528,16 @@ export default function StrategyStream() {
           value={
             Array.isArray(tempData?.tags)
               ? tempData.tags.map((tag) => tag.id)
-              : (tempData?.tags?.length > 0 ? JSON.parse(tempData.tags).map((tag) => tag.id) : [])
+              : (tempData?.tags?.length > 0 ? JSON.parse(tempData?.tags).map((tag) => tag.id) : [])
           }
           onChange={(e) => {
-            const selectedTagIds = Array.from(e.target.selectedOptions).map((option) => option.value);
+            // Filter out the "Select a tag" option before processing selected options
+            const selectedOptions = Array.from(e.target.options).filter((option) => option.value !== "");
+            const selectedTagIds = selectedOptions.map((option) => option.value);
             const selectedTags = availableTags.filter((tag) => selectedTagIds.includes(tag.id));
 
             // Combine existing tags with newly selected tags, removing duplicates
-            const combinedTags = [...new Set([...tempData?.tags || [], ...selectedTags])]; 
+            const combinedTags = [...new Set([...tempData?.tags || [], ...selectedTags])];
 
             setTempData((prev) => ({
               ...prev,
@@ -543,7 +545,8 @@ export default function StrategyStream() {
             }));
           }}
         >
-          <option value="">Select a tag</option>
+          {/* Don't include a value attribute for "Select a tag" option */}
+          <option value="" disabled>Select a tag</option>
           {availableTags.map(({ name, id }) => (
             <option key={id} value={id}>
               {name}
@@ -553,31 +556,30 @@ export default function StrategyStream() {
       </div>
     ) : (
       // Read-only mode: Display tags as a comma-separated string
-<div>
-  {element.tags && (
-    <div className={styles.tagsReadonlyContainer}>
-      {Array.isArray(element.tags)
-        ? element.tags.map((tag, index) => (
-            <span key={index} className={styles.tagReadonly}>
-              {tag.name}
-            </span>
-          ))
-        : JSON.parse(element.tags).map((tag, index) => (
-            <span key={index} className={styles.tagReadonly}>
-              {tag.name}
-            </span>
-          ))}
-    </div>
-  )}
+      <div>
+        {element.tags && (
+          <div className={styles.tagsReadonlyContainer}>
+            {Array.isArray(element.tags)
+              ? element.tags.map((tag, index) => (
+                  <span key={index} className={styles.tagReadonly}>
+                    {tag.name}
+                  </span>
+                ))
+              : JSON.parse(element.tags).map((tag, index) => (
+                  <span key={index} className={styles.tagReadonly}>
+                    {tag.name}
+                  </span>
+                ))}
+          </div>
+        )}
 
-  {(!element.tags ||
-    (Array.isArray(element.tags) && element.tags.length === 0) ||
-    (typeof element.tags === "string" &&
-      JSON.parse(element.tags).length === 0)) && (
-    <span>No tags</span>
-  )}
-</div>
-
+        {(!element.tags ||
+          (Array.isArray(element.tags) && element.tags.length === 0) ||
+          (typeof element.tags === "string" &&
+            JSON.parse(element.tags).length === 0)) && (
+          <span>No tags</span>
+        )}
+      </div>
     )}
   </div>
 </div>
