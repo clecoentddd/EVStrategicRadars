@@ -131,3 +131,57 @@
     margin-left: 20px;
     margin-top: 20px;
   }
+
+  /* TAGS */
+  .tagsContainer {
+    margin: 10px 0;
+  }
+  
+  .tagsList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .tagItem {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .removeTagButton {
+    margin-left: 10px;
+    color: red;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .tagsDropdown {
+    margin-top: 10px;
+    padding: 5px;
+    width: 100%;
+  }
+  
+  .tagsDropdownDisabled {
+    background: #f0f0f0;
+    color: #a0a0a0;
+    cursor: not-allowed;
+  }
+
+  .tagsReadonlyContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  
+  .tagReadonly {
+    background-color: #ae2525; /* Light gray background */
+    color: #333; /* Dark text color for readability */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 2em;
+    display: inline-block;
+  }
+    

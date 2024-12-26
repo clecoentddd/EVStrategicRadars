@@ -492,24 +492,20 @@ export default function StrategyStream() {
                   {/* Tags Field (Below Table) */}
           
 {/* Tags Field (Below Table) */}
-{/* Tags Field (Below Table) */}
 
-{/* Tags Field (Below Table) */}
-
-<div style={tagsStyle}>
+<div className={styles.tagsContainer}>
   <strong>Tags</strong>
-
   <div>
     {editableElementId === element.id ? (
       // Editable mode: Display existing tags with the option to delete
       <div>
-        <ul style={{ listStyleType: "none", padding: 0 }}>
+        <ul className={styles.tagsList}>
           {(Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).map((tag, index) => (
-            <li key={index} style={{ marginBottom: "5px" }}>
+            <li key={index} className={styles.tagItem}>
               {tag.name} ({tag.id})
               <button
                 type="button"
-                style={{ marginLeft: "10px", color: "red", cursor: "pointer" }}
+                 className={styles.removeTagButton}
                 onClick={() => {
                   // Remove only the selected tag
                   const updatedTags = (Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).filter((t) => t.id !== tag.id);
@@ -528,6 +524,7 @@ export default function StrategyStream() {
         <select
           disabled={editableElementId !== element.id}
           multiple
+          className={styles.tagsDropdown}
           value={
             Array.isArray(tempData?.tags)
               ? tempData.tags.map((tag) => tag.id)
@@ -556,24 +553,34 @@ export default function StrategyStream() {
       </div>
     ) : (
       // Read-only mode: Display tags as a comma-separated string
-      <div>
-        {element.tags && 
-          (Array.isArray(element.tags) 
-            ? element.tags.map((tag) => `${tag.name} (${tag.id}), `).join("") 
-            : JSON.parse(element.tags).map((tag) => `${tag.name} (${tag.id}), `).join(""))} 
+<div>
+  {element.tags && (
+    <div className={styles.tagsReadonlyContainer}>
+      {Array.isArray(element.tags)
+        ? element.tags.map((tag, index) => (
+            <span key={index} className={styles.tagReadonly}>
+              {tag.name}
+            </span>
+          ))
+        : JSON.parse(element.tags).map((tag, index) => (
+            <span key={index} className={styles.tagReadonly}>
+              {tag.name}
+            </span>
+          ))}
+    </div>
+  )}
 
-        {(!element.tags || 
-          (Array.isArray(element.tags) && element.tags.length === 0) || 
-          (typeof element.tags === 'string' && JSON.parse(element.tags).length === 0)) && (
-            <span>No tags</span>
-          )
-        }
-      </div>
+  {(!element.tags ||
+    (Array.isArray(element.tags) && element.tags.length === 0) ||
+    (typeof element.tags === "string" &&
+      JSON.parse(element.tags).length === 0)) && (
+    <span>No tags</span>
+  )}
+</div>
+
     )}
   </div>
 </div>
-
-
    
                   <div className={styles.rowButtonsEditCancelSave}>
                     {/* Edit Button */}
