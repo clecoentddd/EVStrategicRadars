@@ -2,7 +2,6 @@ import { fetchAllRadars } from '../radars/infrastructure/radarsDB'; // Fetch rad
 import { getEvents } from '../radars/infrastructure/eventStoreRadars'; // Fetch event logs from the event store
 
 export default async function syncStatusHandler(req, res) {
-  console.log("Calling syncStatusHandler API", req, res);
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Only GET method is allowed" });
   }
