@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './styles/index.module.css';
 import createRadar from './services/createRadarIndex';
 import updateRadar from './services/updateRadarIndex';
+import deleteRadar from './services/deleteRadarIndex';
 
 function HomePage() {
   const [radars, setRadars] = useState([]);
@@ -41,11 +42,19 @@ function HomePage() {
     const level = parseInt(event.target.level.value, 10);
 
     try {
-      const result = await createRadar(name, description, level);
-      setRadars([...radars, result.radar]); // Add the new radar to the state
+      const newRadar = await createRadar(name, description, level);
+      console.log("final preparing reading result for setRadars", newRadar);
+    
+      // Correctly add the new radar to the array
+      const updatedRadars = [...radars, newRadar];
+    
+      console.log('Updated radars:', updatedRadars); // Log the updated radars array
+      setRadars(updatedRadars); // Update the state with the new array
+
       setErrorMessage(null);
       setIsFormVisible(false); // Close the form
-      setSuccessMessage(`Radar "${result.radar.name}" created successfully!`);
+      setSuccessMessage(`Radar "${newRadar.name}" created successfully!`);
+
     } catch (error) {
       console.error('Error saving radar:', error.message);
       setErrorMessage(error.message);
@@ -76,6 +85,7 @@ function HomePage() {
         setRadarToUpdate(null); // Clear radarToUpdate
       } else {
         console.error('Error: No radar selected for update.');
+        setErrorMessage ('Error updating radar...');
       }
     } catch (error) {
       console.error('Error updating radar:', error.message);
@@ -109,6 +119,55 @@ function HomePage() {
       [radarId]: !prevExpanded[radarId],
     }));
   };
+
+  async  function viewRadar(name, aggregateId) {
+    // Navigate to the radar details page with the name and id as query parameters
+    const radarPage = `/radars/ui/${encodeURIComponent(name)}?radar_id=${encodeURIComponent(aggregateId)}`;
+    window.location.href = radarPage;
+  }
+
+  const viewStream = async (radarId) => {
+    try {
+      const response = await fetch(`/api/readmodel-strategies?radar_id=${encodeURIComponent(radarId)}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch streams: ${response.status}`);
+      }
+      const stream = await response.json(); // Response is an object
+      console.log("API Response:", stream);
+      // Check for active_strategy_id in the response
+      const streamID = stream.id;
+      if (streamID) {
+        // Navigate to the strategy page
+        window.location.href = `/strategies/ui/streamid?${encodeURIComponent(streamID)}`;
+            } else {
+        alert('No active stream found for this radar.');
+      }
+    } catch (error) {
+      console.error('Error fetching stream:', error.message);
+      alert('Failed to fetch strategies. Please try again later.');
+    }
+  };
+
+
+  const buttonDeleteRadar = async (radarId) => {
+    console.log("buttonDeleteRadar", radarId);
+    const response = await deleteRadar(radarId);
+
+    if (response) {
+      if (response) { 
+        // Radar successfully deleted
+        setSuccessMessage('Radar deleted successfully!'); 
+        // Option 1: Close the form (if applicable)
+        setIsFormVisible(false); 
+        // Option 2: Refresh the page
+        window.location.reload(); 
+
+    } else {
+     console.log(`Failed to delete radar: ${response.status}`);
+     setErrorMessage ('Failed to delete the radar...');
+    }
+  }
+};
 
   return (
     <main className={styles.main}>
@@ -232,7 +291,7 @@ function HomePage() {
                     </button>
                     <button
                       className={styles.buttonDelete}
-                      onClick={() => alert('API to be implemented')}
+                      onClick={() => buttonDeleteRadar(radar.id)}
                     >
                       Delete
                     </button>

@@ -1,5 +1,5 @@
 import { fetchAllRadars } from '../radars/infrastructure/radarsDB'; // Fetch radars from Supabase
-import { getEvents } from '../radars/infrastructure/eventStoreRadars'; // Fetch event logs from the event store
+import { getEvents } from '../radars/infrastructure/eventStoreCreateRadar'; // Fetch event logs from the event store
 
 export default async function syncStatusHandler(req, res) {
   if (req.method !== "GET") {

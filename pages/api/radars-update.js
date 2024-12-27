@@ -1,6 +1,7 @@
-import { handleRadarUpdate } from "../radars/model/radars"; // Adjust the path if necessary
+import { handleRadarUpdate } from "../radars/model/radarsUpdate"; // Adjust the path if necessary
 
 export default async function updateRadarHandler(req, res) {
+  console.log ("updateRadarHandler", req.body);
   try {
     if (req.method === "PUT") {
       // Handle POST request: Create a new radar
@@ -14,8 +15,8 @@ export default async function updateRadarHandler(req, res) {
         payload: { radarId, name, description, level },
       };
 
-      console.log ("To implement handleRadarUpdate: ", payload);
-      // const result = await handleRadarUpdate(command);
+      console.log ("To implement handleRadarUpdate: ", command.payload);
+      const result = await handleRadarUpdate(command);
 
       if (result.success) {
         // console.log("api/radars.js: result :", result);

@@ -1,4 +1,4 @@
-import { handleRadarCreation } from "../radars/model/radars"; // Adjust the path if necessary
+import { handleRadarCreation } from "../radars/model/radarsCreate"; // Adjust the path if necessary
 import { fetchAllRadars, fetchRadarById } from "../radars/infrastructure/radarsDB"; // Adjust the path if necessary
 
 export default async function radarsHandler(req, res) {
@@ -18,8 +18,8 @@ export default async function radarsHandler(req, res) {
       const result = await handleRadarCreation(command);
 
       if (result.success) {
-        // console.log("api/radars.js: result :", result);
-        return res.status(201).json({ uuid: result.radar.id, radar: result.radar });
+        console.log("api/radars.js: result :", result.radar);
+        return res.status(201).json({ message: 'Successful', result });
       } else {
         return res.status(409).json({ message: result.message }); // Conflict for duplicate names
       }

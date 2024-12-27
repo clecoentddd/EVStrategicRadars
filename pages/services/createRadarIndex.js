@@ -14,10 +14,18 @@ async function createRadar(name, description, level) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const result = await response.json();
-    return result; 
+    const data = await response.json();
+
+    console.log("createRadarIndex.js radar:", data.result);
+
+    if (data.message === 'Successful') { 
+      // Directly return the radar object from the data.result
+      return data.result.radar; 
+    } else {
+      throw new Error('Unexpected response from server');
+    }
   } catch (error) {
-    console.error("Error saving radar:", error.message);
+    console.error("Error creating radar:", error.message);
     throw error; // Re-throw the error to be handled by the caller
   }
 }

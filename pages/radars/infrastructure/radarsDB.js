@@ -15,7 +15,7 @@ export async function fetchAllRadars() {
       throw new Error("Failed to fetch radars.");
     }
 
-    // console.log("Fetched radars successfully:", data);
+    console.log("radarDB.js: Fetched radars:", data);
     return data;
   } catch (err) {
     console.error("Unexpected error in fetchAllRadars:", err.message);
@@ -27,7 +27,7 @@ export async function fetchAllRadars() {
 export async function fetchRadarById(aggregateId) {
   // Fetch radar by its id from the database (or in-memory data structure)
   const radars = await fetchAllRadars(); // Assuming fetchAllRadars fetches all the radars
-  console.log("MODEL fetchAllRadars :", radars);
+  console.log("radarDB.js:  fetchadarById :", radars);
   return radars.find(radar => radar.id === aggregateId); // Find and return the radar
 }
 

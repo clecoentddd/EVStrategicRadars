@@ -1,5 +1,5 @@
-import { getEvents } from "../radars/infrastructure/eventStoreRadars";
-import { getRadarByIdFromEventSource } from "../radars/infrastructure/eventStoreRadars"; // Import getRadarById
+import { getEvents } from "../radars/infrastructure/eventStoreCreateRadar";
+import { replayRadarAggregate } from "../radars/infrastructure/eventReplayRadars"; // Import getRadarById
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
     if (id) {
       try {
-        const radar = await getRadarByIdFromEventSource(id);
+        const radar = await replayRadarAggregate(id);
         res.status(200).json({ success: true, radar });
       } catch (error) {
         console.error("Error fetching radar:", error);
