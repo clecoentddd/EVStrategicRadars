@@ -1,0 +1,14 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1735331416462,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 2,
+      "name": "Security",
+      "description": "Shift-left - Constantly ahead",
+      "id": "21d32025-9732-4027-8e35-a48446ffb710"
+    },
+    "eventStoreId": "6f1e10a6-6b22-4fba-b80b-3cc0df980459"
+  }
+]

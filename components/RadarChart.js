@@ -58,6 +58,7 @@ const RadarChart = ({ items, radius = 200 }) => {
         };
 
     // Draw quadrants
+    const quadrantColors = ['lavender', 'lavenderblush', 'lavender', 'lavenderblush'];
     for (let i = 0; i < 4; i++) {
       svg.append("path")
         .attr("d", d3.arc()
@@ -66,7 +67,7 @@ const RadarChart = ({ items, radius = 200 }) => {
           .startAngle((Math.PI / 2) * i)
           .endAngle((Math.PI / 2) * (i + 1))
         )
-        .attr("fill", i % 2 === 0 ? "#f0f0f0" : "#e0e0e0")
+        .attr("fill", quadrantColors[i])
         .attr("stroke", "#ccc");
     }
 
@@ -296,11 +297,11 @@ const getColorByImpact = (impact) => {
   console.log(`Getting color for impact: ${impact}`);
   switch (impact) {
     case 'Low':
-      return 'green';
+      return '#77DD77';
     case 'Medium':
-      return 'orange';
+      return '#FFD580';
     case 'High':
-      return 'red';
+      return '#FF6961';
     default:
       return 'steelblue';
   }

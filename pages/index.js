@@ -187,7 +187,7 @@ function HomePage() {
           className={styles.buttonCreateRadar}
           onClick={() => toggleForm('create')}
         >
-          Create Radar
+          Create Organisation
         </button>
         <div
           id="create-form"
@@ -274,14 +274,11 @@ function HomePage() {
                     }}
                   >
                     <p>{radar.description}</p>
-                    <p>
-                      <small>id: {radar.id}</small>
-                    </p>
                     <button
                       className={styles.buttonViewRadar}
                       onClick={() => viewRadar(radar.name, radar.id)}
                     >
-                      View
+                      View Radar
                     </button>
                     <button
                       className={styles.buttonUpdate}

@@ -1,0 +1,14 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1735328490726,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 2,
+      "name": "SWE",
+      "description": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. \nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast.",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d"
+    },
+    "eventStoreId": "1da61514-f735-448e-8d79-8363253b55a5"
+  }
+]

@@ -120,38 +120,7 @@
       toggleCreateForm(false);
     }
 
-    async function saveRadar1() {
-      const name = document.getElementById("name").value;
-      const description = document.getElementById("description").value;
-      const level = parseInt(document.getElementById("level").value, 10);
-
-      try {
-        const response = await fetch("/api/radars", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ result }),
-        });
-
-        const result = await response.json();
-        const resultMessage = document.getElementById("result-message");
-
-        if (response.ok) {
-          resultMessage.style.display = "block";
-          resultMessage.innerHTML = `New radar created successfully! Data: ${JSON.stringify(result.radar)}`;
-          toggleCreateForm(false);
-          fetchRadars();
-        } else {
-          resultMessage.style.display = "block";
-          resultMessage.style.backgroundColor = "red";
-          resultMessage.innerHTML = `Error: ${result.message}`;
-        }
-      } catch (error) {
-        console.error("Error saving radar:", error.message);
-      }
-    }
-
+ 
   async function saveRadar() {
     const name = document.getElementById("name").value;
     const description = document.getElementById("description").value;

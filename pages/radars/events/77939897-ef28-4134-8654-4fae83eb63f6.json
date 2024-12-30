@@ -1,0 +1,58 @@
+[
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radar_id": "77939897-ef28-4134-8654-4fae83eb63f6",
+      "name": "Learning",
+      "detect": "nothing",
+      "assess": "to be done",
+      "respond": "later",
+      "type": "Problem",
+      "category": "Business",
+      "distance": "Assessing",
+      "impact": "Medium",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1735218388609,
+      "id": "31158755-3246-4666-9c94-7e516889111b"
+    },
+    "eventStoreId": "5d9d2dbb-59ba-4d63-9853-4d5888732de6"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735314509578,
+    "aggregateType": "RADAR",
+    "payload": {
+      "radarId": "77939897-ef28-4134-8654-4fae83eb63f6",
+      "level": 1,
+      "name": "Company Tech Radar",
+      "description": "Learnings across the organisation must be shared. We are learners. Or, as Microsoft said \"From know it all to learn it all!\""
+    },
+    "eventStoreId": "35748d06-c060-493b-913f-9d17a9175253"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735315531957,
+    "aggregateType": "RADAR",
+    "payload": {
+      "radarId": "77939897-ef28-4134-8654-4fae83eb63f6",
+      "level": 1,
+      "name": "Company Tech Radar",
+      "description": "where gap in knowledge is identified, where changes are creating these gaps."
+    },
+    "eventStoreId": "a5dc86b4-475a-49fc-9cb6-b74a592f3052"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735316513844,
+    "aggregateType": "RADAR",
+    "payload": {
+      "radarId": "77939897-ef28-4134-8654-4fae83eb63f6",
+      "level": 1,
+      "name": "Company Tech Radar",
+      "description": "where gap in knowledge is identified, where changes are creating these gaps. We stop knowing, we start learning. \nQuantity of learnings provide Quality of knowledge.\n\n\"Think before you speak, read before you think!\""
+    },
+    "eventStoreId": "f80b4c2c-8ed7-4e0c-9534-557531612bb1"
+  }
+]
