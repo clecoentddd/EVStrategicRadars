@@ -1,24 +1,41 @@
 .radarContainer {
-    position: relative;
+    position: left;
+    display: flex; /* Use flexbox for easier centering */
+    justify-content: right; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100%; /* If you want to center within the parent container */
+    font-family: 'Orbitron', sans-serif;
   }
   
   .tooltip {
-    position: absolute;
-    background-color: #e6f7ff; /* Light blue background */
-    border: 1px solid #91d5ff; /* Blue border */
-    color: #003a8c; /* Dark blue text */
+    position: relative;
+    background-color: lavender; /* Light blue background */
+    border: 1px solid plum; /* Blue border */
+    color: black; /* Dark blue text */
     padding: 8px 12px;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(24, 144, 255, 0.8); /* Blue glow */
+    border-radius: 10px;
+    box-shadow: 10 10 8px rgba(24, 144, 255, 0.8); /* Blue glow */
     font-size: 14px;
     pointer-events: none; /* Tooltip should not block mouse interactions */
     z-index: 10; /* Ensure it appears above other elements */
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.5s ease-in-out;
     opacity: 1;
+    font-family: 'Orbitron', sans-serif;
   }
   
   .radarItem {
-    fill: #1890ff; /* Blue color for radar items */
+    fill: plum; /* Blue color for radar items */
     cursor: pointer;
+  }
+
+  .chartText { 
+    font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
+    font-size: 12px; fill: #333; /* Default text color */ 
+    font-weight: bold; 
+  }
+
+  .chartTextNormal { 
+    font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
+    font-size: 9px; fill: #333; /* Default text color */ 
   }
   

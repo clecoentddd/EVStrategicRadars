@@ -31,6 +31,32 @@ const RadarChart = ({ items, radius = 200 }) => {
       .append('g')
       .attr('transform', `translate(${radius + 25}, ${radius + 25})`);
 
+      // Define the glow filter 
+      // Define the gradient and glow filter 
+        svg.append('defs').html(` 
+          <radialGradient id="g"> 
+          <stop stop-color="#00f" offset="0.1"/> 
+          <stop stop-color="rgba(0,0,255, 0.5)" offset="0.8"/> 
+          </radialGradient> 
+          <filter id="sofGlow" width="300%" height="300%" x="-100%" y="-100%"> 
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blurred" /> 
+          </filter> `);
+    
+          const accentuateColor = (hex) => { 
+            // Remove the hash if it exists 
+            hex = hex.replace(/^#/, ''); 
+            // Parse the hex color and invert each channel
+            //let r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16).padStart(2, '0'); 
+            //let g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16).padStart(2, '0'); 
+            //let b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16).padStart(2, '0'); 
+            // Increase brightness by 50% 
+            let r = Math.min(255, parseInt(hex.slice(0, 2), 16) + 50).toString(16).padStart(2, '0'); 
+            let g = Math.min(255, parseInt(hex.slice(2, 4), 16) + 50).toString(16).padStart(2, '0'); 
+            let b = Math.min(255, parseInt(hex.slice(4, 6), 16) + 50).toString(16).padStart(2, '0');
+            
+              return `#${r}${g}${b}`; 
+        };
+
     // Draw quadrants
     for (let i = 0; i < 4; i++) {
       svg.append("path")
@@ -44,15 +70,41 @@ const RadarChart = ({ items, radius = 200 }) => {
         .attr("stroke", "#ccc");
     }
 
+    // Draw radial lines 
+    const numberOfLines = 16; // Number of radial lines (can be adjusted as needed) 
+    for (let i = 0; i < numberOfLines; i++) { const angle = (Math.PI * 2 / numberOfLines) * i; const x = radius * Math.cos(angle); const y = radius * Math.sin(angle); svg.append("line") .attr("x1", 0) .attr("y1", 0) 
+    .attr("x2", x) 
+    .attr("y2", y) 
+    .attr("stroke", "purple") 
+    .attr("stroke-width", 0.1); }
+
     // Draw concentric circles (light blue for radar grid)
     [0.25, 0.5, 0.75, 1].forEach(d => {
       svg.append("circle")
         .attr("r", radius * d)
         .attr("fill", "none")
-        .attr("stroke", "lightblue") // Light blue for radar grid circles
+        .attr("stroke", "plum") // Light blue for radar grid circles
         .attr("stroke-width", 1);
     });
 
+  // Define category labels for each quadrant 
+  const categories = ["Business", "Operating Model", "People and Knowledge", "Capabilities"]; 
+  const labelPositions = [ 
+  { x: radius - 5 , y: -radius , anchor: 'middle' }, 
+  { x: -radius -20, y: -radius, anchor: 'start' },
+  { x: radius - 40 , y: radius, anchor: 'middle' }, 
+  { x: -radius +50, y: radius, anchor: 'end' } 
+  ]; 
+  categories.forEach((category, i) => { 
+    svg.append("text") .attr("x", labelPositions[i].x) 
+    .attr("y", labelPositions[i].y) 
+    .attr("text-anchor", labelPositions[i].anchor) 
+    .attr("font-size", "12px") 
+    .attr("font-weight", "bold") 
+    .attr("fill", "#333") .text(category)
+    .classed(styles.chartText, true);
+  });
+      
     // Group items by category and distance
     const groupedItems = items.reduce((acc, item) => {
       const key = `${item.category}-${item.distance}`;
@@ -104,15 +156,30 @@ const RadarChart = ({ items, radius = 200 }) => {
         const color = getColorByImpact(item.impact);
         const size = getSizeByTolerance(item.tolerance);
 
+         // Determine circle style based on item.type
+         let circleStyle = {};
+         if (item.type === 'Problem') {
+           circleStyle = {
+             fill: color,
+             stroke: 'none',
+           };
+         } else if (item.type === 'Opportunity') {
+           circleStyle = {
+             fill: color,
+             stroke: color,
+             strokeWidth: 2,
+           };
+         }
         // Append group for each item
         const itemGroup = svg.append('g')
           .on('mouseover', async function () {
             console.log(`Mouse over: ${item.name}, zoom_in id: ${item.zoom_in}`);
 
-            d3.select(this).select('circle').attr('stroke', 'black').attr('stroke-width', 3);
+          
+            d3.select(this).select('circle') .attr('r', size * 2) // Optional: Add a black stroke to highlight 
 
             // Fetch the radar name based on zoom_in
-            let tooltipText = `<strong>${item.name}</strong><br/>Category: ${item.category}</strong><br/>Type: ${item.type}</strong><br/>Description: ${item.description}</strong><br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}</strong><br/>Distance: ${item.distance}<br/>Distance to radius : ${distanceToRadius[item.distance]}`;
+            let tooltipText = `<strong>${item.name}</strong><br/>Category: ${item.category}</strong><br/>Type: ${item.type}</strong><br/>Description: ${item.detect}</strong><br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}</strong><br/>Distance: ${item.distance}<br/>Distance to radius : ${distanceToRadius[item.distance]}`;
 
             if (item.zoom_in) {
               const radar = await fetchRadarName(item.zoom_in);
@@ -130,20 +197,30 @@ const RadarChart = ({ items, radius = 200 }) => {
           })
           .on('mouseout', function () {
             console.log(`Mouse out: ${item.name}`);
-            d3.select(this).select('circle').attr('stroke', 'white').attr('stroke-width', 2);
+            // Revert to original color on mouseout 
+            d3.select(this).select('circle') 
+            .attr('r', size)
 
             // Clear tooltip data on mouseout
             // setTooltipData(null);
           })
           
         // Draw item circle
-        itemGroup.append('circle')
+       const itemCircle = itemGroup.append('circle')
           .attr('cx', x)
           .attr('cy', y)
           .attr('r', size)
           .attr('fill', color)
-          .attr('stroke', 'white')
-          .attr('stroke-width', 2);
+          .attr('fill', circleStyle.fill) // Use the determined fill color
+          .attr('stroke', circleStyle.stroke) // Use the determined stroke color
+          .attr('stroke-width', circleStyle.strokeWidth); 
+          
+
+          // Add glow effect if item type is "Opportunity" 
+          if (item.type === 'Opportunity') 
+            { 
+              itemCircle.attr('filter', 'url(#sofGlow)'); // Apply the glow filter for Opportunity circles
+            }
 
         // Draw item name
         itemGroup.append('text')
@@ -152,7 +229,8 @@ const RadarChart = ({ items, radius = 200 }) => {
           .attr('text-anchor', 'middle')
           .attr('font-size', '10px')
           .attr('fill', '#333')
-          .text(item.name);
+          .text(item.name)
+          .classed(styles.chartTextNormal, true);
       });
     });
   }, [items, radius, router])
@@ -189,10 +267,11 @@ const RadarChart = ({ items, radius = 200 }) => {
     return (
       <div className={styles.tooltip} style={{
         position: 'absolute',
-        top: `${yPos - 30}px`, // Adjust tooltip position relative to the circle (above it)
+        top: `${yPos - 140}px`, // Adjust tooltip position relative to the circle (above it)
         left: `${xPos + 15}px`, // Position the tooltip to the right of the circle
         visibility: tooltipData ? 'visible' : 'hidden',
-        maxWidth: '200px', // Limit tooltip width to fit in the grey area
+        width: '200px',
+        maxWidth: '300px', // Limit tooltip width to fit in the grey area
         padding: '10px',
         backgroundColor: 'white',
         border: '1px solid #ccc',
@@ -231,11 +310,11 @@ const getSizeByTolerance = (tolerance) => {
   console.log(`Getting size for tolerance: ${tolerance}`);
   switch (tolerance) {
     case 'Low':
-      return 15;
-    case 'Medium':
       return 10;
-    case 'High':
+    case 'Medium':
       return 7;
+    case 'High':
+      return 4;
     default:
       return 10;
   }

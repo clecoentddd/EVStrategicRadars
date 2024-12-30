@@ -35,6 +35,7 @@ export default function RadarPage() {
   const [logs, setLogs] = useState([]); // State to manage logs
   const router = useRouter();
   const { name, radar_id } = router.query;
+  const [collapsedItems, setCollapsedItems] = useState(new Array(radarItems.length).fill(true));
   
   
   useEffect(() => {
@@ -270,6 +271,14 @@ useEffect(() => {
     }
   };
 
+  const toggleCollapse = (index) => {
+    setCollapsedItems((prevCollapsedItems) => {
+      const updatedCollapsedItems = [...prevCollapsedItems];
+      updatedCollapsedItems[index] = !prevCollapsedItems[index];
+      return updatedCollapsedItems;
+    });
+  };
+
   const handleSave = async () => {
     try {
       console.log("handleSave: Entering handleSave...");
@@ -369,229 +378,230 @@ console.log("Error saving radar item");
           <div className={styles.radarDetails}>
             <h1 className={styles.radarName}>{radar.name}</h1>
             <p className={styles.detect}>{radar.detect}</p>
+            <p className={styles.detect}>{radar.category}</p>
           </div>
         </>
       )}
       </div>
-         
-      <h2>Radar Chart</h2>
-      <RadarChart items={radarItems} radius={200} />
+      <div className={styles.radarChart}>
+        <RadarChart items={radarItems} radius={200} />
+      </div>
 
-      <h2>Radar Items</h2>
+      <h2 className={styles.radarItemsTitle}>Radar Items</h2>
       <button
         onClick={() => setShowForm(!showForm)}
-        style={{ padding: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", marginBottom: "20px" }}
+        style={{ padding: "10px", backgroundColor: "plum", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", marginBottom: "20px" }}
       >
         {showForm ? "Cancel" : "Create Radar Item"}
       </button>
 
       {showForm && (
-  <div className={styles.showForm}> 
-    <h3>{editMode ? "Edit Radar Item" : "Create Radar Item"}</h3>
-    <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-      <div className={styles.formRow}> 
-        <div className={styles.column} style={{ flex: 2 }}> 
-          <label htmlFor="name" className={styles.label}>
-            Name
-          </label>
-          <input 
-            name="name" 
-            value={formData.name} 
-            onChange={handleInputChange} 
-            required 
-            className={styles.inputField} 
-          />
-          <label htmlFor="detect" className={styles.label}>
-            What have you detected 
-          </label>
-          <textarea 
-            name="detect" 
-            value={formData.detect} 
-            onChange={handleInputChange} 
-            required 
-            className={styles.textArea} 
-          />
-          <label htmlFor="assess" className={styles.label}>
-            What is your assessment
-          </label>
-          <textarea 
-            name="assess" 
-            value={formData.assess} 
-            onChange={handleInputChange} 
-            className={styles.textArea} 
-          />
-          <label htmlFor="respond" className={styles.label}>
-            What decisions could you take
-          </label>
-          <textarea 
-            name="respond" 
-            value={formData.respond} 
-            onChange={handleInputChange} 
-            className={styles.textArea} 
-          />
-        </div>
-        <div className={styles.column} style={{ flex: 1 }}> 
-          <label htmlFor="category" className={styles.label}>
-            Category
-          </label>
-          <select 
-            name="category" 
-            value={formData.category} 
-            onChange={handleInputChange}
-            required 
-            className={styles.inputField} 
-          > 
-            <option value="">Select Category</option>
-            {categoryOptions.length > 0 ? (
-              categoryOptions.map((option) => (
-                <option key={option._id} value={option.name}>
-                  {option.label}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading options...</option>
-            )}
-          </select>
-          <label htmlFor="type" className={styles.label}>
-            Type
-          </label>
-          <select 
-            name="type" 
-            value={formData.type} 
-            onChange={handleInputChange}
-            required 
-            className={styles.inputField} 
-          > 
-            <option value="">Select type</option>
-            {typeOptions.length > 0 ? (
-              typeOptions.map((option) => (
-                <option key={option._id} value={option.name}>
-                  {option.label}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading options...</option>
-            )}
-          </select>
-          <label htmlFor="zoom_in" className={styles.label}>
-            Zoom In
-          </label>
-          <select
-            name="zoom_in"
-            value={formData.zoom_in}
-            onChange={handleInputChange}
-            className={styles.inputField}
+      <div className={styles.showForm}> 
+        <h3>{editMode ? "Edit Radar Item" : "Create Radar Item"}</h3>
+        <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+          <div className={styles.formRow}> 
+            <div className={styles.column} style={{ flex: 2 }}> 
+              <label htmlFor="name" className={styles.label}>
+                Name
+              </label>
+              <input 
+                name="name" 
+                value={formData.name} 
+                onChange={handleInputChange} 
+                required 
+                className={styles.inputField} 
+              />
+              <label htmlFor="detect" className={styles.label}>
+                What have you detected 
+              </label>
+              <textarea 
+                name="detect" 
+                value={formData.detect} 
+                onChange={handleInputChange} 
+                required 
+                className={styles.textArea} 
+              />
+              <label htmlFor="assess" className={styles.label}>
+                What is your assessment
+              </label>
+              <textarea 
+                name="assess" 
+                value={formData.assess} 
+                onChange={handleInputChange} 
+                className={styles.textArea} 
+              />
+              <label htmlFor="respond" className={styles.label}>
+                What decisions could you take
+              </label>
+              <textarea 
+                name="respond" 
+                value={formData.respond} 
+                onChange={handleInputChange} 
+                className={styles.textArea} 
+              />
+            </div>
+            <div className={styles.column} style={{ flex: 1 }}> 
+              <label htmlFor="category" className={styles.label}>
+                Category
+              </label>
+              <select 
+                name="category" 
+                value={formData.category} 
+                onChange={handleInputChange}
+                required 
+                className={styles.inputField} 
+              > 
+                <option value="">Select Category</option>
+                {categoryOptions.length > 0 ? (
+                  categoryOptions.map((option) => (
+                    <option key={option._id} value={option.name}>
+                      {option.label}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading options...</option>
+                )}
+              </select>
+              <label htmlFor="type" className={styles.label}>
+                Type
+              </label>
+              <select 
+                name="type" 
+                value={formData.type} 
+                onChange={handleInputChange}
+                required 
+                className={styles.inputField} 
+              > 
+                <option value="">Select type</option>
+                {typeOptions.length > 0 ? (
+                  typeOptions.map((option) => (
+                    <option key={option._id} value={option.name}>
+                      {option.label}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading options...</option>
+                )}
+              </select>
+              <label htmlFor="zoom_in" className={styles.label}>
+                Zoom In
+              </label>
+              <select
+                name="zoom_in"
+                value={formData.zoom_in}
+                onChange={handleInputChange}
+                className={styles.inputField}
+              >
+                <option value="">Select a "zoom-in" radar</option>
+                {zoomInOptions.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+              <label htmlFor="distance" className={styles.label}>
+                Distance
+              </label>
+              <select
+                name="distance"
+                value={formData.distance}
+                onChange={handleInputChange}
+                className={styles.inputField}
+              >
+                <option value="">Select Distance</option>
+                {distanceOptions.length > 0 ? (
+                  distanceOptions.map((option) => (
+                    <option key={option._id} value={option.name}>
+                      {option.label}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading options...</option>
+                )}
+              </select>
+              <label htmlFor="impact" className={styles.label}>
+                Impact
+              </label>
+              <select
+                name="impact"
+                value={formData.impact}
+                onChange={handleInputChange}
+                className={styles.inputField}
+              >
+                <option value="">Select Impact</option>
+                {impactOptions.length > 0 ? (
+                  impactOptions.map((option) => (
+                    <option key={option._id} value={option.name}>
+                      {option.label}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading options...</option>
+                )}
+              </select>
+              <label htmlFor="tolerance" className={styles.label}>
+                Tolerance
+              </label>
+              <select
+                name="tolerance"
+                value={formData.tolerance}
+                onChange={handleInputChange}
+                className={styles.inputField}
+              >
+                <option value="">Select Tolerance</option>
+                {toleranceOptions.length > 0 ? (
+                  toleranceOptions.map((option) => (
+                    <option key={option._id} value={option.name}>
+                      {option.label}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading options...</option>
+                )}
+              </select>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className={styles.saveButton}
           >
-            <option value="">Select a "zoom-in" radar</option>
-            {zoomInOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-          <label htmlFor="distance" className={styles.label}>
-            Distance
-          </label>
-          <select
-            name="distance"
-            value={formData.distance}
-            onChange={handleInputChange}
-            className={styles.inputField}
-          >
-            <option value="">Select Distance</option>
-            {distanceOptions.length > 0 ? (
-              distanceOptions.map((option) => (
-                <option key={option._id} value={option.name}>
-                  {option.label}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading options...</option>
-            )}
-          </select>
-          <label htmlFor="impact" className={styles.label}>
-            Impact
-          </label>
-          <select
-            name="impact"
-            value={formData.impact}
-            onChange={handleInputChange}
-            className={styles.inputField}
-          >
-            <option value="">Select Impact</option>
-            {impactOptions.length > 0 ? (
-              impactOptions.map((option) => (
-                <option key={option._id} value={option.name}>
-                  {option.label}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading options...</option>
-            )}
-          </select>
-          <label htmlFor="tolerance" className={styles.label}>
-            Tolerance
-          </label>
-          <select
-            name="tolerance"
-            value={formData.tolerance}
-            onChange={handleInputChange}
-            className={styles.inputField}
-          >
-            <option value="">Select Tolerance</option>
-            {toleranceOptions.length > 0 ? (
-              toleranceOptions.map((option) => (
-                <option key={option._id} value={option.name}>
-                  {option.label}
-                </option>
-              ))
-            ) : (
-              <option disabled>Loading options...</option>
-            )}
-          </select>
-        </div>
+            Save
+          </button>
+        </form>
       </div>
-      <button
-        type="submit"
-        className={styles.saveButton}
-      >
-        Save
-      </button>
-    </form>
-  </div>
 )}
-
-
-
-
-      <ul style={{ listStyleType: 'none', paddingLeft: 0 }}>
+      <ul className={styles.radarItemList}> 
         {radarItems.length === 0 ? (
           <li>No radar items yet</li>
         ) : (
-          radarItems.map((item) => (
-            <li key={item.id} style={{ padding: "10px", border: "1px solid #ccc", marginBottom: "10px" }}>
-              <h3>{item.name}</h3>
-              <p><strong>Detect</strong> {item.detect}</p>
-              <button
-                onClick={() => handleEdit(item)}
-                style={{ padding: "5px 10px", backgroundColor: "#FFA500", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
+          <ul>
+          {radarItems.map((item, index) => (
+              <div
+              key={item.id}
+              className={`${styles.radarItem} ${
+                collapsedItems[index] ? styles.collapsed : styles.expanded
+              }`}
+              onClick={() => toggleCollapse(index)} // Toggle on click
               >
-                Edit
-              </button>
-            </li>
-          ))
+              {/* Always visible item.name */}
+              <h3>{item.name} ({item.category})</h3>
+    
+              {/* Expanded Content */}
+              {!collapsedItems[index] && (
+                <div className={styles.collapsedContent}>
+                  <p><strong>Detect</strong>: {item.detect}</p>
+                  <p>Type: {item.type}</p>
+                  <p>Category: {item.category}</p>
+                  <p>Distance: {item.distance}</p>
+                  <button onClick={() => handleEdit(item)} className={styles.editButton}>Edit </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </ul>
         )}
       </ul>
 
-      {/* Log messages */}
-      <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#f4f4f4", borderTop: "1px solid #ccc", maxHeight: "200px", overflowY: "scroll" }}>
-        <h3>Logs</h3>
-        <ul>
-          {logs.map((log, index) => (
-            <li key={index}>{log}</li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
