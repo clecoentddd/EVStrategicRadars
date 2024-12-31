@@ -5,26 +5,34 @@ export async function replayRadarAggregate(aggregateId) {
     // Get all events for the given aggregateId
     const events = await readEventsFromFile(aggregateId);
 
+    // Filter events based on the conditions
+    const filteredEvents = events.filter(
+      (event) => event.aggregateType === 'RADAR' && event.payload.id === aggregateId
+    );
+    console.log("Events before replay", filteredEvents);
+    const sortedFilteredEvents = filteredEvents.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // Example using timestamp
+
+    
     // Replay events to reconstruct the radar state
     let radar = null; 
-    for (const event of events) {
-      console.log("Event being replayed", event.eventType);
-      switch (event.eventType) {
+    for (const radarEvent of sortedFilteredEvents) {
+      console.log("Event being replayed", radarEvent);
+      switch (radarEvent.eventType) {
         case 'RADAR_CREATED':
           radar = {
-            id: event.payload.id,
-            name: event.payload.name,
-            description: event.payload.description,
-            level: event.payload.level,
+            id: radarEvent.payload.id,
+            name: radarEvent.payload.name,
+            description: radarEvent.payload.description,
+            level: radarEvent.payload.level,
           };
           break;
         case 'RADAR_UPDATED':
           if (radar) { 
             radar = {
               ...radar, 
-              name: event.payload.name, 
-              description: event.payload.description, 
-              level: event.payload.level,
+              name: radarEvent.payload.name, 
+              description: radarEvent.payload.description, 
+              level: radarEvent.payload.level,
             };
           } else {
             throw new Error(`Invalid event sequence: RADAR_UPDATED encountered before RADAR_CREATED for aggregate ${aggregateId}`);
@@ -34,7 +42,7 @@ export async function replayRadarAggregate(aggregateId) {
           radar = null; 
           break;
         default:
-          throw new Error(`Unknown event type: ${event.type}`);
+          throw new Error(`Unknown event type: ${radarEvent}`);
       }
     }
 

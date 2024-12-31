@@ -1,6 +1,7 @@
 import { appendEventToFile, readEventsFromFile } from './eslib.js';
 import { projectRadarToSupabase } from './radarProjection.js'; // Import projection function
 import {replayRadarAggregate} from './eventReplayRadars.js';
+import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js'
 
 export const sendRadarUpdated = async (event) => {
 
@@ -16,7 +17,7 @@ export const sendRadarUpdated = async (event) => {
     timestamp: newtimestamp,
     aggregateType: "RADAR",
       payload: {
-      radarId: event.radarId,
+      id: event.radarId,
       level: event.level,
       name: event.name,
       description: event.description,
@@ -31,23 +32,23 @@ export const sendRadarUpdated = async (event) => {
     console.log ("eventstoreRadars.js publishing events 1", radarToUpdate);
   
     //eventStore.push(eventWithId); // Push the new event with the ID into the event store
-    const radarUpdated = appendEventToFile(radarToUpdate.payload.radarId, radarToUpdate);
+    const radarUpdated = appendEventToFile(radarToUpdate.payload.id, radarToUpdate);
   
     // Publish integration event
     console.log ("eventstore.js publishing events", radarUpdated);
-    /* try {
+    try {
       publishIntegrationEvent(radarUpdated);
     } catch (error) {
-    console.error('Error publishing event:', error);
+    console.error('Error publishing even (updating radar):', error);
     // Consider additional error handling, such as retrying the operation or notifying an administrator
-    } */
+    }
   
     // If the event type is "RADAR_CREATED", project it to Supabase
     if (radarUpdated.eventType === 'RADAR_UPDATED') {
       try {
         // Project the event to Supabase
-        console.log("Projection radar to supase", radarUpdated.eventType);
-        await projectRadarToSupabase(radarUpdated.payload); // Pass the payload with id
+        console.log("Projection radar to supase", radarUpdated);
+        await projectRadarToSupabase(radarUpdated.eventType, radarUpdated.payload); // Pass the payload with id
       } catch (error) {
         console.log('saveEvent: Error projecting radar to Supabase:', error);
       }

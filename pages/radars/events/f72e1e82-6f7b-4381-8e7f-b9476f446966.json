@@ -1,0 +1,122 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1735637871144,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 1,
+      "name": "test",
+      "description": "pur",
+      "id": "f72e1e82-6f7b-4381-8e7f-b9476f446966"
+    },
+    "eventStoreId": "fd9a6978-6137-4c4c-ac43-42401b2f25f2"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735637970224,
+    "aggregateType": "RADAR",
+    "payload": {
+      "radarId": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 2,
+      "name": "Corp",
+      "description": "Governance will be dynamic and fighting for biases like the Echo Chamber. Governance will be to ensure we know why we do what we do in a world of disruption. Governance will be agile."
+    },
+    "eventStoreId": "12b86d09-e45d-498c-8b93-2c3b2308bb65"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735638005858,
+    "aggregateType": "RADAR",
+    "payload": {
+      "radarId": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 2,
+      "name": "Corpo",
+      "description": "Governance will be dynamic and fighting for biases like the Echo Chamber. Governance will be to ensure we know why we do what we do in a world of disruption. Governance will be agile."
+    },
+    "eventStoreId": "e862cafc-6713-4e84-bf0f-8748fad5e058"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735638018039,
+    "aggregateType": "RADAR",
+    "payload": {
+      "radarId": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 2,
+      "name": "Corporate Governance",
+      "description": "Governance will be dynamic and fighting for biases like the Echo Chamber. Governance will be to ensure we know why we do what we do in a world of disruption. Governance will be agile."
+    },
+    "eventStoreId": "24e05021-6a90-47fc-a5f7-bbb1da5c6be6"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735639151475,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "Governance will fight \"Echo Chamber\" bias: Governance will be dynamic and agile. Governance will be an enabler, always looking at the intent before processes"
+    },
+    "eventStoreId": "bcfb21e4-b685-439b-a057-a3c35893e6f4"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735639399856,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "Governance will fight \"Echo Chamber\" bias: Governance will be dynamic and agile. Governance will be an enabler, always looking at the intent before processes"
+    },
+    "eventStoreId": "079c5ba3-6eab-443f-be72-a56ee4dcc728"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735639421068,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "Governance will fight \"Echo Chamber\" bias: Governance will be dynamic and agile. Governance will be an enabler, always looking at the intent before processes"
+    },
+    "eventStoreId": "9e9c49c2-bea2-4442-9b14-49f3a31b8961"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735639874694,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 2,
+      "name": "Corporate Governance",
+      "description": "Governance will fight \"Echo Chamber\" bias: Governance will be dynamic and agile. Governance will be an enabler, always looking at the intent before processes"
+    },
+    "eventStoreId": "de8fb12c-61e4-4ebb-8536-e9614d23217e"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735639941973,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 2,
+      "name": "Corporate Governance",
+      "description": "Governance will fight \"Echo Chamber\" bias: Governance will be dynamic and agile. Governance will be an enabler, always looking at the intent before processes"
+    },
+    "eventStoreId": "753cb629-ddd0-4a75-85de-9857fad034ee"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735639997666,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "f72e1e82-6f7b-4381-8e7f-b9476f446966",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "pur"
+    },
+    "eventStoreId": "ce1c8087-125e-41e1-92cb-aac7ffc921d2"
+  }
+]

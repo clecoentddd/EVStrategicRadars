@@ -13,7 +13,7 @@ export const sendStreamCreated = async (event) => {
       event: "STREAM_CREATED",
       type: "STREAM",
       id: uuidv4(),
-      radar_id: event.radar_id,
+      radarId: event.radarId,
       name: event.name,
       timestamp: new Date().toISOString(),
       state: 'Open',
@@ -117,7 +117,7 @@ export const replayStream = (streamId) => {
         return {
           ...currentAggregate,
           id: event.id,
-          radar_id: event.radar_id,
+          radarId: event.radarId,
           name: event.name,
           timestamp: event.timestamp,
           state: event.state,

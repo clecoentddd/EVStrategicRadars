@@ -55,7 +55,7 @@ export async function projectStreamToSupabase(strategicStream) {
               id: strategicStream.id,
               name: strategicStream.name,
               description: strategicStream.description,
-              radar_id: strategicStream.radar_id,
+              radarId: strategicStream.radarId,
               active_strategy_id: null, //strategicStream.active_strategy_id,
               state: strategicStream.state,
               updated_at: new Date().toISOString(),

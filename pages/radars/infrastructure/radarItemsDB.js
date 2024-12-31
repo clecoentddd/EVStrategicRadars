@@ -3,18 +3,18 @@
 import { supabase } from "../../../utils/supabaseClient";  // Import Supabase client
 
 /**
- * Fetch all radar items by radar_id from the database.
- * @param {string} radar_id - The aggregate ID of the radar.
- * @returns {Promise<Array>} The list of radar items for the specified radar_id.
+ * Fetch all radar items by radarId from the database.
+ * @param {string} radarId - The aggregate ID of the radar.
+ * @returns {Promise<Array>} The list of radar items for the specified radarId.
  */
-export async function fetchAllRadarItemsByRadarId(radar_id) {
+export async function fetchAllRadarItemsByRadarId(radarId) {
   try {
-    console.log ("radarItemsDB: get all radar items for radar id", radar_id);
-    // Query the radar_items table for all items with the given radar_id
+    console.log ("radarItemsDB: get all radar items for radar id", radarId);
+    // Query the radar_items table for all items with the given radarId
     const { data, error } = await supabase
       .from("radar_items")
       .select("*")
-      .eq("radar_id", radar_id);  // Filter by radar_id
+      .eq("radarId", radarId);  // Filter by radarId
 
     console.log ("radarItemsDB: get all radar items for radar id: job done?", error);
     // If there's an error, throw it

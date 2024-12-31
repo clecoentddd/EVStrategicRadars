@@ -28,9 +28,9 @@ import {
           } else if (query.id) {
             const element = await getStrategicElementById(query.id);
             res.status(200).json(element);
-          } else if (query.radar_id) {
-            console.log ("Before calling getStreamByRadarId : ", query.radar_id);
-            const streamElement = await getStreamByRadarId(query.radar_id);
+          } else if (query.radarId) {
+            console.log ("Before calling getStreamByRadarId : ", query.radarId);
+            const streamElement = await getStreamByRadarId(query.radarId);
             res.status(200).json(streamElement);
           } else {
             res.status(400).json({ error: "Missing required query parameters." });

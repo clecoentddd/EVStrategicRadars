@@ -22,7 +22,7 @@ export const saveRadarItemEvent = async (event) => {
 
     // Save the event in memory
     // radarItemEvents.push(event);
-    const eventReturned = appendEventToFile(event.payload.radar_id, event);
+    const eventReturned = appendEventToFile(event.payload.radarId, event);
 
     console.log("Radar Item Event saved:", eventReturned);
     console.log("Current Radar Item Events in Memory:", radarItemEvents);
@@ -44,11 +44,11 @@ export const saveRadarItemEvent = async (event) => {
   }
 };
 
-// Fetch all Radar Item Events (for a given radar_id)
-export const getRadarItemEvents = async (radar_id, id) => {
+// Fetch all Radar Item Events (for a given radarId)
+export const getRadarItemEvents = async (radarId, id) => {
   console.log("ES: get all events for id", id);
 
-  const events = readEventsFromFile(radar_id);
+  const events = readEventsFromFile(radarId);
 
   console.log("getRadarItemEvents events are", events);
 
@@ -77,7 +77,7 @@ export const getRadarItemEvents = async (radar_id, id) => {
   // Log the filtered events for further inspection
   console.log("Filtered events:", filteredEvents);
   
-  console.log("Fetching Radar Item Events for radar_id:", radar_id);
+  console.log("Fetching Radar Item Events for radarId:", radarId);
   console.log("Filtered Events:", filteredEvents);
 
   return filteredEvents;
@@ -91,10 +91,10 @@ export const clearRadarItemEventStore = async () => {
 };
 
 // Replay events to get the last state of the radar item based on the most recent event
-export const replayRadarItemState = async (radar_id, id) => {
+export const replayRadarItemState = async (radarId, id) => {
   try {
     // Fetch events for the given id
-    const events = await getRadarItemEvents(radar_id, id);
+    const events = await getRadarItemEvents(radarId, id);
 
     if (!events || events.length === 0) {
       return { success: false, message: `No events found for id: ${id}` };

@@ -34,7 +34,7 @@ export default function RadarPage() {
   const [currentEditingId, setCurrentEditingId] = useState(null); // Track the id of the item being edited
   const [logs, setLogs] = useState([]); // State to manage logs
   const router = useRouter();
-  const { name, radar_id } = router.query;
+  const { name, radarId } = router.query;
   const [collapsedItems, setCollapsedItems] = useState(new Array(radarItems.length).fill(true));
   
   
@@ -68,7 +68,7 @@ export default function RadarPage() {
 
 useEffect(() => {
 
-  if (!radar_id) return;
+  if (!radarId) return;
 
   const fetchRadar = async () => {
     try {
@@ -76,7 +76,7 @@ useEffect(() => {
       setError(null);
       logMessage("Fetching radar data...");
 
-      const response = await fetch(`/api/radars?id=${radar_id}`);
+      const response = await fetch(`/api/radars?id=${radarId}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -97,7 +97,7 @@ useEffect(() => {
     const fetchRadarItems = async () => {
       try {
         logMessage("Fetching radar items...");
-        const response = await fetch(`/api/radar-items?radar_id=${radar_id}`);
+        const response = await fetch(`/api/radar-items?radarId=${radarId}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -121,7 +121,7 @@ useEffect(() => {
         const radars = await response.json();
 
         if (response.ok) {
-          setZoomInOptions(radars.filter((radarItem) => radarItem.id !== radar_id));
+          setZoomInOptions(radars.filter((radarItem) => radarItem.id !== radarId));
         }
       } catch (err) {
         setError('Error fetching radar options for zoom-in');
@@ -140,11 +140,6 @@ useEffect(() => {
         const typeOptions = Object.values(data.typeOptions);
         const categoryOptions = Object.values(data.categoryOptions);
         const toleranceOptions = Object.values(data.toleranceOptions);
-        logMessage(` HTML RAW RESPONSE fetching config - Distance: ${distanceOptions}`);
-        logMessage(` HTML RAW RESPONSE fetching config - Impact: ${impactOptions}`);
-        logMessage(` HTML RAW RESPONSE fetching config - Tolerance: ${toleranceOptions}`);
-        logMessage(` HTML RAW RESPONSE fetching config - Type: ${typeOptions}`);
-        logMessage(` HTML RAW RESPONSE fetching config - Category: ${categoryOptions}`);
         
         setImpactOptions(impactOptions); // Set the fetched impact options
         setTypeOptions(typeOptions); // Set the fetched impact options
@@ -160,13 +155,12 @@ useEffect(() => {
     };
   
     // Call fetchConfig to retrieve impact options
-    logMessage(`2 Impact options retrieved successfully`);
     fetchConfig();
     fetchRadar();
     /*fetchRadarById();*/
     fetchRadarItems();
     fetchZoomInOptions();
-  }, [radar_id]);
+  }, [radarId]);
 
   const logMessage = (message) => {
     setLogs((prevLogs) => [...prevLogs, message]); // Add log message to state
@@ -181,9 +175,9 @@ useEffect(() => {
   };
 
   const goToStrategize = async () => {
-    console.log("goToStrategize -> radar_id is: ", radar_id);
+    console.log("goToStrategize -> radarId is: ", radarId);
     try {
-      const response = await fetch(`/api/readmodel-strategies?radar_id=${radar_id}`);
+      const response = await fetch(`/api/readmodel-strategies?radarId=${radarId}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch streams: ${response.status}`);
       }
@@ -217,7 +211,7 @@ useEffect(() => {
       // Fetch the latest data for the selected aggregate
       console.log("handleEdit: Fetching radar item with id:", item.id);
       //const response = await fetch(`/api/radar-items?id=${item.id}`);
-      const response = await fetch(`/api/radar-items?radar_id=${item.radar_id}&id=${item.id}`, {
+      const response = await fetch(`/api/radar-items?radarId=${item.radarId}&id=${item.id}`, {
         method: 'GET',
       });
       // Log the response status
@@ -279,6 +273,10 @@ useEffect(() => {
     });
   };
 
+  const goToHome = () => {
+    router.push('/'); // Navigate to the home page
+};
+
   const handleSave = async () => {
     try {
       console.log("handleSave: Entering handleSave...");
@@ -287,7 +285,7 @@ useEffect(() => {
   
       // Wrap the data inside command.payload
       const command = {
-          radar_id, // Include radar_id in the payload
+          radarId, // Include radarId in the payload
           ...formData,
       };
       
@@ -364,7 +362,7 @@ console.log("Error saving radar item");
 
       {/* Add the sidepanel code here */}
       <div id="navbar" className={styles.navbar}>
-        <a href="#Radars">1. Engage</a>
+        <a href="#Radars" onClick={goToHome}>1. Engage</a>
         <a href="#Detect, Assess and Respond">2. Detect, Assess and Respond</a>
         <a href="#Strategize" onClick={(e) => { e.preventDefault(); goToStrategize(); }}>3. Strategize</a>
       </div>

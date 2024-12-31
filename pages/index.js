@@ -122,13 +122,13 @@ function HomePage() {
 
   async  function viewRadar(name, aggregateId) {
     // Navigate to the radar details page with the name and id as query parameters
-    const radarPage = `/radars/ui/${encodeURIComponent(name)}?radar_id=${encodeURIComponent(aggregateId)}`;
+    const radarPage = `/radars/ui/${encodeURIComponent(name)}?radarId=${encodeURIComponent(aggregateId)}`;
     window.location.href = radarPage;
   }
 
   const viewStream = async (radarId) => {
     try {
-      const response = await fetch(`/api/readmodel-strategies?radar_id=${encodeURIComponent(radarId)}`);
+      const response = await fetch(`/api/readmodel-strategies?radarId=${encodeURIComponent(radarId)}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch streams: ${response.status}`);
       }

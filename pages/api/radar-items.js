@@ -19,13 +19,13 @@ export default async function handler(req, res) {
     console.log("Entering API handler for radar_items.js", req.query);
     if (req.method === "GET") {
       console.log("GET for", req.body);
-      const { radar_id, id } = req.query; // Extract radar_id and id
+      const { radarId, id } = req.query; // Extract radarId and id
 
       if (id) {
         // Handle the new GET API for fetching radar item aggregate
         try {
           console.log("API Fetching radar item aggregate for:", id);
-          const radarItem = await getRadarItem(radar_id, id); // Call the model method
+          const radarItem = await getRadarItem(radarId, id); // Call the model method
           console.log ("API -> ready to return aggregate :",radarItem);
 
           if (radarItem) {
@@ -37,10 +37,10 @@ export default async function handler(req, res) {
           console.error("Error fetching radar item aggregate:", error.message);
           return res.status(500).json({ message: "Internal Server Error", error: error.message });
         }
-      } else if (radar_id) {
-        // Existing GET API to fetch all radar items by radar_id
+      } else if (radarId) {
+        // Existing GET API to fetch all radar items by radarId
         try {
-          const radarItems = await fetchAllRadarItemsByRadarId(radar_id);
+          const radarItems = await fetchAllRadarItemsByRadarId(radarId);
 
           if (radarItems.length >= 0) {
             return res.status(200).json(radarItems);
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
           return res.status(500).json({ message: "Internal Server Error" });
         }
       } else {
-        return res.status(400).json({ message: "Either radar_id or id is required." });
+        return res.status(400).json({ message: "Either radarId or id is required." });
       }
       
     } else if (req.method === "POST") {

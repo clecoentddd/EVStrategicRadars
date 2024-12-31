@@ -1,3 +1,5 @@
+import { interfaceCreateStream, interfaceUpdateStream } from '../strategies/infrastructure/pubAndSubInterface';
+
 const EventEmitter = require('events');
 
 // Create an event emitter
@@ -12,12 +14,21 @@ export function subscribeToIntegrationEvents(callback) {
   eventEmitter.on('integrationEvent', callback);
 }
 
-// strategy.js
-//import { subscribeToIntegrationEvents } from './pushAndSubEvents';
-import { interfaceCreateStream } from '../strategies/infrastructure/pubAndSubInterface';
 
 // Ensure subscription happens early in the application lifecycle
 subscribeToIntegrationEvents((eventData) => {
   console.log ("PubAndSub subscribeToIntegrationEvents...", eventData)
-  interfaceCreateStream(eventData);
+  
+  switch (eventData.type) {
+    case 'RADAR_CREATED':
+      interfaceCreateStream(eventData.payload);
+      break;
+
+    case 'RADAR_UPDATED':
+      interfaceUpdateStream(eventData.payload);
+      break;
+
+    default:
+      console.warn(`Unhandled event type: ${eventData.type}`);
+  }
 });

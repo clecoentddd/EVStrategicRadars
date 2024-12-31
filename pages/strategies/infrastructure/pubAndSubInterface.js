@@ -1,4 +1,4 @@
-import {createStream} from '../model/strategy';
+import {createStreamHandler} from '../application/strategyStreamHandler';
 
 export async function interfaceCreateStream(command) {
 
@@ -6,7 +6,7 @@ export async function interfaceCreateStream(command) {
 
     if (command.eventType === "RADAR_CREATED" ) {
         try {
-            const stream = await createStream(command.payload);
+            const stream = await createStreamHandler(command.payload);
         
             // ... use the created stream
             console.log ("interfaceCreateStream stream is: ", stream);

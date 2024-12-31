@@ -5,7 +5,7 @@ export async function createStream(command) {
     console.log('Strategy stream creating with radar data:', command);
        
     const streamToCreate = {
-      radar_id: command.radarId,
+      radarId: command.id,
       name: command.name,
       level: command.level,
       active_strategy_id: null,
@@ -14,7 +14,7 @@ export async function createStream(command) {
     console.log ("Strategy stream... Stream to create based on radar id ", streamToCreate);
   
     // Validate inputs
-    if (! streamToCreate.radar_id || !streamToCreate.name ) {
+    if (! streamToCreate.radarId || !streamToCreate.name ) {
       return { success: false, message: "Missing required fields in event data" };
     }
   

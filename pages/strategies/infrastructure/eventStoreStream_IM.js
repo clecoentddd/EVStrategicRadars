@@ -24,12 +24,12 @@ export const sendStreamCreated = async (event) => {
   console.log("ES - sendStreamCreated before ", eventStore);
   try {
     const timeStamp = new Date().toISOString();
-    if (event.radar_id != null) {
+    if (event.radarId != null) {
       const streamId = uuidv4();
       const streamEvent = {
         type: "STREAM_CREATED",
         id: streamId,
-        radar_id: event.radar_id,
+        radarId: event.radarId,
         name: event.name,
         timestamp: timeStamp,
         state: 'Open',
@@ -155,7 +155,7 @@ export const replayStream = (streamId) => {
         return {
           ...currentAggregate,
           id: event.id,
-          radar_id: event.radar_id,
+          radarId: event.radarId,
           name: event.name,
           timestamp: event.timestamp,
           state: event.state,

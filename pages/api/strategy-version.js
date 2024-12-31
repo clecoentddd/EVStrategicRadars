@@ -1,4 +1,5 @@
-import { CreateStrategy, GetStrategyById } from '../strategies/model/strategy';
+import {GetStrategyById } from '../strategies/model/strategy';
+import {CreateStrategyHandler} from '../strategies/application/strategyStreamHandler';
 
 export default async function handler(req, res) {
     console.log("API Version of Strategy", req.url);
@@ -7,7 +8,7 @@ export default async function handler(req, res) {
            if (req.url.endsWith('/strategy-version')) {
                 // Handle Create New Version of Strategy
                 console.log("API CreateStrategy Request Body: ", req.body);
-                const result = await CreateStrategy(req.body);
+                const result = await CreateStrategyHandler(req.body);
                 return res.status(200).json(result);
             } else {
                 return res.status(404).json({ message: 'Not Found' });

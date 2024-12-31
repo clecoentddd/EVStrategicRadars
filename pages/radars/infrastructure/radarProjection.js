@@ -2,7 +2,8 @@ import { supabase } from "../../../utils/supabaseClient";
 
 export async function projectRadarToSupabase(eventType, radar) {
   try {
-    console.log("projectRadarToSupabase", radar);
+    console.log("projectRadarToSupabase - data to insert:", radar);
+    console.log("projectRadarToSupabase - eventType is:", eventType);
     // Validate radar object
     if (!radar.id) {
       throw new Error("Invalid radar object received. Missing payload.");
@@ -33,7 +34,7 @@ export async function projectRadarToSupabase(eventType, radar) {
     }
 
     // Handle RADAR_UPDATED event (or default behavior)
-    if (eventType === "RADAR_CREATED") {
+    if (eventType === "RADAR_UPDATED") {
     const { data, error } = await supabase
       .from('radars')
       .update({
@@ -42,7 +43,10 @@ export async function projectRadarToSupabase(eventType, radar) {
         level: radar.level,
         updated_at: new Date().toISOString(),
       })
-      .match({ id: radar.id });
+      .match({ id: radar.id })
+      .select('*');
+      
+      console.log("projectRadarToSupabase - data returned from supabase:", data);
 
     if (error) {
       console.log("Error updating radar in Supabase:", error.message);
@@ -50,7 +54,26 @@ export async function projectRadarToSupabase(eventType, radar) {
     }
   }
 
-    return data; // Return updated radar data (or undefined if not found)
+      // Handle RADAR_UPDATED event (or default behavior)
+      if (eventType === "RADAR_DELETED") {
+        const { data, error } = await supabase
+          .from('radars')
+          .delete({
+            name: radar.name,
+            description: radar.description,
+            level: radar.level,
+            updated_at: new Date().toISOString(),
+          })
+          .match({ id: radar.id })
+          .select('*');
+    
+        if (error) {
+          console.log("Error updating radar in Supabase:", error.message);
+          throw new Error(`Error updating radar in Supabase: ${error.message}`);
+        }
+      }
+
+    // return data; // Return updated radar data (or undefined if not found)
   } catch (error) {
     console.error("Error upserting radar:", error.message);
     throw error;
@@ -59,10 +82,10 @@ export async function projectRadarToSupabase(eventType, radar) {
 }
 export async function projectRadarToSupabase2(eventType, radar) {
   // console.log("Entering Projection: Radar to project to Supabase:", radar);
-    if (!radar.radarId) {
+    if (!radar.id) {
       throw new Error("Invalid radar object received. Missing payload.");
     }
-    console.log("About to delete in supabase item whose id is: ", radar.radarId);
+    console.log("About to delete in supabase item whose id is: ", radar.id);
     try {
       if (eventType === "RADAR_DELETED") { 
         const { error } = await supabase

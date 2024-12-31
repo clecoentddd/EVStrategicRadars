@@ -5,161 +5,17 @@
     "aggregateType": "RADAR",
     "payload": {
       "level": 1,
-      "name": "chatgpt",
+      "name": "chatgpt1",
       "description": "test chat",
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a"
+      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a"
     },
     "eventStoreId": "beb6717b-006c-4e3b-8a66-1cacb428cd67"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735310008845,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 13,
-      "name": "chatgpt3",
-      "description": "test chat3"
-    },
-    "eventStoreId": "1d19c3c6-a52e-4ab1-b541-a1620c036630"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735311961641,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 14,
-      "name": "chatgpt4",
-      "description": "test chat4"
-    },
-    "eventStoreId": "ff26b84e-bd20-4821-ba81-5a9456adb804"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735312106981,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 15,
-      "name": "chatgpt5",
-      "description": "test chat5"
-    },
-    "eventStoreId": "c33e981f-be19-4bb6-a46b-6e8e656d8d19"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735312194138,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 16,
-      "name": "chatgpt6",
-      "description": "test chat6"
-    },
-    "eventStoreId": "7edc1453-14a8-4ba4-99e1-23928aba7319"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735312337505,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 17,
-      "name": "chatgpt7",
-      "description": "test chat7"
-    },
-    "eventStoreId": "6bad5dd2-de51-4b16-a237-dd5b271a14fd"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735312427103,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 18,
-      "name": "chatgpt8",
-      "description": "test chat8"
-    },
-    "eventStoreId": "005aaaf5-f10e-4e9d-9361-86de9e67efcb"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735312521611,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 19,
-      "name": "chatgpt9",
-      "description": "test chat9"
-    },
-    "eventStoreId": "8640fecd-8462-4392-a3ee-720217eb6218"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735312675139,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 10,
-      "name": "chatgpt10",
-      "description": "test chat10"
-    },
-    "eventStoreId": "b8cbef85-2d35-4b32-a39d-1d94c99e2d99"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735313206199,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 11112,
-      "name": "chatgpt112",
-      "description": "test chat apply2"
-    },
-    "eventStoreId": "1a17f1d9-3f1c-4243-9a62-76a03bad3f9a"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735313671352,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 1,
-      "name": "Executive Radar",
-      "description": "To drive agility, detect, assess and respond to change with the will to win"
-    },
-    "eventStoreId": "97946ffb-ebab-44a5-ac1b-2ae8eb6f8894"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735313943654,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 1,
-      "name": "Executive Radar",
-      "description": "To drive agility, detect, assess and respond to change with the will to win where winning is to bring technology and learnings into better solutions for customers: speed, quality and low cost must be compatible. \n\nLearning is what makes us apart."
-    },
-    "eventStoreId": "3e6b148e-bb88-4251-b3a4-42d2e6936377"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735315475391,
-    "aggregateType": "RADAR",
-    "payload": {
-      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 1,
-      "name": "Executive CEO",
-      "description": "the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approches and technologies to make speed, quality and low cost compatible to serve our customers."
-    },
-    "eventStoreId": "fdcde0ce-8fcc-4d92-8119-9ace737196cb"
   },
   {
     "event": "RADAR_ITEM_CREATED",
     "payload": {
       "aggregate_type": "RADAR_ITEM",
-      "radar_id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
       "name": "Inerita",
       "detect": "We have not really checked where inertia was crippling our system: we are assuming it is not because technologies make us believe we are moving forward.",
       "assess": "Need facts and data",
@@ -180,7 +36,7 @@
     "payload": {
       "aggregate_type": "RADAR_ITEM",
       "id": "c2d51ed7-7530-4a74-869c-b8e4deb3439d",
-      "radar_id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
       "name": "Inerita",
       "detect": "We have not really checked where inertia was crippling our system: we are assuming it is not because technologies make us believe we are moving forward.",
       "assess": "Need facts and data",
@@ -200,7 +56,7 @@
     "payload": {
       "aggregate_type": "RADAR_ITEM",
       "id": "c2d51ed7-7530-4a74-869c-b8e4deb3439d",
-      "radar_id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
       "name": "Inertia",
       "detect": "We have not really checked where inertia was crippling our system: we are assuming it is not because technologies make us believe we are moving forward.",
       "assess": "Need facts and data",
@@ -219,7 +75,7 @@
     "event": "RADAR_ITEM_CREATED",
     "payload": {
       "aggregate_type": "RADAR_ITEM",
-      "radar_id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
       "name": "Knowledge sharing",
       "detect": "Silos are working against us, opinions take over data and facts.",
       "assess": "Learning is the constraint: we need to build a culture of learnings and knowledge, knowledge beyond the old and obvious",
@@ -239,7 +95,7 @@
     "event": "RADAR_ITEM_CREATED",
     "payload": {
       "aggregate_type": "RADAR_ITEM",
-      "radar_id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
       "name": "Emergent practices",
       "detect": "Although we in the world of software engineering and agility, we have built our processes as \"good practices\" blocking us from adapting and taking risks where risks and opportunities are the 2 sides of the same coin",
       "assess": "Too much focused on following the rules",
@@ -259,7 +115,7 @@
     "event": "RADAR_ITEM_CREATED",
     "payload": {
       "aggregate_type": "RADAR_ITEM",
-      "radar_id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
       "name": "Lack of diversity",
       "detect": "TBD",
       "assess": "TBD",
@@ -274,5 +130,53 @@
       "id": "c4c66469-811c-4302-931c-1a6c361597a0"
     },
     "eventStoreId": "217e2ae9-b956-4edd-9724-66fb7239703f"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735651059031,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
+    },
+    "eventStoreId": "560c4d05-5c53-41a4-8ba1-6d862a865ecf"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735651289953,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
+    },
+    "eventStoreId": "c16f80c0-da00-4cf9-a3e6-416a9fab0428"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735665885787,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
+    },
+    "eventStoreId": "bf70e45d-b676-49b1-8cd3-0fd06745e454"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1735666052488,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "level": 1,
+      "name": "Corporate Governance",
+      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
+    },
+    "eventStoreId": "9b24dc9b-34ef-498e-ad01-4e0a8d485269"
   }
 ]

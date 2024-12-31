@@ -62,15 +62,15 @@ test('Radar item creation test', async () => {
       tolerance: "Medium",
       impact: "High",
       distance: "short",
-      radar_id: "1ab3675e-91f9-40b8-a0db-e3b4a474d299", // Using the specified radar_id
+      radarId: "1ab3675e-91f9-40b8-a0db-e3b4a474d299", // Using the specified radarId
     };
 
     // Ensure that the POST request to create the radar item is awaited
     const createdItem = await makeRequest('http://localhost:3000/api/radaritems', 'POST', item);
     state.radarItems["Practice"] = createdItem;
 
-    // Then: The created radar item should have the expected radar_id
-    expect(state.radarItems["Practice"].radar_id).toBe(item.radar_id); // Using Jest's expect for assertion
+    // Then: The created radar item should have the expected radarId
+    expect(state.radarItems["Practice"].radarId).toBe(item.radarId); // Using Jest's expect for assertion
 
   } catch (err) {
     // Catch any errors from async operations and fail the test

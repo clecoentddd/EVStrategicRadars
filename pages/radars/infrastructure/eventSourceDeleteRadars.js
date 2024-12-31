@@ -16,7 +16,7 @@ export const sendRadarDelete= async (event) => {
     timestamp: newtimestamp,
     aggregateType: "RADAR",
       payload: {
-      radarId: event.radarId,
+      id: event.radarId,
       }
     };
   

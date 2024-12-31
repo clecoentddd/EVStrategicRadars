@@ -184,7 +184,7 @@ const RadarChart = ({ items, radius = 200 }) => {
 
             if (item.zoom_in) {
               const radar = await fetchRadarName(item.zoom_in);
-              tooltipText += `<br/>Zoom in into radar: <a href='/radars/ui/${radar}?radar_id=${item.zoom_in}' target='_blank' style='color: blue;'>${radar}</a>`;
+              tooltipText += `<br/>Zoom in into radar: <a href='/radars/ui/${radar}?radarId=${item.zoom_in}' target='_blank' style='color: blue;'>${radar}</a>`;
             } else {
               tooltipText += `<br/>Zoom In Not Selected`;
             }
