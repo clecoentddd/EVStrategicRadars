@@ -166,10 +166,11 @@
 /* styles.css */
 /* styles.module.css (or styles.css, depending on your setup) */
 .radarChartTitle {
-  font-size: 24px;
+  font-size: 20px;
   color: #333;
   text-align: center;
   margin-top: 20px;
+  margin-bottom: 5px;
   font-family: 'Orbitron', sans-serif;
 }
 
@@ -185,7 +186,7 @@
   display: flex;
   justify-content: center;
   margin: 10px auto;
-  background-color: lavender;
+  background-color: black;
   border-radius: 10px;
 }
 

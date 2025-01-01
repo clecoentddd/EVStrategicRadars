@@ -382,7 +382,7 @@ console.log("Error saving radar item");
       )}
       </div>
       <div className={styles.radarChart}>
-        <RadarChart items={radarItems} radius={200} />
+        <RadarChart items={radarItems} radius={280} />
       </div>
 
       <h2 className={styles.radarItemsTitle}>Radar Items</h2>

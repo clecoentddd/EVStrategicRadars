@@ -30,12 +30,12 @@
 
   .chartText { 
     font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
-    font-size: 12px; fill: #333; /* Default text color */ 
+    font-size: 12px; fill: #eeeaea; /* Default text color */ 
     font-weight: bold; 
   }
 
   .chartTextNormal { 
     font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
-    font-size: 9px; fill: #333; /* Default text color */ 
+    font-size: 9px; fill: white; /* Default text color */ 
   }
   

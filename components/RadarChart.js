@@ -7,29 +7,32 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
 // Initialize Supabase client
 //const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-const RadarChart = ({ items, radius = 200 }) => {
-  const svgRef = useRef();
-  const router = useRouter(); // Next.js router for navigation
+ 
+  const RadarChart = ({ items, radius}) => {
+    const svgRef = useRef();
+    const [tooltipData, setTooltipData] = useState({
+      text: "Zoom over to see details for each risk", // Default tooltip text
+      xPos: 0, // Position for tooltip, initially set to 0
+      yPos: 0, 
+    });
 
-  // State to manage tooltip data
-  const [tooltipData, setTooltipData] = useState({
-    text: "Zoom over to see details for each risk", // Default tooltip text
-    xPos: radius + radius + 100,  // Fixed position
-    yPos: radius + 0,            // Adjust vertical position
-  });
+ 
+    useEffect(() => {
 
-  useEffect(() => {
-    console.log("Rendering RadarChart...");
-    console.log("Items: ", items);
-
-    // Clear previous SVG content
-    d3.select(svgRef.current).selectAll('*').remove();
-
-    const svg = d3.select(svgRef.current)
-      .attr('width', radius * 2 + 50)
-      .attr('height', radius * 2 + 50)
-      .append('g')
-      .attr('transform', `translate(${radius + 25}, ${radius + 25})`);
+      console.log("RadarChart.js: Rendering RadarChart.. radius being:", radius);
+      console.log("RadarChart.js: Items: ", items);
+      // Calculate SVG size based on radius
+      const svgSize = radius * 2 + 100;
+  
+      // Clear previous SVG content
+      d3.select(svgRef.current).selectAll('*').remove();
+  
+      const svg = d3.select(svgRef.current)
+        .attr('width', svgSize)
+        .attr('height', svgSize)
+        .append('g')
+        .attr('transform', `translate(${svgSize / 2}, ${svgSize / 2})`);
+  
 
       // Define the glow filter 
       // Define the gradient and glow filter 
@@ -42,23 +45,17 @@ const RadarChart = ({ items, radius = 200 }) => {
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blurred" /> 
           </filter> `);
     
-          const accentuateColor = (hex) => { 
-            // Remove the hash if it exists 
-            hex = hex.replace(/^#/, ''); 
-            // Parse the hex color and invert each channel
-            //let r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16).padStart(2, '0'); 
-            //let g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16).padStart(2, '0'); 
-            //let b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16).padStart(2, '0'); 
-            // Increase brightness by 50% 
-            let r = Math.min(255, parseInt(hex.slice(0, 2), 16) + 50).toString(16).padStart(2, '0'); 
-            let g = Math.min(255, parseInt(hex.slice(2, 4), 16) + 50).toString(16).padStart(2, '0'); 
-            let b = Math.min(255, parseInt(hex.slice(4, 6), 16) + 50).toString(16).padStart(2, '0');
-            
-              return `#${r}${g}${b}`; 
-        };
+    // Draw radar circle   
+    
+  // Update tooltipData once radius is available (since radius is dynamic)
+  setTooltipData(prev => ({
+    ...prev,
+    xPos: 700, // Adjust based on your design
+    yPos: radius, // Adjust based on your design
+  }));
 
     // Draw quadrants
-    const quadrantColors = ['lavender', 'lavenderblush', 'lavender', 'lavenderblush'];
+    const quadrantColors = ['black', '#232b2b', 'black', '#232b2b'];
     for (let i = 0; i < 4; i++) {
       svg.append("path")
         .attr("d", d3.arc()
@@ -68,16 +65,27 @@ const RadarChart = ({ items, radius = 200 }) => {
           .endAngle((Math.PI / 2) * (i + 1))
         )
         .attr("fill", quadrantColors[i])
-        .attr("stroke", "#ccc");
+        .attr("stroke", "plum");
     }
 
-    // Draw radial lines 
-    const numberOfLines = 16; // Number of radial lines (can be adjusted as needed) 
-    for (let i = 0; i < numberOfLines; i++) { const angle = (Math.PI * 2 / numberOfLines) * i; const x = radius * Math.cos(angle); const y = radius * Math.sin(angle); svg.append("line") .attr("x1", 0) .attr("y1", 0) 
-    .attr("x2", x) 
-    .attr("y2", y) 
-    .attr("stroke", "purple") 
-    .attr("stroke-width", 0.1); }
+    const categoryLabels = [
+      { text: "Business", x: -radius + 35, y: -radius - 10, anchor: "end" }, // Top-left quadrant
+      { text: "Operating Model", x: radius - 88, y: -radius - 10, anchor: "start" }, // Top-right quadrant
+      { text: "People and Knowledge", x: -radius + 128, y: radius + 20, anchor: "end" }, // Bottom-left quadrant
+      { text: "Capabilities", x: radius -60, y: radius + 20, anchor: "start" }, // Bottom-right quadrant
+    ];
+    
+    categoryLabels.forEach(label => {
+      svg.append("text")
+        .attr("x", label.x)
+        .attr("y", label.y)
+        .attr("text-anchor", label.anchor)
+        .attr("font-size", "14px")
+        .attr("font-weight", "bold")
+        .attr("fill", "white")
+        .attr("font-family", "Orbitron, sans-serif") 
+        .text(label.text);
+    });
 
     // Draw concentric circles (light blue for radar grid)
     [0.25, 0.5, 0.75, 1].forEach(d => {
@@ -85,26 +93,18 @@ const RadarChart = ({ items, radius = 200 }) => {
         .attr("r", radius * d)
         .attr("fill", "none")
         .attr("stroke", "plum") // Light blue for radar grid circles
-        .attr("stroke-width", 1);
+        .attr("stroke-width", d === 1 ? 5 : 1);
     });
 
-  // Define category labels for each quadrant 
-  const categories = ["Business", "Operating Model", "People and Knowledge", "Capabilities"]; 
-  const labelPositions = [ 
-  { x: radius - 5 , y: -radius , anchor: 'middle' }, 
-  { x: -radius -20, y: -radius, anchor: 'start' },
-  { x: radius - 40 , y: radius, anchor: 'middle' }, 
-  { x: -radius +50, y: radius, anchor: 'end' } 
-  ]; 
-  categories.forEach((category, i) => { 
-    svg.append("text") .attr("x", labelPositions[i].x) 
-    .attr("y", labelPositions[i].y) 
-    .attr("text-anchor", labelPositions[i].anchor) 
-    .attr("font-size", "12px") 
-    .attr("font-weight", "bold") 
-    .attr("fill", "#333") .text(category)
-    .classed(styles.chartText, true);
-  });
+    // Draw radial lines 
+    const numberOfLines = 16; // Number of radial lines (can be adjusted as needed) 
+    for (let i = 0; i < numberOfLines; i++) { const angle = (Math.PI * 2 / numberOfLines) * i; const x = radius * Math.cos(angle); const y = radius * Math.sin(angle); svg.append("line") .attr("x1", 0) .attr("y1", 0) 
+    .attr("x2", x) 
+    .attr("y2", y) 
+    .attr("stroke", "plum") 
+    .attr("stroke-width", 0.4); }
+
+
       
     // Group items by category and distance
     const groupedItems = items.reduce((acc, item) => {
@@ -134,8 +134,8 @@ const RadarChart = ({ items, radius = 200 }) => {
 
     const categoryToIndex = {};
     Object.keys(ValueCategory).forEach((key, index) => {
-  categoryToIndex[ValueCategory[key]] = index;
-});
+    categoryToIndex[ValueCategory[key]] = index;
+}   );
 
     Object.entries(groupedItems).forEach(([key, items]) => {
       const [category, distance] = key.split('-');
@@ -178,6 +178,7 @@ const RadarChart = ({ items, radius = 200 }) => {
 
           
             d3.select(this).select('circle') .attr('r', size * 2) // Optional: Add a black stroke to highlight 
+            
 
             // Fetch the radar name based on zoom_in
             let tooltipText = `<strong>${item.name}</strong><br/>Category: ${item.category}</strong><br/>Type: ${item.type}</strong><br/>Description: ${item.detect}</strong><br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}</strong><br/>Distance: ${item.distance}<br/>Distance to radius : ${distanceToRadius[item.distance]}`;
@@ -191,7 +192,7 @@ const RadarChart = ({ items, radius = 200 }) => {
 
             // Update the tooltip data (fixed position for the tooltip)
             setTooltipData({
-              xPos: radius + radius + 100,  // Fixed to the right of the circle
+              xPos: 700,  // Fixed to the right of the circle
               yPos: radius + 0,       // Adjust the position relative to the circle
               text: tooltipText
             });
@@ -234,7 +235,7 @@ const RadarChart = ({ items, radius = 200 }) => {
           .classed(styles.chartTextNormal, true);
       });
     });
-  }, [items, radius, router])
+  }, [items, radius, useRouter])
 
   // Function to fetch radar name by zoom_in
   const fetchRadarName = async (zoom_in) => {
