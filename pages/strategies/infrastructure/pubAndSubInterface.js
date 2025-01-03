@@ -1,4 +1,4 @@
-import {createStreamHandler} from '../application/strategyStreamHandler';
+import {createStreamHandler} from '../application/streamHandler';
 
 export async function interfaceCreateStream(command) {
 

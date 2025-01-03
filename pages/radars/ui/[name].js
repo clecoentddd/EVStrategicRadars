@@ -35,8 +35,14 @@ export default function RadarPage() {
   const [logs, setLogs] = useState([]); // State to manage logs
   const router = useRouter();
   const { name, radarId } = router.query;
-  const [collapsedItems, setCollapsedItems] = useState(new Array(radarItems.length).fill(true));
+  const [collapsedItems, setCollapsedItems] = useState([]);
   
+  useEffect(() => {
+    // Initialize all items as collapsed when radarItems changes
+    if (radarItems.length > 0) {
+      setCollapsedItems(new Array(radarItems.length).fill(true));
+    }
+  }, [radarItems]);
   
   useEffect(() => {
    
@@ -81,6 +87,7 @@ useEffect(() => {
 
       if (response.ok) {
         setRadar(data);
+        setCollapsedItems(new Array(data.length).fill(true));
         logMessage("Radar data fetched successfully");
       } else {
         setError(data.message);
@@ -231,9 +238,6 @@ useEffect(() => {
       // Parse the raw response text as JSON
       const radarItem = JSON.parse(rawResponseText); // Safely parse JSON from text
   
-      console.log("Parsed Radar Item: ", JSON.stringify(radarItem));
-      console.log ("HTLM radar item name is :", radarItem.name);
-  
       // Check if the response indicates success
       if (radarItem.success === false) {
         setError(radarItem.message); // Show the message from the response
@@ -361,11 +365,11 @@ console.log("Error saving radar item");
     <div>    
 
       {/* Add the sidepanel code here */}
-      <div id="navbar" className={styles.navbar}>
+    <div id="navbar" className={styles.navbar}>
         <a href="#Radars" onClick={goToHome}>1. Engage</a>
         <a href="#Detect, Assess and Respond">2. Detect, Assess and Respond</a>
         <a href="#Strategize" onClick={(e) => { e.preventDefault(); goToStrategize(); }}>3. Strategize</a>
-      </div>
+    </div>
 
       <div className={styles.container}>
       {loadingRadar && <p>Loading radar details...</p>}
@@ -381,17 +385,28 @@ console.log("Error saving radar item");
         </>
       )}
       </div>
+
       <div className={styles.radarChart}>
         <RadarChart items={radarItems} radius={280} />
       </div>
 
       <h2 className={styles.radarItemsTitle}>Radar Items</h2>
-      <button
-        onClick={() => setShowForm(!showForm)}
-        style={{ padding: "10px", backgroundColor: "plum", color: "white", border: "none", borderRadius: "5px", cursor: "pointer", marginBottom: "20px" }}
-      >
-        {showForm ? "Cancel" : "Create Radar Item"}
-      </button>
+        {!showForm && (
+          <button
+            onClick={() => setShowForm(true)}
+            style={{
+              padding: "10px",
+              backgroundColor: "plum",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              marginBottom: "20px",
+            }}
+          >
+            Create Radar Item
+          </button>
+        )}
 
       {showForm && (
       <div className={styles.showForm}> 
@@ -559,46 +574,66 @@ console.log("Error saving radar item");
               </select>
             </div>
           </div>
-          <button
-            type="submit"
-            className={styles.saveButton}
-          >
-            Save
+          <div className={styles.buttonGroup}>
+            <button
+              type="submit"
+              className={styles.saveButton}
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className={styles.cancelButton}
+            >
+              Cancel
           </button>
+        </div>
         </form>
       </div>
 )}
-      <ul className={styles.radarItemList}> 
-        {radarItems.length === 0 ? (
-          <li>No radar items yet</li>
-        ) : (
-          <ul>
-          {radarItems.map((item, index) => (
-              <div
-              key={item.id}
-              className={`${styles.radarItem} ${
-                collapsedItems[index] ? styles.collapsed : styles.expanded
-              }`}
-              onClick={() => toggleCollapse(index)} // Toggle on click
-              >
-              {/* Always visible item.name */}
-              <h3>{item.name} ({item.category})</h3>
-    
-              {/* Expanded Content */}
-              {!collapsedItems[index] && (
-                <div className={styles.collapsedContent}>
-                  <p><strong>Detect</strong>: {item.detect}</p>
-                  <p>Type: {item.type}</p>
-                  <p>Category: {item.category}</p>
-                  <p>Distance: {item.distance}</p>
-                  <button onClick={() => handleEdit(item)} className={styles.editButton}>Edit </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </ul>
-        )}
-      </ul>
+    <ul className={styles.radarItemList}>
+      {radarItems.length === 0 ? (
+        <li>No radar items yet</li>
+      ) : (
+        radarItems.map((item, index) => (
+          <li
+            key={item.id}
+            className={`${styles.radarItem} ${
+              collapsedItems[index] ? styles.collapsed : styles.expanded
+            }`}
+            onClick={() => toggleCollapse(index)} // Toggle on click
+          >
+            {/* Always visible item.name */}
+            <h3>
+              {item.name} ({item.category})
+            </h3>
+
+            {/* Expanded Content */}
+            {!collapsedItems[index] && (
+              <div className={styles.collapsedContent}>
+                <p>
+                  <strong>Detect</strong>: {item.detect}
+                </p>
+                <p>Type: {item.type}</p>
+                <p>Category: {item.category}</p>
+                <p>Distance: {item.distance}</p>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent collapsing/expanding when clicking the button
+                    handleEdit(item);
+                  }}
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+            )}
+          </li>
+        ))
+      )}
+    </ul>
+
 
     </div>
   );

@@ -35,7 +35,7 @@ export async function createStream(command) {
 
   
 
-export async function CreateStrategy(command) {
+export async function createStrategy(command) {
     // Implement your strategy creation logic here
     console.log('Creating new version of strategy with payload:', command);
     // ... other logic to create the strategy

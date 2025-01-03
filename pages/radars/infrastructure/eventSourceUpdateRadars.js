@@ -10,7 +10,7 @@ export const sendRadarUpdated = async (event) => {
   
     const newtimestamp = new Date().getTime();
   
-    console.log("EVENTSTORE event is ", event);
+    console.log("sendRadarUpdated:  event to store ", event);
     
     const radarToUpdate = {
     eventType: "RADAR_UPDATED",
@@ -24,7 +24,7 @@ export const sendRadarUpdated = async (event) => {
       }
     };
   
-    if (replayRadarAggregate(event.radarId) === null) {
+    if (replayRadarAggregate(event.id) === null) {
         console.log ("Radar Aggregate not found");
         return null;
     }
@@ -35,7 +35,7 @@ export const sendRadarUpdated = async (event) => {
     const radarUpdated = appendEventToFile(radarToUpdate.payload.id, radarToUpdate);
   
     // Publish integration event
-    console.log ("eventstore.js publishing events", radarUpdated);
+    console.log ("sendRadarUpdated: event added to source:", radarUpdated);
     try {
       publishIntegrationEvent(radarUpdated);
     } catch (error) {

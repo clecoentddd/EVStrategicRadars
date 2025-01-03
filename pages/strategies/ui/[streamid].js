@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './streamid.module.css';
+import Navbar from "./navbar"; 
+import { EXPORT_DETAIL } from 'next/dist/shared/lib/constants';
 
 export default function StrategyStream() {
   const router = useRouter();
@@ -9,7 +11,7 @@ export default function StrategyStream() {
   const [streamData, setStreamData] = useState({
     data: [], // Initialize data as an empty array
   });
-  const [ streamAggregate, setStreamAggregate] = useState(null);
+  const [streamAggregate, setStreamAggregate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editableElementId, setEditableElementId] = useState(null);
@@ -23,11 +25,6 @@ export default function StrategyStream() {
   });
 
   const [availableTags, setAvailableTags] = useState([]); // Tags fetched from API
-  const [selectedTags, setSelectedTags] = useState([]);  // Tags selected by the user
-
-  const [radarItems, setRadarItems] = useState([]); 
-  const [selectedRadarItemId, setSelectedRadarItemId] = useState('')
-  
 
   const handleEditClick = async (id) => {
     setEditableElementId(id);
@@ -38,7 +35,7 @@ export default function StrategyStream() {
 
       // Fetch available tags when entering edit mode
       try {
-        const response = await fetch(`/api/radar-items?radar_id=${id}`, {
+        const response = await fetch(`/api/radar-items?radarId=${id}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json', // Indicate you expect JSON
@@ -79,7 +76,6 @@ export default function StrategyStream() {
       setTempData(null); // Discard temporary edits
   };
 
- 
   const handleFieldChange = (fieldName, value) => {
     setTempData((prev) => ({
       ...prev,
@@ -99,12 +95,6 @@ export default function StrategyStream() {
     }));
   };
 
-  async  function viewRadar(name, aggregateId) {
-    // Navigate to the radar details page with the name and id as query parameters
-    console.log( "View Radar ", streamAggregate.radar_id);
-    const radarPage = `/radars/ui/${encodeURIComponent(name)}?radar_id=${encodeURIComponent(aggregateId)}`;
-    window.open(radarPage, '_blank');
-  }
   const [expandedElementId, setExpandedElementId] = useState(null);
 
   const [showCreateElementForm, setShowCreateElementForm] = useState(false);
@@ -129,10 +119,10 @@ export default function StrategyStream() {
         }
         const aggregateStream= await aggregateResponse.json();
 
-        console.log ("Stream Aggregate id fetched is", aggregateStream.radar_id);
+        console.log ("Stream Aggregate id fetched is", aggregateStream.radarId);
         console.log ("Stream Aggregate name fetched is", aggregateStream.name);
 
-        // Extract radar_id from aggregate data
+        // Extract radarId from aggregate data
         setStreamAggregate(aggregateStream || null);
 
         // Fetch stream data if needed
@@ -153,10 +143,19 @@ export default function StrategyStream() {
     fetchStreamData();
   }, [router.isReady, streamid]);
 
+  const getRadarUrl = (streamAggregate) => {
+    if (!streamAggregate || !streamAggregate.radarId) {
+      return ''; // Handle cases where streamAggregate is missing or invalid
+    }
+    const name = streamAggregate.name; // Assuming 'name' is available in streamAggregate
+    const radarId = streamAggregate.radarId;
+    return `/radars/ui/${encodeURIComponent(name)}?radarId=${encodeURIComponent(radarId)}`;
+  };
+
   const organizeData = (streamData) => {
     const strategies = {};
     
-    
+  
     streamData?.data.forEach(item => {
       if (item.type === "STRATEGY") {
         strategies[item.id] = { ...item, elements: [] };
@@ -182,13 +181,11 @@ export default function StrategyStream() {
       }
     }, [streamData]);
 
-
-   
-
   const handleElementExpand = (elementId) => {
     console.log("handleElementExpand - 1");
     setExpandedElementId(expandedElementId === elementId ? null : elementId);
   };
+
   const handleEditToggle = async (elementId) => {
     if (editableElementId === elementId) {
       // Save the changes
@@ -271,9 +268,8 @@ export default function StrategyStream() {
       setTempData(null);
     }
   };
-  
-  
-    const handleTagSelect = (selectedTag) => {
+    
+  const handleTagSelect = (selectedTag) => {
       // Check if element.tags is a string and parse it if it is
       const element = streamData.data.find((item) => item.id === editableElementId); // Get the current element
 
@@ -299,7 +295,6 @@ export default function StrategyStream() {
       tags: JSON.stringify(existingTags) 
     });
   };
-  
   
   const handleCreateStrategyChange = (e) => {
     const { name, value } = e.target;
@@ -354,7 +349,6 @@ export default function StrategyStream() {
     }));
   };
 
-
   const handleCreateStrategySubmit = async (e) => {
     e.preventDefault();
     try {
@@ -386,7 +380,17 @@ export default function StrategyStream() {
     }
   };
 
- 
+  const handleCancelCreateElement = () => {
+    // Reset the newElement state
+    setNewElement({ 
+      name: '', 
+      description: '' 
+    }); 
+    // Optionally, close the form (if it's in a modal or overlay)
+    setShowCreateElementForm(false); 
+  };
+
+  
   const renderStrategies = (strategies) => {
     return strategies.map((strategy) => (
       <div key={strategy.id} className="strategy" style={strategyStyle}>
@@ -421,36 +425,37 @@ export default function StrategyStream() {
               {expandedElementId === element.id && (
                 <div className="element-details" style={elementDetailsStyle}>
                   {/* Name Field */}
-                  <label style={labelElementStyle}>
-                    Name
-                    <input
-                      type="text"
-                      value={tempData?.name || element.name || ""}
-                      onChange={(e) => handleFieldChange("name", e.target.value)}
-                      disabled={editableElementId !== element.id}
-                      className={
-                        editableElementId === element.id
-                          ? `${styles.nameCell} ${styles.nameCellEditable}` // Editable-specific styles
-                          : styles.nameCell // Default cell styles
-                      }
-                    />
-                  </label>
+                  <div className={styles.horizontalAlignmentWrapper}>
+                    <label className={styles.labelElementStyle}>
+                      Name
+                      <textarea
+                        value={tempData?.name || element.name || ""}
+                        onChange={(e) => handleFieldChange("name", e.target.value)}
+                        disabled={editableElementId !== element.id}
+                        className={
+                          editableElementId === element.id
+                            ? `${styles.textAreaName} ${styles.textAreaNameEditable}`
+                            : styles.textAreaName
+                        }
+                      />
+                    </label>
 
-                  {/* Description Field */}
-                  <label>
-                    Description
-                    <textarea
-                      value={tempData?.description || element.description || ""}
-                      onChange={(e) => handleFieldChange("description", e.target.value)}
-                      disabled={editableElementId !== element.id}
-                      className={
-                        editableElementId === element.id
-                          ? `${styles.descriptionCell} ${styles.descriptionCellEditable}` // Editable-specific styles
-                          : styles.descriptionCell // Default cell styles
-                      }
-                    />
-                  </label>
-   
+                    <label className={styles.labelElementStyle}>
+                      Description
+                      <textarea
+                        value={tempData?.description || element.description || ""}
+                        onChange={(e) => handleFieldChange("description", e.target.value)}
+                        disabled={editableElementId !== element.id}
+                        className={
+                          editableElementId === element.id
+                            ? `${styles.textAreaDescription} ${styles.textAreaDescriptionEditable}`
+                            : styles.textAreaDescription
+                        }
+                      />
+                    </label>
+                  </div>
+
+
                   {/* Table Fields */}
                   <table className={styles.tableStyle}>
                     <thead>
@@ -471,8 +476,7 @@ export default function StrategyStream() {
                                 ? `${styles.tableCell} ${styles.tableCellEditable}`
                                 : styles.tableCell // Default cell class
                             }
-                          
-                          >
+                                                    >
                             {editableElementId === element.id ? (
                               <textarea
                                 value={tempData[field] || ""}
@@ -490,99 +494,97 @@ export default function StrategyStream() {
                   </table
                   >
                   {/* Tags Field (Below Table) */}
-          
-{/* Tags Field (Below Table) */}
 
-<div className={styles.tagsContainer}>
-  <strong>Tags</strong>
-  <div>
-    {editableElementId === element.id ? (
-      // Editable mode: Display existing tags with the option to delete
-      <div>
-        <ul className={styles.tagsList}>
-          {(Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).map((tag, index) => (
-            <li key={index} className={styles.tagItem}>
-              {tag.name}
-              <button
-                type="button"
-                className={styles.removeTagButton}
-                onClick={() => {
-                  // Remove only the selected tag
-                  const updatedTags = (Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).filter((t) => t.id !== tag.id);
+                  <div className={styles.tagsContainer}>
+                    <strong>Tags</strong>
+                    <div>
+                      {editableElementId === element.id ? (
+                        // Editable mode: Display existing tags with the option to delete
+                        <div>
+                          <ul className={styles.tagsList}>
+                            {(Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).map((tag, index) => (
+                              <li key={index} className={styles.tagItem}>
+                                {tag.name}
+                                <button
+                                  type="button"
+                                  className={styles.removeTagButton}
+                                  onClick={() => {
+                                    // Remove only the selected tag
+                                    const updatedTags = (Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).filter((t) => t.id !== tag.id);
 
-                  setTempData((prev) => ({
-                    ...prev,
-                    tags: updatedTags,
-                  }));
-                }}
-              >
-                X
-              </button>
-            </li>
-          ))}
-        </ul>
-        <select
-          disabled={editableElementId !== element.id}
-          multiple
-          className={styles.tagsDropdown}
-          value={
-            Array.isArray(tempData?.tags)
-              ? tempData.tags.map((tag) => tag.id)
-              : (tempData?.tags?.length > 0 ? JSON.parse(tempData?.tags).map((tag) => tag.id) : [])
-          }
-          onChange={(e) => {
-            // Filter out the "Select a tag" option before processing selected options
-            const selectedOptions = Array.from(e.target.options).filter((option) => option.value !== "");
-            const selectedTagIds = selectedOptions.map((option) => option.value);
-            const selectedTags = availableTags.filter((tag) => selectedTagIds.includes(tag.id));
+                                    setTempData((prev) => ({
+                                      ...prev,
+                                      tags: updatedTags,
+                                    }));
+                                  }}
+                                >
+                                  X
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                          <select
+                            disabled={editableElementId !== element.id}
+                            multiple
+                            className={styles.tagsDropdown}
+                            value={
+                              Array.isArray(tempData?.tags)
+                                ? tempData.tags.map((tag) => tag.id)
+                                : (tempData?.tags?.length > 0 ? JSON.parse(tempData?.tags).map((tag) => tag.id) : [])
+                            }
+                            onChange={(e) => {
+                              // Filter out the "Select a tag" option before processing selected options
+                              const selectedOptions = Array.from(e.target.options).filter((option) => option.value !== "");
+                              const selectedTagIds = selectedOptions.map((option) => option.value);
+                              const selectedTags = availableTags.filter((tag) => selectedTagIds.includes(tag.id));
 
-            // Combine existing tags with newly selected tags, removing duplicates
-            const combinedTags = [...new Set([...tempData?.tags || [], ...selectedTags])];
+                              // Combine existing tags with newly selected tags, removing duplicates
+                              const combinedTags = [...new Set([...tempData?.tags || [], ...selectedTags])];
 
-            setTempData((prev) => ({
-              ...prev,
-              tags: combinedTags,
-            }));
-          }}
-        >
-          {/* Don't include a value attribute for "Select a tag" option */}
-          <option value="" disabled>Select a tag</option>
-          {availableTags.map(({ name, id }) => (
-            <option key={id} value={id}>
-              {name}
-            </option>
-          ))}
-        </select>
-      </div>
-    ) : (
-      // Read-only mode: Display tags as a comma-separated string
-      <div>
-        {element.tags && (
-          <div className={styles.tagsReadonlyContainer}>
-            {Array.isArray(element.tags)
-              ? element.tags.map((tag, index) => (
-                  <span key={index} className={styles.tagReadonly}>
-                    {tag.name}
-                  </span>
-                ))
-              : JSON.parse(element.tags).map((tag, index) => (
-                  <span key={index} className={styles.tagReadonly}>
-                    {tag.name}
-                  </span>
-                ))}
-          </div>
-        )}
+                              setTempData((prev) => ({
+                                ...prev,
+                                tags: combinedTags,
+                              }));
+                            }}
+                          >
+                            {/* Don't include a value attribute for "Select a tag" option */}
+                            <option value="" disabled>Select a tag</option>
+                            {availableTags.map(({ name, id }) => (
+                              <option key={id} value={id}>
+                                {name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      ) : (
+                        // Read-only mode: Display tags as a comma-separated string
+                        <div>
+                          {element.tags && (
+                            <div className={styles.tagsReadonlyContainer}>
+                              {Array.isArray(element.tags)
+                                ? element.tags.map((tag, index) => (
+                                    <span key={index} className={styles.tagReadonly}>
+                                      {tag.name}
+                                    </span>
+                                  ))
+                                : JSON.parse(element.tags).map((tag, index) => (
+                                    <span key={index} className={styles.tagReadonly}>
+                                      {tag.name}
+                                    </span>
+                                  ))}
+                            </div>
+                          )}
 
-        {(!element.tags ||
-          (Array.isArray(element.tags) && element.tags.length === 0) ||
-          (typeof element.tags === "string" &&
-            JSON.parse(element.tags).length === 0)) && (
-          <span>No tags</span>
-        )}
-      </div>
-    )}
-  </div>
-</div>
+                          {(!element.tags ||
+                            (Array.isArray(element.tags) && element.tags.length === 0) ||
+                            (typeof element.tags === "string" &&
+                              JSON.parse(element.tags).length === 0)) && (
+                            <span>No tags</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
    
                   <div className={styles.rowButtonsEditCancelSave}>
                     {/* Edit Button */}
@@ -595,7 +597,7 @@ export default function StrategyStream() {
                     <button className={styles.editButton} onClick={() => handleEditClick(element.id)}>Edit</button>
                     )}
                   </div>
-                </div>
+                  </div>
               )}
             </div>
           ))}
@@ -603,37 +605,36 @@ export default function StrategyStream() {
       </div>
     ));
   };
-   
 
-  return (
-    <div style={{ fontFamily: 'Arial, sans-serif', margin: '20px' }}>
-      <h1>Strategy Stream</h1>
-      <p>Stream name: {streamAggregate ? streamAggregate.name : "Loading..."}</p>
+return (
+  <>
+    <div>
+      <Navbar getRadarUrl={getRadarUrl} streamAggregate={streamAggregate} />
+    </div>
 
-                
-      <button style={createStrategyButtonStyle} onClick={() => setShowCreateStrategyForm(true)}>
+    <div className={styles.container}>
+  {/* Display Radar Name and Description */}
+  <div className={styles.streamHeader}>
+    <h1>
+      {streamAggregate && streamAggregate.name ? streamAggregate.name : "Loading..."}
+    </h1>
+    <h2>This is about strategic thinking now</h2>
+  </div>
+</div>
+
+      <div className= {styles.container}>
+      <button
+        className={styles.createStrategyButtonStyle}
+        onClick={() => setShowCreateStrategyForm(true)}
+      >
         Create Strategy
       </button>
-      <button style={createElementButtonStyle} onClick={() => setShowCreateElementForm(true)}>
+      <button
+        className={styles.createStrategyButtonStyle}
+        onClick={() => setShowCreateElementForm(true)}
+      >
         Create a Strategy Element
       </button>
-      {streamData && streamData.data && streamAggregate && (
-        <button 
-        className="button" 
-        onClick={() => {
-          if (streamAggregate) { 
-            viewRadar(streamAggregate.name, streamAggregate.radar_id); 
-          } else {
-            console.error("streamAggregate is undefined"); 
-          }
-        }} 
-        style={radarLinkButtonStyle}
-      >
-        View radar
-      </button>
-      )}
-
-
 
       {showCreateStrategyForm && (
         <form style={formStyle} onSubmit={handleCreateStrategySubmit}>
@@ -667,7 +668,7 @@ export default function StrategyStream() {
         </form>
       )}
 
-{showCreateElementForm && (
+      {showCreateElementForm && (
         <form style={formStyle} onSubmit={handleCreateElementSubmit}>
           <h3>Create Strategy Element</h3>
           <input
@@ -686,28 +687,36 @@ export default function StrategyStream() {
             rows="3"
             required
           ></textarea>
-          <button type="submit" style={editButtonStyle}>
-            Create
-          </button>
+          <div className={styles.buttonContainerStyle}>
+            <button type="submit" className={styles.saveButton}>
+              Create
+            </button>
+            <button
+              type="button"
+              className={styles.cancelButton}
+              onClick={handleCancelCreateElement}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       )}
 
       {loading && <p>Loading stream data...</p>}
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      {error && <p style={{ color: "red" }}>Error: {error}</p>}
       {streamData && streamData.data && Array.isArray(streamData.data) ? (
-      <div>
-        <h2>Stream Details</h2>
-        {renderStrategies(organizeData(streamData))} 
-      </div>
-    ) : (
-      <div style={{ color: 'red' }}>
-        No strategies defined yet.
-      </div>
-    )}
-
+        <div>
+          <h2>Stream Details</h2>
+          {renderStrategies(organizeData(streamData))}
+        </div>
+      ) : (
+        <div style={{ color: "red" }}>No strategies defined yet.</div>
+      )}
     </div>
-  );
+  </>
+);
 }
+
 
 
 // Add your styles here
@@ -723,12 +732,6 @@ const createStrategyButtonStyle = {
     cursor: 'pointer',
   };
 
-  const labelElementStyle = {
-    margin: '20px 0px',
-    padding: '10px 15px',
-    marginRight: '5px',
-    fontSize: '16px',
-  };
 
   const formStyle = {
     display: 'flex',
@@ -826,7 +829,7 @@ const createStrategyButtonStyle = {
     color: '#555',
   };
 
-  const createElementButtonStyle = {
+const createElementButtonStyle = {
   margin: '10px 10px',
   padding: '10px 15px',
   fontSize: '16px',

@@ -42,7 +42,7 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
           <stop stop-color="rgba(0,0,255, 0.5)" offset="0.8"/> 
           </radialGradient> 
           <filter id="sofGlow" width="300%" height="300%" x="-100%" y="-100%"> 
-          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blurred" /> 
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blurred" /> 
           </filter> `);
     
     // Draw radar circle   

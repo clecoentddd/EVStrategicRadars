@@ -1,13 +1,64 @@
- 
-  .textArea {
-    width: 100%; 
-    min-height: 300px; 
-    border: 3px solid lavender;
-    border-radius: 1px; 
-    resize: vertical; 
-  }
+.container {
+ font-family: 'Orbitron', sans-serif;
+}
 
-  .headerCells {
+.streamHeader {
+  text-align: center;
+  margin-top: 50px; /* Reduce top margin */
+  margin-bottom: 2px; 
+  background-color: #e887cd;
+  padding: 2px; 
+  border-radius: 5px; /* Add rounded corners */
+  font-size: 10px;
+}
+
+
+.labelElementStyle {
+  cursor: default;
+  font-weight: bold; /* Ensure bold styling */
+  margin-right: 10px; /* Add space to the right of the label */
+  text-align: center; /* Center the text */
+  display: inline-block; /* Ensure it aligns horizontally */
+}
+
+.horizontalAlignmentWrapper {
+  display: grid; /* Use Grid for layout */
+  grid-template-columns: 30% 60%; /* Label and textarea pairs in equal columns */
+  column-gap: 10px; /* Space between columns */
+  row-gap: 10px; /* Space between rows (if multiple rows exist) */
+  align-items: center; /* Center labels vertically with textareas */
+  justify-content: center; /* Center content horizontally within the container */
+  padding: 0 10px; /* Add left and right padding for page space */
+  width: 100%; /* Take full container width */
+}
+
+
+.textAreaName {
+  padding: 8px; /* Padding inside the textarea */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 4px; /* Rounded corners */
+  width: 100%; /* Make textarea take full width of its column */
+  height: 100px;
+}
+
+.textAreaNameEditable {
+  background-color: #f9f9f9; /* Optional: Special style for editable mode */
+}
+
+.textAreaDescription {
+  padding: 8px; /* Padding inside the textarea */
+  border: 1px solid #ccc; /* Light gray border */
+  border-radius: 4px; /* Rounded corners */
+  width: 100%; /* Make textarea take full width of its column */
+  height: 100px;
+}
+
+.textAreaDescriptionEditable {
+  background-color: #f9f9f9; /* Optional: Special style for editable mode */
+}
+
+
+.headerCells {
     background-color: Thistle;
     color: black;
     padding: 8px;
@@ -15,13 +66,6 @@
     border: 1px Thistle;
   };
 
-.cellStyle  {
-    padding: 8px;
-    border: 1px thistle;
-    vertical-align: top;
-    table-layout: auto;
-    background-color: aquamarine;
-  };
 
   /* TableStyles.css */
 
@@ -31,6 +75,7 @@
     width: 100%;
     text-align: top;
     padding: 40px;
+    height: 120px;
   }
 
   .nameCell {
@@ -38,47 +83,62 @@
     border: 1px solid plum;
     text-align: top;
     width: 200px;
-    height: 80px;
+    height: 120px;
     transition: background-color 0.2s; /* Smooth transition for hover or edit styles */
   }
   
   .descriptionCellEditable {
     background-color: #f1eff0; /* Example background for editable cells */
     border: 2px solid plum; /* Highlight border for editable cells */
-    width: 300px;
-    height: 80px;
+    width: 80%;
+    padding: 10px;
+    height: 120px;
     text-align: top ;
   }
 
   .descriptionCell {
-    padding: 40px;
-    border: 1px solid plum;
+    padding: 10px;
+    border: 1px solid grey;
     vertical-align: top;
-    width: 300px;
-    height: 80px;
+    width: 80%;
+    height: 120px;
     transition: background-color 0.2s; /* Smooth transition for hover or edit styles */
     text-align: top ;
   }
   
+  .table {
+    table-layout: auto; /* Let the table size columns automatically */
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse; /* Ensure clean borders */
+  }
+  
+  .tableCell,
   .tableCellEditable {
-    border-collapse: collapse;
-    min-height: 200px;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    background-color: #f1eff0; /* Example background for editable cells */
-    border: 2px solid plum; /* Highlight border for editable cells */
+    vertical-align: top; /* Ensure content stays at the top */
+    border: 1px solid plum;
+    height: 100%;
+    width: 25%; /* Equal width for all cells */
+    font-size: 12px;
+    white-space: pre-line; /* Render newlines */
   }
 
-  .tableCell {
-    border-collapse: collapse;
-    min-height: 200px;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    border: 1px solid plum;
-    min-height: 200px;
-    width: 25%;
+    .textArea {
+      padding: 0px; /* Padding inside the textarea */
+      border: 1px solid #ccc; /* Light gray border */
+      border-radius: 4px; /* Rounded corners */
+      width: 100%; /* Ensure textarea fills the cell's width */
+      height: 400px; /* Match the height of the parent cell */
+      box-sizing: border-box; /* Ensure padding doesn't affect width/height */
+      font-size: 12px;
+      font-family: 'Orbitron', sans-serif;
+      overflow: hidden; /* Prevent scrollbars */
+      white-space: pre-line; /* Handle newlines gracefully */
+      resize: none; /* Disable manual resizing */
     }
+    
   
+    
   .tableCell:hover {
     background-color: lavender; /* Optional hover effect */
   }
@@ -95,7 +155,7 @@
         padding: 8px;
         background-color: rgb(37, 37, 160);
         border : 1px dashedrgb(198, 97, 168);
-        table-layout: 'fixed';
+        table-layout: 'auto';
       };
 
 /* table related buttons */
@@ -109,13 +169,38 @@
     border: 1px solid #ccc; 
     border-radius: 5px;
   }
-  
-  
-  .saveButton {
-    background-color: purple;
+
+  .headingStyle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    background-color: violet;
+  }
+
+  .createStrategyButtonStyle {
+    background-color: plum;
     color: white;
     margin-left: 20px;
     margin-top: 20px;
+    border-radius: 10px;
+    padding: 8px;
+    border-bottom: none;
+    border-color: plum;
+  }
+  
+  .buttonContainerStyle {
+    display: 'flex';
+    justify-content: 'flex-end';
+  };
+  
+  .saveButton {
+    padding: 10px 20px; 
+    background-color: plum; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
   }
   
   .cancelButton {
@@ -123,13 +208,20 @@
     color: white;
     margin-left: 20px;
     margin-top: 20px;
+    border-radius: 10px;
+    padding: 8px;
+    border-bottom: none;
   }
   
   .editButton {
-    background-color: purple;
+    background-color: plum;
     color: white;
     margin-left: 20px;
     margin-top: 20px;
+    border-radius: 10px;
+    padding: 8px;
+    border-bottom: none;
+    border-color: plum
   }
 
   /* TAGS */
@@ -153,7 +245,7 @@
     color: #333; /* Dark text color for readability */
     padding: 5px 10px;
     border-radius: 10px;
-    font-size: 0.9em;
+    font-size: 0.9rem;
     display: inline-block;
     position: relative;
   }
