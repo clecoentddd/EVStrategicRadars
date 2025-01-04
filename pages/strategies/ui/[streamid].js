@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styles from './streamid.module.css';
 import Navbar from "./navbar"; 
 import { EXPORT_DETAIL } from 'next/dist/shared/lib/constants';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 export default function StrategyStream() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function StrategyStream() {
 
       // Fetch available tags when entering edit mode
       try {
-        const response = await fetch(`/api/radar-items?radarId=${id}`, {
+        const response = await fetch(`/api/radar-items?radarId=${streamAggregate.radarId}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json', // Indicate you expect JSON
@@ -460,10 +461,10 @@ export default function StrategyStream() {
                   <table className={styles.tableStyle}>
                     <thead>
                       <tr>
-                        <th className={styles.headerCells}>Diagnosis</th>
-                        <th className={styles.headerCells}>Overall Approach</th>
-                        <th className={styles.headerCells}>Set of Coherent Actions</th>
-                        <th className={styles.headerCells}>Proximate Objectives</th>
+                        <th id="diagnosis" className={styles.headerCells}>Diagnosis</th>
+                        <th id="overallApproach" className={styles.headerCells}>Overall Approach</th>
+                        <th id="coherentActions" className={styles.headerCells}>Set of Coherent Actions</th>
+                        <th id="proximateObjectives" className={styles.headerCells}>Proximate Objectives</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -474,9 +475,9 @@ export default function StrategyStream() {
                             className={
                               editableElementId === element.id
                                 ? `${styles.tableCell} ${styles.tableCellEditable}`
-                                : styles.tableCell // Default cell class
+                                : styles.tableCell
                             }
-                                                    >
+                          >
                             {editableElementId === element.id ? (
                               <textarea
                                 value={tempData[field] || ""}
@@ -491,8 +492,15 @@ export default function StrategyStream() {
                         ))}
                       </tr>
                     </tbody>
-                  </table
-                  >
+                  </table>
+
+                  {/* Define tooltips for the header elements */}
+                  <ReactTooltip anchorId="diagnosis" place="top" content={<span>We need facts and data. Be very mindful of biases like the echo chamber.<br />Be careful of logical arguments.<br />Tools such as Wardley mapping can be used here</span>} className={styles.customTooltip}/>
+                  <ReactTooltip anchorId="overallApproach" place="top" content={<span>How you are going to solve the problem and take advantage of the opportinuty.<br />This is seen as the strategy but do not be fooled: strategy is more than an approach</span>} className={styles.customTooltip} />
+                  <ReactTooltip anchorId="coherentActions" place="top" content={<span>Ensure you have a set of coherent actions</span>} className={styles.customTooltip}/>
+                  <ReactTooltip anchorId="proximateObjectives" place="top" content={<span>You want to make your strategy concrete, executable in the very short-term so people can believe you are walking the talk</span>} className={styles.customTooltip}/>
+                  
+                  
                   {/* Tags Field (Below Table) */}
 
                   <div className={styles.tagsContainer}>
@@ -502,7 +510,10 @@ export default function StrategyStream() {
                         // Editable mode: Display existing tags with the option to delete
                         <div>
                           <ul className={styles.tagsList}>
-                            {(Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).map((tag, index) => (
+                            {(Array.isArray(tempData?.tags)
+                              ? tempData.tags
+                              : JSON.parse(tempData?.tags || "[]")
+                            ).map((tag, index) => (
                               <li key={index} className={styles.tagItem}>
                                 {tag.name}
                                 <button
@@ -510,7 +521,10 @@ export default function StrategyStream() {
                                   className={styles.removeTagButton}
                                   onClick={() => {
                                     // Remove only the selected tag
-                                    const updatedTags = (Array.isArray(tempData?.tags) ? tempData.tags : JSON.parse(tempData?.tags || "[]")).filter((t) => t.id !== tag.id);
+                                    const updatedTags = (Array.isArray(tempData?.tags)
+                                      ? tempData.tags
+                                      : JSON.parse(tempData?.tags || "[]")
+                                    ).filter((t) => t.id !== tag.id);
 
                                     setTempData((prev) => ({
                                       ...prev,
@@ -530,25 +544,45 @@ export default function StrategyStream() {
                             value={
                               Array.isArray(tempData?.tags)
                                 ? tempData.tags.map((tag) => tag.id)
-                                : (tempData?.tags?.length > 0 ? JSON.parse(tempData?.tags).map((tag) => tag.id) : [])
+                                : tempData?.tags?.length > 0
+                                ? JSON.parse(tempData?.tags).map((tag) => tag.id)
+                                : []
                             }
                             onChange={(e) => {
-                              // Filter out the "Select a tag" option before processing selected options
-                              const selectedOptions = Array.from(e.target.options).filter((option) => option.value !== "");
-                              const selectedTagIds = selectedOptions.map((option) => option.value);
-                              const selectedTags = availableTags.filter((tag) => selectedTagIds.includes(tag.id));
+                              // Get selected tag IDs
+                              const selectedTagIds = Array.from(e.target.selectedOptions).map(
+                                (option) => option.value
+                              );
 
-                              // Combine existing tags with newly selected tags, removing duplicates
-                              const combinedTags = [...new Set([...tempData?.tags || [], ...selectedTags])];
+                              // Map selected IDs to tag objects
+                              const selectedTags = availableTags.filter((tag) =>
+                                selectedTagIds.includes(tag.id)
+                              );
+
+                              // Combine existing tags with newly selected tags, avoiding duplicates
+                              const combinedTags = [
+                                ...(Array.isArray(tempData?.tags)
+                                  ? tempData.tags
+                                  : JSON.parse(tempData?.tags || "[]")),
+                                ...selectedTags,
+                              ];
+
+                              const uniqueTags = combinedTags.reduce((acc, tag) => {
+                                if (!acc.some((t) => t.id === tag.id)) {
+                                  acc.push(tag);
+                                }
+                                return acc;
+                              }, []);
 
                               setTempData((prev) => ({
                                 ...prev,
-                                tags: combinedTags,
+                                tags: uniqueTags,
                               }));
                             }}
                           >
-                            {/* Don't include a value attribute for "Select a tag" option */}
-                            <option value="" disabled>Select a tag</option>
+                            <option value="" disabled>
+                              Select a tag
+                            </option>
                             {availableTags.map(({ name, id }) => (
                               <option key={id} value={id}>
                                 {name}
@@ -578,14 +612,12 @@ export default function StrategyStream() {
                           {(!element.tags ||
                             (Array.isArray(element.tags) && element.tags.length === 0) ||
                             (typeof element.tags === "string" &&
-                              JSON.parse(element.tags).length === 0)) && (
-                            <span>No tags</span>
-                          )}
+                              JSON.parse(element.tags).length === 0)) && <span>No tags</span>}
                         </div>
                       )}
                     </div>
                   </div>
-   
+
                   <div className={styles.rowButtonsEditCancelSave}>
                     {/* Edit Button */}
                     {editableElementId === element.id ? (
@@ -721,18 +753,6 @@ return (
 
 // Add your styles here
 
-const createStrategyButtonStyle = {
-    margin: '20px 0',
-    padding: '10px 15px',
-    fontSize: '16px',
-    backgroundColor: 'Purple',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  };
-
-
   const formStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -799,6 +819,7 @@ const createStrategyButtonStyle = {
     borderRadius: '4px',
   };
 
+
   const editButtonStyle = {
     marginLeft: '200px',
     padding: '5px 10px',
@@ -810,33 +831,3 @@ const createStrategyButtonStyle = {
     cursor: 'pointer',
     transition: 'background-color 0.3s',
   };
-
-  const radarLinkButtonStyle = {
-    margin: '20px 0',
-    padding: '10px 15px',
-    fontSize: '16px',
-    backgroundColor: '#ffffff',
-    color: 'blue',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  };
-
-  const tagsStyle = {
-    marginTop: '15px',
-    fontSize: '14px',
-    fontStyle: 'italic',
-    color: '#555',
-  };
-
-const createElementButtonStyle = {
-  margin: '10px 10px',
-  padding: '10px 15px',
-  fontSize: '16px',
-  backgroundColor: 'Plum',
-  color: 'white',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-};
-

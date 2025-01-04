@@ -286,4 +286,14 @@
     font-size: 0.9em;
     display: inline-block;
   }
-    
+
+  .customTooltip {
+    max-width: 200px;       /* Restrict tooltip width */
+    height: auto;           /* Adjust height based on content */
+    padding: 12px;          /* Add padding for more height */
+    background-color: rgb(160, 164, 221); /* Tooltip background */
+    color: #fff;            /* Tooltip text color */
+    border-radius: 8px;     /* Rounded corners */
+    text-align: center;     /* Center-align text */
+    line-height: 1.4;       /* Space between lines for readability */
+  }

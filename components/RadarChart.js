@@ -69,10 +69,10 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
     }
 
     const categoryLabels = [
-      { text: "Business", x: -radius + 35, y: -radius - 10, anchor: "end" }, // Top-left quadrant
-      { text: "Operating Model", x: radius - 88, y: -radius - 10, anchor: "start" }, // Top-right quadrant
-      { text: "People and Knowledge", x: -radius + 128, y: radius + 20, anchor: "end" }, // Bottom-left quadrant
-      { text: "Capabilities", x: radius -60, y: radius + 20, anchor: "start" }, // Bottom-right quadrant
+      { text: "Capabilities", x: -radius + 35, y: -radius - 10, anchor: "end" }, // Top-left quadrant
+      { text: "People and Knowledge", x: radius - 88, y: -radius - 10, anchor: "start" }, // Top-right quadrant
+      { text: "Operating Model", x: -radius + 128, y: radius + 20, anchor: "end" }, // Bottom-left quadrant
+      { text: "Business", x: radius -60, y: radius + 20, anchor: "start" }, // Bottom-right quadrant
     ];
     
     categoryLabels.forEach(label => {
@@ -219,10 +219,10 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
           
 
           // Add glow effect if item type is "Opportunity" 
-          if (item.type === 'Opportunity') 
-            { 
-              itemCircle.attr('filter', 'url(#sofGlow)'); // Apply the glow filter for Opportunity circles
-            }
+          //if (item.type === 'Opportunity') 
+          //  { 
+          //    itemCircle.attr('filter', 'url(#sofGlow)'); // Apply the glow filter for Opportunity circles
+          //  }
 
         // Draw item name
         itemGroup.append('text')
@@ -312,11 +312,11 @@ const getSizeByTolerance = (tolerance) => {
   console.log(`Getting size for tolerance: ${tolerance}`);
   switch (tolerance) {
     case 'Low':
-      return 10;
+      return 14;
     case 'Medium':
-      return 7;
+      return 10;
     case 'High':
-      return 4;
+      return 7;
     default:
       return 10;
   }
