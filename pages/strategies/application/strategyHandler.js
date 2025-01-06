@@ -1,5 +1,5 @@
-import { replayStream } from '../infrastructure/eventStoreStream';
-import { createStrategy } from '../model/strategy.js';
+import { replayStream } from '../infrastructure/eventStoreStream.js';
+import { createStrategy } from '../model/strategyStrategies.js';
 
 export async function createStrategyHandler(command) {
     // Implement your strategy creation logic here
@@ -11,6 +11,7 @@ export async function createStrategyHandler(command) {
     }
     else
     {
+        console.log("Replay stream before creating a new strategy:", command);
         if (replayStream(command.stream_id) === null) {
             return { success: false, message: "createStrategyHandler: Strategy stream does not exist" };
         } else{ 

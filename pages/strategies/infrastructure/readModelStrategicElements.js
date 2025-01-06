@@ -128,6 +128,57 @@ export async function getAllStreamData(stream_id) {
 
     // If no strategies found, return early
     if (!strategies || strategies.length === 0) {
+      return []; // Return empty array if no strategies exist
+    }
+
+    // Step 2: Attach elements to each strategy
+    const strategiesWithElements = await Promise.all(
+      strategies.map(async (strategy) => {
+        // Fetch elements for the current strategy
+        const { data: elements, error: elementsError } = await supabase
+          .from("strategic_elements")
+          .select("*")
+          .eq("strategy_id", strategy.id);
+
+        if (elementsError) {
+          console.error(
+            "Error fetching elements for strategy:",
+            strategy.id,
+            elementsError.message
+          );
+          // Proceed without elements if there's an error
+          return { ...strategy, elements: [] };
+        }
+
+        // Attach elements to the strategy
+        return { ...strategy, elements: elements || [] };
+      })
+    );
+    return strategiesWithElements; // Return structured data
+  } catch (err) {
+    console.error("Unexpected error fetching stream data:", err.message);
+    throw err;
+  }
+}
+
+
+export async function getAllStreamData1(stream_id) {
+  try {
+    // Step 1: Fetch all strategies where stream_id matches
+    const { data: strategies, error: strategiesError } = await supabase
+      .from("strategic_strategies")
+      .select("*")
+      .eq("stream_id", stream_id);
+
+    if (strategiesError) {
+      console.error("Error fetching strategies for stream_id:", strategiesError.message);
+      throw new Error("Failed to fetch strategies for stream_id");
+    }
+
+    console.log("Fetched strategies:", strategies);
+
+    // If no strategies found, return early
+    if (!strategies || strategies.length === 0) {
       return { strategies: [], elements: [] }; // No data to return
     }
 

@@ -18,6 +18,7 @@ import {
           if (query.stream_id) {
             console.log ("API -> calling getAllstreamData");
             const streamElements = await getAllStreamData(query.stream_id);
+            console.log ("API -> calling getAllstreamData returning: ", streamElements);
             res.status(200).json(streamElements);
           } else if (query.stream_aggregate) {
             const streamAggregate = await getStreamDataFromStreamId(query.stream_aggregate);

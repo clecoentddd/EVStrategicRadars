@@ -42,7 +42,7 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
           <stop stop-color="rgba(0,0,255, 0.5)" offset="0.8"/> 
           </radialGradient> 
           <filter id="sofGlow" width="300%" height="300%" x="-100%" y="-100%"> 
-          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blurred" /> 
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blurred" /> 
           </filter> `);
     
     // Draw radar circle   
@@ -68,12 +68,29 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
         .attr("stroke", "plum");
     }
 
-    const categoryLabels = [
-      { text: "Capabilities", x: -radius + 35, y: -radius - 10, anchor: "end" }, // Top-left quadrant
-      { text: "People and Knowledge", x: radius - 88, y: -radius - 10, anchor: "start" }, // Top-right quadrant
-      { text: "Operating Model", x: -radius + 128, y: radius + 20, anchor: "end" }, // Bottom-left quadrant
-      { text: "Business", x: radius -60, y: radius + 20, anchor: "start" }, // Bottom-right quadrant
-    ];
+        // Position items in each category quadrant based on distance
+    const ValueCategory = {
+          CATEGORY1: "Business",
+          CATEGORY2: "Operating Model",
+          CATEGORY3: "People and Knowledge",
+          CATEGORY4: "Capabilities"
+        };
+
+    // Dynamically generate the categoryLabels using the ValueCategory object
+const categoryLabels = Object.values(ValueCategory).map((category, index) => {
+  // You can use the index to apply unique x, y, and anchor values
+  const positions = [
+    { x: radius - 60, y: radius + 20, anchor: "start" }, // Bottom-right quadrant
+    { x: -radius + 68, y: radius + 20, anchor: "end" }, // Bottom-left quadrant
+    { x: -radius + 105, y: -radius - 10, anchor: "end" }, // Top-left quadrant
+    { x: radius - 88, y: -radius - 10, anchor: "start" }, // Top-right quadrant
+  ];
+
+  return {
+    text: category,  // Use the category value from ValueCategory
+    ...positions[index], // Spread the respective position from positions array
+  };
+});
     
     categoryLabels.forEach(label => {
       svg.append("text")
@@ -124,14 +141,6 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
       Responding: radius * 0.25,
     };
 
-    // Position items in each category quadrant based on distance
-    const ValueCategory = {
-      CATEGORY1: "Business",
-      CATEGORY2: "Operating Model",
-      CATEGORY3: "People and Knowledge",
-      CATEGORY4: "Capabilities"
-    };
-
     const categoryToIndex = {};
     Object.keys(ValueCategory).forEach((key, index) => {
     categoryToIndex[ValueCategory[key]] = index;
@@ -179,6 +188,9 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
           
             d3.select(this).select('circle') .attr('r', size * 2) // Optional: Add a black stroke to highlight 
             
+            d3.select(this).select('text')
+              .attr('font-size', '20px') // Adjust this value as needed
+              .attr('font-weight', 'bold'); // Optional: Make the text bold
 
             // Fetch the radar name based on zoom_in
             let tooltipText = `<strong>${item.name}</strong><br/>Category: ${item.category}</strong><br/>Type: ${item.type}</strong><br/>Description: ${item.detect}</strong><br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}</strong><br/>Distance: ${item.distance}<br/>Distance to radius : ${distanceToRadius[item.distance]}`;
@@ -219,10 +231,10 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
           
 
           // Add glow effect if item type is "Opportunity" 
-          //if (item.type === 'Opportunity') 
-          //  { 
-          //    itemCircle.attr('filter', 'url(#sofGlow)'); // Apply the glow filter for Opportunity circles
-          //  }
+          if (item.type === 'Opportunity') 
+            { 
+              itemCircle.attr('filter', 'url(#sofGlow)'); // Apply the glow filter for Opportunity circles
+            }
 
         // Draw item name
         itemGroup.append('text')

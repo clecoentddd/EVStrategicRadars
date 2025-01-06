@@ -19,8 +19,8 @@ export async function projectStreamToSupabase(strategicStream) {
     console.log("projectStreamToSupabase : ExistingItem", existingItem);
 
     if (fetchError) {
-      console.error("Error fetching strategic stream:", fetchError.message);
-      throw new Error("Failed to check if strategic stream exists.");
+      console.error("projectStreamToSupabase: Error fetching strategic stream:", fetchError.message);
+      throw new Error("projectStreamToSupabase: Failed to check if strategic stream exists.");
     }
 
     if (existingItem != undefined) {

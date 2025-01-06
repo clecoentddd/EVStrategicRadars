@@ -22,7 +22,7 @@ export default function StrategyStream() {
   const [newStrategy, setNewStrategy] = useState({
     name: '',
     description: '',
-    whatWeWillNotDo: '',
+    whatwewillnotdo: '',
   });
 
   const [availableTags, setAvailableTags] = useState([]); // Tags fetched from API
@@ -105,43 +105,83 @@ export default function StrategyStream() {
     description: '',
   });
 
+      
+  const fetchStreamData = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch aggregate data and stream data in one go if needed
+      const aggregateResponse = await fetch(`/api/readmodel-strategies?stream_aggregate=${streamid}`);
+      if (!aggregateResponse.ok) {
+        throw new Error(`fetchStreamData: Failed to fetch aggregate data: ${aggregateResponse.statusText}`);
+      }
+      const aggregateStream= await aggregateResponse.json();
+
+      console.log ("fetchStreamData: Stream Aggregate id fetched is", aggregateStream.radarId);
+      console.log ("fetchStreamData: Stream Aggregate name fetched is", aggregateStream.name);
+
+      // Extract radarId from aggregate data
+      setStreamAggregate(aggregateStream || null);
+
+      // Fetch stream data if needed
+      const streamResponse = await fetch(`/api/readmodel-strategies?stream_id=${streamid}`);
+      console.log("fetchStreamData: Stream data response:", streamResponse);
+
+      if (!streamResponse.ok) {
+        throw new Error(`Failed to fetch stream data: ${streamResponse.statusText}`);
+      }
+      const streamData= await streamResponse.json();
+
+      setStreamData(streamData.sort((a, b) => {
+        // Compare the 'created_at' property of each object
+        return new Date(b.created_at) - new Date(a.created_at); 
+      }));
+      console.log ("fetchStreamData: Stream data fetched is (streamData)", streamData);
+
+      //const organizedData = organizeData(streamData); 
+      // Use the organizedData here, for example:
+      //console.log("Organized data:", organizedData); 
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const organizeData = (streamData) => {
+    
+    if (!streamData) {
+      console.error("streamData is undefined.");
+      return []; // Or handle the error appropriately
+    }
+    const strategies = {};
+
+    console.log("organizeData", streamData);
+  
+    for (const key in streamData) {
+      if (key !== 'length') { 
+        const item = streamData[key]; 
+        console.error("organizeData: streamData item:", item);
+        if (item.type === "STRATEGY") {
+          strategies[item.id] = { ...item, elements: [] };
+        } else if (item.type === "STRATEGIC_ELEMENT") {
+          if (strategies[item.strategy_id]?.elements) {
+            strategies[item.strategy_id].elements.push(item);
+          }
+        }
+      }
+    }
+  
+    return Object.values(strategies);
+  };
+
   useEffect(() => {
     if (!router.isReady) return;
 
-    
-    const fetchStreamData = async () => {
-      try {
-        setLoading(true);
-
-        // Fetch aggregate data and stream data in one go if needed
-        const aggregateResponse = await fetch(`/api/readmodel-strategies?stream_aggregate=${streamid}`);
-        if (!aggregateResponse.ok) {
-          throw new Error(`Failed to fetch aggregate data: ${aggregateResponse.statusText}`);
-        }
-        const aggregateStream= await aggregateResponse.json();
-
-        console.log ("Stream Aggregate id fetched is", aggregateStream.radarId);
-        console.log ("Stream Aggregate name fetched is", aggregateStream.name);
-
-        // Extract radarId from aggregate data
-        setStreamAggregate(aggregateStream || null);
-
-        // Fetch stream data if needed
-        const streamResponse = await fetch(`/api/readmodel-strategies?stream_id=${streamid}`);
-        if (!streamResponse.ok) {
-          throw new Error(`Failed to fetch stream data: ${streamResponse.statusText}`);
-        }
-        const streamData = await streamResponse.json();
-        setStreamData(streamData);
-
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    console.log("useEffect, fetchStreamData...");
     fetchStreamData();
+   
   }, [router.isReady, streamid]);
 
   const getRadarUrl = (streamAggregate) => {
@@ -152,35 +192,6 @@ export default function StrategyStream() {
     const radarId = streamAggregate.radarId;
     return `/radars/ui/${encodeURIComponent(name)}?radarId=${encodeURIComponent(radarId)}`;
   };
-
-  const organizeData = (streamData) => {
-    const strategies = {};
-    
-  
-    streamData?.data.forEach(item => {
-      if (item.type === "STRATEGY") {
-        strategies[item.id] = { ...item, elements: [] };
-      } else if (item.type === "STRATEGIC_ELEMENT") {
-        if (strategies[item.strategy_id]) {
-          strategies[item.strategy_id].elements.push(item);
-        }
-      }
-    });
-
-    return Object.values(strategies); // Returning the organized strategies
-  };
-
-
-    // Organize data when streamData is updated
-    useEffect(() => {
-      if (streamData && streamData.data && Array.isArray(streamData.data)) {
-        const organizedStrategies = organizeData(streamData);
-        console.log(organizedStrategies); // Do something with the organized data
-      } else
-      {
-        console.log("No strategies defined yet."); 
-      }
-    }, [streamData]);
 
   const handleElementExpand = (elementId) => {
     console.log("handleElementExpand - 1");
@@ -353,14 +364,15 @@ export default function StrategyStream() {
   const handleCreateStrategySubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await fetch(`/api/strategy-version`, {
+        console.log("Calling POST API for", newStrategy);
+        const response = await fetch(`/api/strategy-strategies`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               stream_id: streamid,
               name: newStrategy.name,
               description: newStrategy.description,
-              // whatWeWillNotDo: newStrategy.whatWeWillNotDo,
+              whatwewillnotdo: newStrategy.whatwewillnotdo,
             }),
           });
 
@@ -368,13 +380,26 @@ export default function StrategyStream() {
         throw new Error('Failed to create strategy', response.statutsText);
       }
 
-      const data = await response.json();
+      const eventData = await response.json();
       alert('Strategy created successfully!');
+      
+      /* format data for updating data on the screen */
+      const newStrategyData = {
+        created_at: eventData.result.timestamp,
+        name: eventData.result.name,
+        description: eventData.result.description,
+        state: eventData.result.state,
+        stream_id: eventData.result.stream_id,
+        id: eventData.result.id,
+        whatwewillnotdo: eventData.result.whatwewillnotdo,
+        elements: [], 
+      };
       setShowCreateStrategyForm(false);
-      setNewStrategy({ name: '', description: '', whatWeWillNotDo: '' });
-      setStreamData((prev) => ({
-        ...prev,
-        data: prev.data ? [...prev.data, data] : [data], // Conditionally use spread
+      setNewStrategy({ name: '', description: '', whatwewillnotdo: '' });
+
+      // reorder based on created_at
+      setStreamData([newStrategyData, ...streamData].sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at); 
       }));
     } catch (err) {
       alert(`Error: ${err.message}`);
@@ -385,18 +410,33 @@ export default function StrategyStream() {
     // Reset the newElement state
     setNewElement({ 
       name: '', 
-      description: '' 
+      description: '',
     }); 
     // Optionally, close the form (if it's in a modal or overlay)
     setShowCreateElementForm(false); 
   };
 
+  const handleCancelCreateStrategy = () => {
+    setNewStrategy({ 
+      name: '', 
+      description: '', 
+      whatwewillnotdo: '', 
+    }); 
+    setShowCreateStrategyForm(false); 
+  };
   
   const renderStrategies = (strategies) => {
+    
+    if (!strategies || strategies.length === 0) {
+      return <div>No strategies available</div>; // Or any other message when there is no data
+    }
+    
+    // console.log("renderStrategies", strategies);
+
     return strategies.map((strategy) => (
       <div key={strategy.id} className="strategy" style={strategyStyle}>
         <div
-          className="strategy-header"
+          className="strategyHeader"
           style={{
             backgroundColor: strategy.state === "Open" ? "Purple" : "Gainsboro",
             color: strategy.state === "Open" ? "white" : "black",
@@ -623,7 +663,7 @@ export default function StrategyStream() {
                     {editableElementId === element.id ? (
                     <>
                     <button className={styles.saveButton} onClick={handleSaveClick}>Save</button>
-                    <button className={styles.cancelButton} onClick={handleCancelClick}>Cancel</button>
+                    <button className={styles.saveButton} onClick={handleCancelClick}>Cancel</button>
                     </>
                     ) : (
                     <button className={styles.editButton} onClick={() => handleEditClick(element.id)}>Edit</button>
@@ -645,7 +685,7 @@ return (
     </div>
 
     <div className={styles.container}>
-  {/* Display Radar Name and Description */}
+  {/* Display Radar Name and Description and What we will not do*/}
   <div className={styles.streamHeader}>
     <h1>
       {streamAggregate && streamAggregate.name ? streamAggregate.name : "Loading..."}
@@ -688,15 +728,20 @@ return (
             required
           ></textarea>
           <textarea
-            name="whatWeWillNotDo"
-            value={newStrategy.whatWeWillNotDo}
+            name="whatwewillnotdo"
+            value={newStrategy.whatwewillnotdo}
             onChange={handleCreateStrategyChange}
             placeholder="What we will not do"
             rows="3"
           ></textarea>
-          <button type="submit" style={editButtonStyle}>
-            Create
-          </button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}> 
+            <button type="submit" className = {styles.editButtonStyle}>
+              Create
+            </button>
+            <button type="button" onClick={handleCancelCreateStrategy} className = {styles.editButtonStyle}>
+              Cancel
+            </button>
+          </div> 
         </form>
       )}
 
@@ -719,6 +764,14 @@ return (
             rows="3"
             required
           ></textarea>
+          <textarea
+            name="whatwewillnotdo"
+            value={newElement.whatwewillnotdo}
+            onChange={handleCreateElementChange}
+            placeholder="What we will not do"
+            rows="3"
+            required
+          ></textarea>
           <div className={styles.buttonContainerStyle}>
             <button type="submit" className={styles.saveButton}>
               Create
@@ -736,10 +789,10 @@ return (
 
       {loading && <p>Loading stream data...</p>}
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      {streamData && streamData.data && Array.isArray(streamData.data) ? (
-        <div>
-          <h2>Stream Details</h2>
-          {renderStrategies(organizeData(streamData))}
+      {streamData && Array.isArray(streamData) ? (
+         <div>
+          <h2>Strategies</h2>
+          {renderStrategies(streamData)}
         </div>
       ) : (
         <div style={{ color: "red" }}>No strategies defined yet.</div>

@@ -56,6 +56,7 @@ export async function projectStrategyToSupabase(strategy) {
               previous_strategy_id: strategy.previous_strategy_id,
               name: strategy.name,
               description: strategy.description,
+              whatwewillnotdo: strategy.whatwewillnotdo,
               state: strategy.state,
               updated_at: new Date().toISOString(),
             },

@@ -1,4 +1,4 @@
-import { createStream } from '../model/strategy';
+import { createStream } from '../model/strategyStream';
 
 export async function createStreamHandler(command) {
     // Implement your strategy creation logic here
