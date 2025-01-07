@@ -173,7 +173,11 @@ function HomePage() {
     <main className={styles.main}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1>Radars</h1>
+          <h1 className={styles.headerTitle}>SPARK - Strategies that are executable</h1>
+          <h2 className={styles.headerSubtitle}>
+            Agility: “the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win.” 
+            Leo Tilmn / General Charles Jacoby
+          </h2>
           <button
             id="sync-status"
             className={isSynced ? styles.buttonGreen : styles.buttonRed}
@@ -182,13 +186,14 @@ function HomePage() {
             {isSynced ? 'Synced' : 'Sync Issue'}
           </button>
         </div>
-        <button
+      </div>
+      <button
           id="create-radar-button"
           className={styles.buttonCreateRadar}
           onClick={() => toggleForm('create')}
-        >
-          Create Organisation
-        </button>
+      >
+          Create a new organisation
+      </button>
         <div
           id="create-form"
           className={styles.createFormContainer}
@@ -222,7 +227,7 @@ function HomePage() {
             </div>
             <div className={styles.levelSeparator}></div>
             <div className={styles.formGroup}>
-              <label htmlFor="description">Purpose</label>
+              <label htmlFor="description">What is your purpose? Why do you get up in the morning?</label>
               <br />
               <textarea
                 id="description"
@@ -265,7 +270,11 @@ function HomePage() {
               {levelGroup.radars.map((radar) => (
                 <div key={radar.id} className={styles.radarItem}>
                   <div className={styles.radarHeader}>
-                    <h3 onClick={() => toggleRadar(radar.id)}>{radar.name}</h3>
+                    <h3 onClick={() => toggleRadar(radar.id)}>
+                      {radar.name}
+                      <br />
+                      <span className={styles.radarDescription}>{radar.description}</span>
+                    </h3>
                   </div>
                   <div
                     className={styles.radarDetails}
@@ -304,7 +313,6 @@ function HomePage() {
             </div>
           ))}
         </div>
-      </div>
     </main>
   );
 }

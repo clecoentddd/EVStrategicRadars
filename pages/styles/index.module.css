@@ -1,9 +1,41 @@
+.main {
+  font-family: 'Orbitron', sans-serif;
+  width: 90%;
+  padding-left: 40px;
+}
+
 
 .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Orbitron', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Orbitron', sans-serif;
+  background-color: darkgrey;
+  border-radius: 5px;
+  gap: 20px;
+}
+  
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    color: white;
+    position: relative; /* Allows button to be positioned in the header */
+  }
+
+  .headerTitle {
+    font-size: 2rem; /* Adjust as needed */
+    margin: 0;
+    text-align: center;
+  }
+  
+  .headerSubtitle {
+    font-size: 1rem; /* Smaller than h1 */
+    margin-top: 10px; /* Space below h1 */
+    text-align: center;
+    color: #d9d7d7; /* Optional: Slightly dimmer color for distinction */
+    font-style: italic; 
   }
   
   .button {
@@ -58,8 +90,8 @@
   .buttonCreateRadar {
     background-color: #9400D3;
     color: white;
-    margin: 5px 5px;
-    padding: 10px 15px ; 
+    margin: 30px 20px 20px 0px;
+    padding: 12px 15px ; 
     border: none; 
     border-radius: 5px; 
     cursor: pointer;
@@ -128,6 +160,12 @@
     gap: 10px;
   }
 
+  .radarDescription {
+    font-size: 0.8rem; /* Smaller font size */
+    font-style: italic;  /* Italic style */
+    color: grey;         /* Optional: muted/darker gray color for better readability */
+  }
+
   .radarItem {
     /* Styles for the entire radar item container */
     padding: 10px;
@@ -167,28 +205,16 @@
     margin-bottom: 20px; 
   } 
 
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between; /* Align items to opposite ends */
-    align-items: center; /* Vertically center the elements */
-    margin-bottom: 20px;
-  }
-
-  .radarListContainer {
+ .radarListContainer {
     /* Optional: Add some spacing */
     margin-top: 20px; 
   }
   
   .levelHeader {
-    font-size: 0.9em; 
+    font-size: 1em; 
     padding: 5px;
     margin-bottom: 5px;
+    text-align: center;
     position: relative;
     border-radius: 5px;
     background-color: plum;

@@ -27,11 +27,14 @@ export default function StrategyStream() {
 
   const [availableTags, setAvailableTags] = useState([]); // Tags fetched from API
 
-  const handleEditClick = async (id) => {
-    setEditableElementId(id);
+  const handleEditClick = async (strategy,element) => {
+    setEditableElementId(element.id);
 
     // Save the original data of the row being edited
-    const currentRow = streamData.data.find((item) => item.id === id);
+    console.log ("handleEditClick ", strategy);
+    console.log ("handleEditClick ", element.id);
+    const currentRow = element
+    console.log ("handleEditClick currentRow", currentRow);
     setTempData({ ...currentRow });
 
       // Fetch available tags when entering edit mode
@@ -201,7 +204,7 @@ export default function StrategyStream() {
   const handleEditToggle = async (elementId) => {
     if (editableElementId === elementId) {
       // Save the changes
-      const element = streamData.data.find((item) => item.id === elementId); // Find the edited element
+      const element = streamData.find((item) => item.id === elementId); // Find the edited element
       if (element) {
         try {
           const response = await fetch(`/api/strategy-items?elementid=${elementId}`, {
@@ -235,17 +238,71 @@ export default function StrategyStream() {
     }
   };  
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (strategy, element) => {
+    if (!editableElementId || !tempData) {
+      alert("No changes to save or invalid element.");
+      return;
+    }
+  
+    try {
+      // Step 1: Make the API call to update the backend
+      const response = await fetch(`/api/strategy-items?elementid=${editableElementId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stream_id: tempData.stream_id,
+          strategy_id: tempData.strategy_id,
+          diagnosis: tempData.diagnosis,
+          overall_approach: tempData.overall_approach,
+          set_of_coherent_actions: tempData.set_of_coherent_actions,
+          proximate_objectives: tempData.proximate_objectives,
+          name: tempData.name,
+          description: tempData.description,
+          tags: tempData.tags,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to save changes");
+      }
+  
+      // Step 2: Update `streamData` only if the API call succeeds
+      setStreamData((prevData) => {
+        return prevData.map((strat) => {
+          // Update the specific strategy
+          if (strat.id === strategy.id) {
+            return {
+              ...strat,
+              elements: strat.elements.map((el) =>
+                el.id === element.id ? { ...tempData } : el
+              ),
+            };
+          }
+          return strat;
+        });
+      });
+  
+      alert("Changes saved successfully!");
+  
+      // Exit edit mode and clear temporary data
+      setEditableElementId(null);
+      setTempData(null);
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    }
+  };
+  
+  const handleSaveClick1 = async () => {
     if (editableElementId && tempData) {
       // Create updatedData outside of setStreamData
-      const updatedData = streamData.data.map((item) =>
+      const updatedData = streamData.map((item) =>
         item.id === editableElementId ? { ...tempData } : item
       );
   
       // Update state with updatedData
       setStreamData((prevData) => ({
         ...prevData,
-        data: updatedData,
+        updatedData,
       }));
   
       // Make the API call using updatedData
@@ -280,34 +337,7 @@ export default function StrategyStream() {
       setTempData(null);
     }
   };
-    
-  const handleTagSelect = (selectedTag) => {
-      // Check if element.tags is a string and parse it if it is
-      const element = streamData.data.find((item) => item.id === editableElementId); // Get the current element
-
-      console.log("Selected tags are:", selectedTag);
-      const existingTags = 
-        element.tags && 
-        typeof element.tags === 'string' && 
-        element.tags.trim() !== '' 
-          ? JSON.parse(element.tags) 
-          : []; 
-  
-    // Check if the selected tag already exists
-    const existingTagIndex = existingTags.findIndex((tag) => tag.id === selectedTag.id);
-  
-    if (existingTagIndex === -1) { 
-      // If the tag doesn't exist, add it to the array
-      existingTags.push(selectedTag); 
-    }
-  
-    // Update the state with the new tags
-    setTempData({ 
-      ...tempData, 
-      tags: JSON.stringify(existingTags) 
-    });
-  };
-  
+      
   const handleCreateStrategyChange = (e) => {
     const { name, value } = e.target;
     setNewStrategy((prev) => ({
@@ -662,11 +692,11 @@ export default function StrategyStream() {
                     {/* Edit Button */}
                     {editableElementId === element.id ? (
                     <>
-                    <button className={styles.saveButton} onClick={handleSaveClick}>Save</button>
+                    <button className={styles.saveButton} onClick={() => handleSaveClick(strategy, element)}>Save</button>
                     <button className={styles.saveButton} onClick={handleCancelClick}>Cancel</button>
                     </>
                     ) : (
-                    <button className={styles.editButton} onClick={() => handleEditClick(element.id)}>Edit</button>
+                    <button className={styles.editButton} onClick={() => handleEditClick(strategy, element)}>Edit</button>
                     )}
                   </div>
                   </div>
