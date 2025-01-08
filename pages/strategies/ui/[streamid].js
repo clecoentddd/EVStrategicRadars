@@ -26,6 +26,7 @@ export default function StrategyStream() {
   });
 
   const [availableTags, setAvailableTags] = useState([]); // Tags fetched from API
+  const [activeStrategy, setActiveStrategy] = useState("");
 
   const handleEditClick = async (strategy,element) => {
     setEditableElementId(element.id);
@@ -464,11 +465,12 @@ export default function StrategyStream() {
     // console.log("renderStrategies", strategies);
 
     return strategies.map((strategy) => (
-      <div key={strategy.id} className="strategy" style={strategyStyle}>
+      <div key={strategy.id} className={styles.strategyStyle}>
+        {/* Strategy Header */}
         <div
           className="strategyHeader"
           style={{
-            backgroundColor: strategy.state === "Open" ? "Purple" : "Gainsboro",
+            backgroundColor: strategy.state === "Open" ? "Plum" : "Gainsboro",
             color: strategy.state === "Open" ? "white" : "black",
             ...strategyHeaderStyle,
           }}
@@ -479,20 +481,47 @@ export default function StrategyStream() {
         >
           <span style={strategyTitleStyle}>{`${strategy.name} (${strategy.state})`}</span>
         </div>
-        <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
+    
+        {/* Expanded Section for Strategy Details */}
+        <div
+          id={`elements-${strategy.id}`}
+          className={styles.elementsStyle}
+          style={{ display: "none" }} // Ensure collapsed by default
+        >
+          {/* Description and What We Will Not Do */}
+          <div className={styles.strategyDetails}>
+             <p>
+              <strong>Description:</strong> {strategy.description}
+            </p>
+            <p>
+              <strong>What We Will Not Do:</strong> {strategy.whatwewillnotdo}
+            </p>
+          </div>
+          <button
+            className={styles.createStrategyButtonStyle}
+            onClick={() => {
+            setShowCreateElementForm(true);
+            setActiveStrategy(strategy.name); // Set the strategy name for the form
+          }}
+          >
+            Create a Strategy Element
+          </button>
+    
+          {/* Elements Inside Strategy */}
           {strategy.elements.map((element) => (
             <div key={element.id} className="element" style={elementStyle}>
               <div
                 className="element-header"
                 style={{
                   ...elementHeaderStyle,
-                  backgroundColor: strategy.state === "Open" ? "Plum" : "Gainsboro",
+                  backgroundColor: strategy.state === "Open" ? "Thistle" : "Gainsboro",
                 }}
                 onClick={() => handleElementExpand(element.id)}
               >
                 <span style={elementTitleStyle}>{`${element.name} (${element.state})`}</span>
               </div>
-              
+    
+              {/* Expanded Element Details */}
               {expandedElementId === element.id && (
                 <div className="element-details" style={elementDetailsStyle}>
                   {/* Name Field */}
@@ -510,7 +539,7 @@ export default function StrategyStream() {
                         }
                       />
                     </label>
-
+    
                     <label className={styles.labelElementStyle}>
                       Description
                       <textarea
@@ -525,21 +554,33 @@ export default function StrategyStream() {
                       />
                     </label>
                   </div>
-
-
+    
                   {/* Table Fields */}
                   <table className={styles.tableStyle}>
                     <thead>
                       <tr>
-                        <th id="diagnosis" className={styles.headerCells}>Diagnosis</th>
-                        <th id="overallApproach" className={styles.headerCells}>Overall Approach</th>
-                        <th id="coherentActions" className={styles.headerCells}>Set of Coherent Actions</th>
-                        <th id="proximateObjectives" className={styles.headerCells}>Proximate Objectives</th>
+                        <th id="diagnosis" className={styles.headerCells}>
+                          Diagnosis
+                        </th>
+                        <th id="overallApproach" className={styles.headerCells}>
+                          Overall Approach
+                        </th>
+                        <th id="coherentActions" className={styles.headerCells}>
+                          Set of Coherent Actions
+                        </th>
+                        <th id="proximateObjectives" className={styles.headerCells}>
+                          Proximate Objectives
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        {["diagnosis", "overall_approach", "set_of_coherent_actions", "proximate_objectives"].map((field) => (
+                        {[
+                          "diagnosis",
+                          "overall_approach",
+                          "set_of_coherent_actions",
+                          "proximate_objectives",
+                        ].map((field) => (
                           <td
                             key={field}
                             className={
@@ -563,16 +604,54 @@ export default function StrategyStream() {
                       </tr>
                     </tbody>
                   </table>
-
+    
                   {/* Define tooltips for the header elements */}
-                  <ReactTooltip anchorId="diagnosis" place="top" content={<span>We need facts and data. Be very mindful of biases like the echo chamber.<br />Be careful of logical arguments.<br />Tools such as Wardley mapping can be used here</span>} className={styles.customTooltip}/>
-                  <ReactTooltip anchorId="overallApproach" place="top" content={<span>How you are going to solve the problem and take advantage of the opportinuty.<br />This is seen as the strategy but do not be fooled: strategy is more than an approach</span>} className={styles.customTooltip} />
-                  <ReactTooltip anchorId="coherentActions" place="top" content={<span>Ensure you have a set of coherent actions</span>} className={styles.customTooltip}/>
-                  <ReactTooltip anchorId="proximateObjectives" place="top" content={<span>You want to make your strategy concrete, executable in the very short-term so people can believe you are walking the talk</span>} className={styles.customTooltip}/>
-                  
-                  
+                  <ReactTooltip
+                    anchorId="diagnosis"
+                    place="top"
+                    content={
+                      <span>
+                        We need facts and data. Be very mindful of biases like the echo chamber.
+                        <br />
+                        Be careful of logical arguments.
+                        <br />
+                        Tools such as Wardley mapping can be used here
+                      </span>
+                    }
+                    className={styles.customTooltip}
+                  />
+                  <ReactTooltip
+                    anchorId="overallApproach"
+                    place="top"
+                    content={
+                      <span>
+                        How you are going to solve the problem and take advantage of the opportunity.
+                        <br />
+                        This is seen as the strategy but do not be fooled: strategy is more than an
+                        approach
+                      </span>
+                    }
+                    className={styles.customTooltip}
+                  />
+                  <ReactTooltip
+                    anchorId="coherentActions"
+                    place="top"
+                    content={<span>Ensure you have a set of coherent actions</span>}
+                    className={styles.customTooltip}
+                  />
+                  <ReactTooltip
+                    anchorId="proximateObjectives"
+                    place="top"
+                    content={
+                      <span>
+                        You want to make your strategy concrete, executable in the very short-term so
+                        people can believe you are walking the talk
+                      </span>
+                    }
+                    className={styles.customTooltip}
+                  />
+    
                   {/* Tags Field (Below Table) */}
-
                   <div className={styles.tagsContainer}>
                     <strong>Tags</strong>
                     <div>
@@ -591,11 +670,12 @@ export default function StrategyStream() {
                                   className={styles.removeTagButton}
                                   onClick={() => {
                                     // Remove only the selected tag
-                                    const updatedTags = (Array.isArray(tempData?.tags)
-                                      ? tempData.tags
-                                      : JSON.parse(tempData?.tags || "[]")
+                                    const updatedTags = (
+                                      Array.isArray(tempData?.tags)
+                                        ? tempData.tags
+                                        : JSON.parse(tempData?.tags || "[]")
                                     ).filter((t) => t.id !== tag.id);
-
+    
                                     setTempData((prev) => ({
                                       ...prev,
                                       tags: updatedTags,
@@ -620,15 +700,15 @@ export default function StrategyStream() {
                             }
                             onChange={(e) => {
                               // Get selected tag IDs
-                              const selectedTagIds = Array.from(e.target.selectedOptions).map(
-                                (option) => option.value
-                              );
-
+                              const selectedTagIds = Array.from(
+                                e.target.selectedOptions
+                              ).map((option) => option.value);
+    
                               // Map selected IDs to tag objects
                               const selectedTags = availableTags.filter((tag) =>
                                 selectedTagIds.includes(tag.id)
                               );
-
+    
                               // Combine existing tags with newly selected tags, avoiding duplicates
                               const combinedTags = [
                                 ...(Array.isArray(tempData?.tags)
@@ -636,14 +716,14 @@ export default function StrategyStream() {
                                   : JSON.parse(tempData?.tags || "[]")),
                                 ...selectedTags,
                               ];
-
+    
                               const uniqueTags = combinedTags.reduce((acc, tag) => {
                                 if (!acc.some((t) => t.id === tag.id)) {
                                   acc.push(tag);
                                 }
                                 return acc;
                               }, []);
-
+    
                               setTempData((prev) => ({
                                 ...prev,
                                 tags: uniqueTags,
@@ -667,45 +747,74 @@ export default function StrategyStream() {
                             <div className={styles.tagsReadonlyContainer}>
                               {Array.isArray(element.tags)
                                 ? element.tags.map((tag, index) => (
-                                    <span key={index} className={styles.tagReadonly}>
+                                    <span
+                                      key={index}
+                                      className={styles.tagReadonly}
+                                    >
                                       {tag.name}
                                     </span>
                                   ))
                                 : JSON.parse(element.tags).map((tag, index) => (
-                                    <span key={index} className={styles.tagReadonly}>
+                                    <span
+                                      key={index}
+                                      className={styles.tagReadonly}
+                                    >
                                       {tag.name}
                                     </span>
                                   ))}
                             </div>
                           )}
-
+    
                           {(!element.tags ||
-                            (Array.isArray(element.tags) && element.tags.length === 0) ||
+                            (Array.isArray(element.tags) &&
+                              element.tags.length === 0) ||
                             (typeof element.tags === "string" &&
-                              JSON.parse(element.tags).length === 0)) && <span>No tags</span>}
+                              JSON.parse(element.tags).length === 0)) && (
+                            <span>No tags</span>
+                          )}
                         </div>
                       )}
                     </div>
                   </div>
-
+    
                   <div className={styles.rowButtonsEditCancelSave}>
                     {/* Edit Button */}
                     {editableElementId === element.id ? (
-                    <>
-                    <button className={styles.saveButton} onClick={() => handleSaveClick(strategy, element)}>Save</button>
-                    <button className={styles.saveButton} onClick={handleCancelClick}>Cancel</button>
-                    </>
+                      <>
+                        <button
+                          className={styles.saveButton}
+                          onClick={() =>
+                            handleSaveClick(strategy, element)
+                          }
+                        >
+                          Save
+                        </button>
+                        <button
+                          className={styles.saveButton}
+                          onClick={handleCancelClick}
+                        >
+                          Cancel
+                        </button>
+                      </>
                     ) : (
-                    <button className={styles.editButton} onClick={() => handleEditClick(strategy, element)}>Edit</button>
+                      <button
+                        className={styles.editButton}
+                        onClick={() =>
+                          handleEditClick(strategy, element)
+                        }
+                      >
+                        Edit
+                      </button>
                     )}
                   </div>
-                  </div>
+                </div>
               )}
             </div>
           ))}
         </div>
       </div>
     ));
+    
   };
 
 return (
@@ -776,8 +885,8 @@ return (
       )}
 
       {showCreateElementForm && (
-        <form style={formStyle} onSubmit={handleCreateElementSubmit}>
-          <h3>Create Strategy Element</h3>
+        <form className={styles.createElementFormStyle} onSubmit={handleCreateElementSubmit}>
+          <h3>Create new strategic element for: {activeStrategy}</h3>
           <input
             type="text"
             name="name"
@@ -803,7 +912,7 @@ return (
             required
           ></textarea>
           <div className={styles.buttonContainerStyle}>
-            <button type="submit" className={styles.saveButton}>
+            <button type="submit" className={styles.createButton}>
               Create
             </button>
             <button
@@ -848,22 +957,12 @@ return (
     margin: '20px auto',
   };
   
-  const strategyStyle = {
-    marginBottom: '20px',
-  };
-
   const strategyHeaderStyle = {
     color: 'white', // Adjust text color for readability
     padding: '10px',
     cursor: 'pointer',
   };
   
-  const elementsStyle = {
-    display: 'none',
-    marginLeft: '10px',
-    marginTop: '10px',
-  };
-
   const strategyTitleStyle = {
     color: '#ffffff', // Dark blue for "STRATEGY"
   };

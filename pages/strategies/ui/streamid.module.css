@@ -16,7 +16,7 @@
   text-align: left;
   margin-top: 50px; /* Reduce top margin */
   margin-bottom: 2px; 
-  background-color: #e887cd;
+  background-color: plum;
   padding: 2px; 
   border-radius: 5px; /* Add rounded corners */
   font-size: 9px;
@@ -204,28 +204,7 @@
   };
   
 
-  .cancelButton {
-    background-color: plum;
-    border-color: plum;
-    color: white;
-    margin-left: 20px;
-    margin-top: 20px;
-    border-radius: 10px;
-    padding: 8px;
-    border-bottom: none;
-  }
 
-  .saveButton {
-    background-color: violet;
-    border-color: violet;
-    color: white;
-    margin-left: 20px;
-    margin-top: 20px;
-    border-radius: 10px;
-    padding: 8px;
-    border-bottom: none;
-  }
-  
   .editButton {
     background-color: plum;
     color: white;
@@ -321,4 +300,102 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+  }
+
+  .strategyStyle  {
+    margin-bottom: 20px;
   };
+
+  .strategyDetails {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9; /* Optional: Add a light background color for better visibility */
+    border: 1px solid #ddd;   /* Optional: Add a subtle border */
+    border-radius: 5px;       /* Optional: Rounded corners */
+  }
+  
+  .strategyDetails p {
+    margin: 5px 5px 5px 5px; /* Add spacing between paragraphs */
+    color: #333;   /* Set text color */
+    font-size: 14px; /* Adjust font size */
+   }
+  
+  .strategyDetails strong {
+    font-weight: bold;
+    color: #000; /* Make the strong text stand out */
+  }
+  
+
+  .elementsStyle {
+    display: none;
+    margin-left: 10px;
+    margin-top: 10px;
+  };
+
+  /* form to create new element */
+  .createElementFormStyle {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .createElementFormStyle h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .createElementFormStyle input,
+  .createElementFormStyle textarea {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+  }
+  
+  .createElementFormStyle textarea {
+    resize: none;
+  }
+  
+  .buttonContainerStyle {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .createButton {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .createButton:hover {
+    background-color: #45a049;
+  }
+  
+  .cancelButton {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cancelButton:hover {
+    background-color: #d32f2f;
+  }
+  
