@@ -38,11 +38,11 @@ function HomePage() {
     event.preventDefault();
 
     const name = event.target.name.value;
-    const description = event.target.description.value;
+    const purpose = event.target.purpose.value;
     const level = parseInt(event.target.level.value, 10);
 
     try {
-      const newRadar = await createRadar(name, description, level);
+      const newRadar = await createRadar(name, purpose, level);
       console.log("final preparing reading result for setRadars", newRadar);
     
       // Correctly add the new radar to the array
@@ -66,17 +66,17 @@ function HomePage() {
     event.preventDefault();
 
     const name = event.target.name.value;
-    const description = event.target.description.value;
+    const purpose = event.target.purpose.value;
     const level = parseInt(event.target.level.value, 10);
 
     try {
       if (radarToUpdate) {
-        const result = await updateRadar(radarToUpdate.id, name, description, level);
+        const result = await updateRadar(radarToUpdate.id, name, purpose, level);
 
         // Update the radar in the state
         setRadars((prevRadars) =>
           prevRadars.map((radar) =>
-            radar.id === radarToUpdate.id ? { ...radar, name, description, level } : radar
+            radar.id === radarToUpdate.id ? { ...radar, name, purpose, level } : radar
           )
         );
 
@@ -94,6 +94,7 @@ function HomePage() {
   };
 
   const toggleForm = (mode, radar = null) => {
+    console.log("toggleForm", mode, radar);
     setIsFormVisible(true); // Always open the form when toggling
     setFormMode(mode);
     setRadarToUpdate(radar); // Set the radar to update if in update mode
@@ -127,6 +128,7 @@ function HomePage() {
   }
 
   const viewStream = async (radarId) => {
+    // Fetch the active strategy stream for the radar to navigate to the strategy page
     try {
       const response = await fetch(`/api/readmodel-strategies?radarId=${encodeURIComponent(radarId)}`);
       if (!response.ok) {
@@ -192,15 +194,11 @@ function HomePage() {
           className={styles.buttonCreateRadar}
           onClick={() => toggleForm('create')}
       >
-          Create a new organisation
+      Create a new organisation
       </button>
-        <div
-          id="create-form"
-          className={styles.createFormContainer}
-          style={{ display: isFormVisible ? 'block' : 'none' }}
-        >
-          <h2>{formMode === 'create' ? 'Create Radar' : 'Update Radar'}</h2>
-          <form onSubmit={formMode === 'create' ? handleCreate : handleUpdate}>
+          <div id="create-form" className={styles.createFormContainer} style={{ display: isFormVisible ? 'block' : 'none' }}>
+          <h2>{formMode === 'create' ? 'Create Radar' : `Update Radar: ${radarToUpdate?.name || ''}`}</h2>
+            <form onSubmit={formMode === 'create' ? handleCreate : handleUpdate}>
             <div className={styles.formGroup}>
               <label htmlFor="name">Name</label>
               <br />
@@ -209,7 +207,10 @@ function HomePage() {
                 id="name"
                 name="name"
                 required
-                defaultValue={radarToUpdate?.name || ''}
+                value={radarToUpdate?.name || ''} // Use value instead of defaultValue
+                onChange={(e) =>
+                  setRadarToUpdate((prev) => ({ ...prev, name: e.target.value }))
+                } // Update radarToUpdate state when the input changes
               />
             </div>
             <div className={styles.formGroup}>
@@ -222,20 +223,25 @@ function HomePage() {
                 min="1"
                 required
                 style={{ width: '50px' }}
-                defaultValue={radarToUpdate?.level || ''}
+                value={radarToUpdate?.level || ''} // Use value instead of defaultValue
+                onChange={(e) =>
+                  setRadarToUpdate((prev) => ({ ...prev, level: e.target.value }))
+                } // Update radarToUpdate state when the input changes
               />
             </div>
-            <div className={styles.levelSeparator}></div>
             <div className={styles.formGroup}>
-              <label htmlFor="description">What is your purpose? Why do you get up in the morning?</label>
+              <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
               <br />
               <textarea
-                id="description"
-                name="description"
+                id="purpose"
+                name="purpose"
                 required
                 rows="5"
-                className={styles.descriptionTextarea}
-                defaultValue={radarToUpdate?.description || ''}
+                className={styles.purposeTextarea}
+                value={radarToUpdate?.purpose || ''} // Use value instead of defaultValue
+                onChange={(e) =>
+                  setRadarToUpdate((prev) => ({ ...prev, purpose: e.target.value }))
+                } // Update radarToUpdate state when the input changes
               ></textarea>
             </div>
             <div className={styles.buttonGroup}>
@@ -245,13 +251,17 @@ function HomePage() {
               <button
                 type="button"
                 className={styles.button}
-                onClick={() => setIsFormVisible(false)}
+                onClick={() => {
+                  setIsFormVisible(false);
+                  setRadarToUpdate(null); // Clear the form state when canceled
+                }}
               >
                 Cancel
               </button>
             </div>
           </form>
-        </div>
+
+          </div>
         <div className={styles.radarListContainer}>
           {Object.values(
             radars
@@ -268,47 +278,127 @@ function HomePage() {
             <div key={levelGroup.level}>
               <h2 className={styles.levelHeader}>Level {levelGroup.level}</h2>
               {levelGroup.radars.map((radar) => (
-                <div key={radar.id} className={styles.radarItem}>
-                  <div className={styles.radarHeader}>
-                    <h3 onClick={() => toggleRadar(radar.id)}>
-                      {radar.name}
-                      <br />
-                      <span className={styles.radarDescription}>{radar.description}</span>
-                    </h3>
-                  </div>
-                  <div
-                    className={styles.radarDetails}
-                    style={{
-                      display: expandedRadars[radar.id] ? 'block' : 'none',
-                    }}
-                  >
-                    <p>{radar.description}</p>
-                    <button
-                      className={styles.buttonViewRadar}
-                      onClick={() => viewRadar(radar.name, radar.id)}
-                    >
-                      View Radar
-                    </button>
-                    <button
-                      className={styles.buttonUpdate}
-                      onClick={() => toggleForm('update', radar)}
-                    >
-                      Update
-                    </button>
-                    <button
-                      className={styles.buttonDelete}
-                      onClick={() => buttonDeleteRadar(radar.id)}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      className={styles.buttonViewStrategy}
-                      onClick={() => viewStream(radar.id)}
-                    >
-                      View Strategies
-                    </button>
-                  </div>
-                </div>
+  <div key={radar.id} className={styles.radarItem}>
+    <div className={styles.radarHeader}>
+      <h3 onClick={() => toggleRadar(radar.id)}>
+        {radar.name}
+        <br />
+        <span className={styles.radarPurpose}>{radar.purpose}</span>
+      </h3>
+    </div>
+    <div
+      className={styles.radarDetails}
+      style={{
+        display: expandedRadars[radar.id] ? 'block' : 'none',
+      }}
+    >
+      <button
+        className={styles.buttonViewRadar}
+        onClick={() => viewRadar(radar.name, radar.id)}
+      >
+        View Radar
+      </button>
+      <button
+        className={styles.buttonUpdate}
+        onClick={() => {
+          toggleForm('update', radar);
+          setRadarToUpdate(radar); // Set the radar to be updated
+        }}
+      >
+        Update
+      </button>
+      <button
+        className={styles.buttonDelete}
+        onClick={() => buttonDeleteRadar(radar.id)}
+      >
+        Delete
+      </button>
+      <button
+        className={styles.buttonViewStrategy}
+        onClick={() => viewStream(radar.id)}
+      >
+        View Strategies
+      </button>
+
+      {/* Render the Update Form for the Selected Radar */}
+      {formMode === 'update' && radarToUpdate?.id === radar.id && (
+        <div className={styles.updateFormContainer}>
+          <h2>Update Radar</h2>
+          <form onSubmit={handleUpdate}>
+            <div className={styles.formGroup}>
+              <label htmlFor="name">Name</label>
+              <br />
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                value={radarToUpdate.name || ''}
+                onChange={(e) =>
+                  setRadarToUpdate((prev) => ({
+                    ...prev,
+                    name: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="level">Level</label>
+              <br />
+              <input
+                type="number"
+                id="level"
+                name="level"
+                min="1"
+                required
+                style={{ width: '50px' }}
+                value={radarToUpdate.level || ''}
+                onChange={(e) =>
+                  setRadarToUpdate((prev) => ({
+                    ...prev,
+                    level: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
+              <br />
+              <textarea
+                id="purpose"
+                name="purpose"
+                required
+                rows="5"
+                className={styles.purposeTextarea}
+                value={radarToUpdate.purpose || ''}
+                onChange={(e) =>
+                  setRadarToUpdate((prev) => ({
+                    ...prev,
+                    purpose: e.target.value,
+                  }))
+                }
+              ></textarea>
+            </div>
+            <div className={styles.buttonGroup}>
+              <button type="submit" className={styles.button}>
+                Update
+              </button>
+              <button
+                type="button"
+                className={styles.button}
+                onClick={() => {
+                  setIsFormVisible(false);
+                  setRadarToUpdate(null); // Reset the form
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  </div>
               ))}
             </div>
           ))}

@@ -19,16 +19,16 @@ export function subscribeToIntegrationEvents(callback) {
 subscribeToIntegrationEvents((eventData) => {
   console.log ("PubAndSub subscribeToIntegrationEvents...", eventData)
   
-  switch (eventData.type) {
+  switch (eventData.eventType) {
     case 'RADAR_CREATED':
-      interfaceCreateStream(eventData.payload);
+      interfaceCreateStream(eventData);
       break;
 
     case 'RADAR_UPDATED':
-      interfaceUpdateStream(eventData.payload);
+      interfaceUpdateStream(eventData);
       break;
 
     default:
-      console.warn(`Unhandled event type: ${eventData.type}`);
+      console.warn(`Unhandled event type: ${eventData.eventType}`);
   }
 });

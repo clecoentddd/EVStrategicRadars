@@ -16,6 +16,7 @@
 }
   
   .header {
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -147,7 +148,7 @@
     border-top: 1px solid violet
   }
   
-  .descriptionTextarea {
+  .purposeTextarea {
     width: 100%;
     height: 100px;
     resize: vertical;
@@ -160,9 +161,11 @@
     gap: 10px;
   }
 
-  .radarDescription {
+  .radarPurpose {
+    display: block; /* Ensures it takes a new line */
+    margin-top: 8px; /* Adjust as needed for spacing */
     font-size: 0.8rem; /* Smaller font size */
-    font-style: italic;  /* Italic style */
+    font-style:initial;
     color: grey;         /* Optional: muted/darker gray color for better readability */
   }
 
@@ -183,7 +186,7 @@
   }
   
   .radarItem p {
-    /* Styles for all paragraphs (description and level) */
+    /* Styles for all paragraphs (purpose and level) */
     margin-top: 5px;
     margin-bottom: 0;
   }

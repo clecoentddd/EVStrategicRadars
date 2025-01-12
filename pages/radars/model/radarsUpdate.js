@@ -2,12 +2,12 @@ import {sendRadarUpdated} from '../infrastructure/eventSourceUpdateRadars';
 
 export async function handleRadarUpdate(command) {
   // console.log("Handling radar creation for:", command); // Log the received command
-  const { radarId, name, description, level } = command.payload;
+  const { radarId, name, purpose, level } = command.payload;
  
   //console.log("MODEL123 New radar to create now");
   // Create the radar object (without UUID, which will be added in eventStore.js)
 
-  if (!radarId  || !name || !description || !level) {
+  if (!radarId  || !name || !purpose || !level) {
     return { success: false, message: "Mandatory fields are missing" };
   }
 

@@ -22,7 +22,7 @@ export async function replayRadarAggregate(aggregateId) {
           radar = {
             id: radarEvent.payload.id,
             name: radarEvent.payload.name,
-            description: radarEvent.payload.description,
+            purpose: radarEvent.payload.purpose,
             level: radarEvent.payload.level,
           };
           break;
@@ -31,7 +31,7 @@ export async function replayRadarAggregate(aggregateId) {
             radar = {
               ...radar, 
               name: radarEvent.payload.name, 
-              description: radarEvent.payload.description, 
+              purpose: radarEvent.payload.purpose, 
               level: radarEvent.payload.level,
             };
           } else {

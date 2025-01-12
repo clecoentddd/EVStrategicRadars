@@ -21,7 +21,7 @@ export const sendRadarCreated = async (event) => {
     payload: {
     level: event.level,
     name: event.name,
-    description: event.description,
+    purpose: event.purpose,
     id: uuidv4(),
     }
   };

@@ -17,7 +17,7 @@ export async function projectRadarToSupabase(eventType, radar) {
           {
             id: radar.id,
             name: radar.name,
-            description: radar.description,
+            purpose: radar.purpose,
             level: radar.level,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
@@ -39,7 +39,7 @@ export async function projectRadarToSupabase(eventType, radar) {
       .from('radars')
       .update({
         name: radar.name,
-        description: radar.description,
+        purpose: radar.purpose,
         level: radar.level,
         updated_at: new Date().toISOString(),
       })
@@ -60,7 +60,7 @@ export async function projectRadarToSupabase(eventType, radar) {
           .from('radars')
           .delete({
             name: radar.name,
-            description: radar.description,
+            purpose: radar.purpose,
             level: radar.level,
             updated_at: new Date().toISOString(),
           })

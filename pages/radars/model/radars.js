@@ -1,8 +1,8 @@
-import { sendRadarCreated, getEvents } from '../infrastructure/eventStoreRadars'; // Ensure you have access to getEvents
+import { sendRadarCreated, getEvents } from '../infrastructure/eventStoreRadars.js.deprecated'; // Ensure you have access to getEvents
 
 export async function handleRadarCreation(command) {
   // console.log("Handling radar creation for:", command); // Log the received command
-  const { name, description, level } = command.payload;
+  const { name, purpose, level } = command.payload;
   
   // Fetch existing events to check for duplicates
   //const existingRadars = await getEvents();
@@ -24,7 +24,7 @@ export async function handleRadarCreation(command) {
   //console.log("MODEL123 New radar to create now");
   // Create the radar object (without UUID, which will be added in eventStore.js)
 
-  if (!name || !description || !level) {
+  if (!name || !purpose || !level) {
     return { success: false, message: "Mandatory fields are missing" };
   }
 

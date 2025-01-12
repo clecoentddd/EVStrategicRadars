@@ -1,7 +1,7 @@
 import { appendEventToFile, readEventsFromFile } from './eslib.js';
 import { projectRadarToSupabase } from './radarProjection.js'; // Import projection function
 import {replayRadarAggregate} from './eventReplayRadars.js';
-import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js'
+import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js';
 
 export const sendRadarUpdated = async (event) => {
 
@@ -20,7 +20,7 @@ export const sendRadarUpdated = async (event) => {
       id: event.radarId,
       level: event.level,
       name: event.name,
-      description: event.description,
+      purpose: event.purpose,
       }
     };
   
@@ -35,11 +35,12 @@ export const sendRadarUpdated = async (event) => {
     const radarUpdated = appendEventToFile(radarToUpdate.payload.id, radarToUpdate);
   
     // Publish integration event
+    console.log('publishIntegrationEvent:', publishIntegrationEvent);
     console.log ("sendRadarUpdated: event added to source:", radarUpdated);
     try {
       publishIntegrationEvent(radarUpdated);
     } catch (error) {
-    console.error('Error publishing even (updating radar):', error);
+    console.error('Error publishing event (updating radar):', error);
     // Consider additional error handling, such as retrying the operation or notifying an administrator
     }
   

@@ -94,6 +94,7 @@ export async function getStreamDataFromStreamId(id) {
 }
 
 export async function getStreamByRadarId(id) { 
+  console.log("getStreamByRadarId : getting stream for radarId = ", id);
   try {
     const { data, error } = await supabase
       .from("strategic_streams")
@@ -102,10 +103,10 @@ export async function getStreamByRadarId(id) {
       .single(); // Single ensures we get exactly one row or null
 
     if (error) {
-      console.error("Error fetching steeam  based on radarId:", error.message);
+      console.error("Error fetching stream  based on radarId:", error.message);
       throw new Error("Failed to fetch stream based on radarId:", id);
     }
-
+    console.error("getStreamByRadarId stream is: ", data);
     return data;
   } catch (err) {
     console.error("Unexpected error fetching stream based on radar id:", err.message);

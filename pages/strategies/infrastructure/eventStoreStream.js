@@ -1,5 +1,4 @@
 import { projectStreamToSupabase } from "./ProjectionStreams";
-import { projectStrategyToSupabase } from "./ProjectionStrategies";
 import { v4 as uuidv4 } from 'uuid';
 import { 
   appendEventToFile, 
@@ -34,75 +33,37 @@ export const sendStreamCreated = async (event) => {
   }
 };
 
-export const sendStrategyCreated = async (event) => {
-  console.log("ES - sendStrategyCreated entering...");
+export const sendStreamUpdated = async (event) => {
+  console.log("ES Stream entering updating");
   try {
-    const currentStream = replayStream(event.stream_id);
+        // Build the object with only the fields to update
+        const eventToUpdate = {};
 
-    let new_version = 1;
-    let previous_strategy_id = null;
+        // Ready to save the stream of id event.id
+        eventToUpdate.id = event.id;
 
-    if (currentStream.active_strategy_id) {
-      const currentStrategy = await replayStrategy(currentStream.active_strategy_id);
-      new_version = currentStrategy.version + 1;
-      previous_strategy_id = currentStrategy.id;
-    }
+        // Safely check and update fields
+        if ('name' in event) {
+          eventToUpdate.name = event.name;
+          eventToUpdate.event = "STREAM_UPDATED_WITH_NEW_NAME",
+          eventToUpdate.timestamp = new Date().toISOString();
+          eventToUpdate.type = "STREAM";
+        }
 
-    if (new_version > 1) {
-      const closeStrategy = {
-        event: 'STRATEGY_CLOSED',
-        id: previous_strategy_id,
-        stream_id: currentStream.id,
-        timestamp: new Date().toISOString(),
-        state: 'Closed',
-      };
+        if ('active_strategy_id' in event) {
+          streamToUpdate.latest_strategy_id = event.latest_strategy_id;
+        }
 
-      console.log("sendStreamCreated: appendEventToFile", streamEvent);
-      appendEventToFile(currentStream.id, closeStrategy);
+    console.log("sendStreamCreated: appendEventToFile", eventToUpdate.id);
 
-      // Add projection
-      console.log("Or Am I there?");
-      const projectionCloseStrategyResult = await projectStrategyToSupabase(closeStrategy);
-      console.log ("projectionCloseStrategyResult", projectionCloseStrategyResult );
-    }
+    appendEventToFile(eventToUpdate.id, eventToUpdate);
 
-    const newStrategy = {
-      event: "STRATEGY_CREATED",
-      type: "STRATEGY",
-      stream_id: event.stream_id,
-      id: uuidv4(),
-      previous_strategy_id,
-      version: new_version,
-      timestamp: new Date().toISOString(),
-      state: 'Open',
-      name: event.name,
-      description: event.description,
-    };
+    // project the new stream
+    await projectStreamToSupabase(eventToUpdate);
 
-    const updatedStreamWithNewStrategyId = {
-      event: "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
-      type: "STREAM",
-      id: currentStream.id,
-      active_strategy_id: newStrategy.id,
-      timestamp: new Date().toISOString(),
-    };
-
-    // Ready to add events to file
-    console.log ("appendEventToFile", currentStream.id);
-    appendEventToFile(currentStream.id, newStrategy);
-    appendEventToFile(currentStream.id, updatedStreamWithNewStrategyId);
-
-    // handle projections
-    console.log("Am I here?", newStrategy);
-    
-    await projectStreamToSupabase(updatedStreamWithNewStrategyId);
-
-    await projectStrategyToSupabase(newStrategy);
-    // console.log ('projectionStrategyResult', projectionStrategyResult);
-
-    return newStrategy;
+    return eventToUpdate;
   } catch (error) {
-    console.error('sendStrategyCreated: Error saving to event source:', error);
+    console.error('sendStreamUpdated: Error saving to event source:', error);
     throw error;
   }
 };
@@ -111,7 +72,11 @@ export const replayStream = (streamId) => {
   const filteredEvents = getEventsForStream(streamId);
   console.log("Replay Stream with events:", filteredEvents);
 
-  const aggregate = filteredEvents.reduce((currentAggregate, event) => {
+  const newFilteredEvents = filteredEvents.filter(
+    (event) => event.type === 'STREAM' && event.id === streamId
+  );
+
+  const aggregate = newFilteredEvents.reduce((currentAggregate, event) => {
     switch (event.event) {
       case 'STREAM_CREATED':
         return {
@@ -141,38 +106,3 @@ export const replayStream = (streamId) => {
   return aggregate;
 };
 
-export const replayStrategy = async (streamId, strategyId) => {
-  const allEvents = await getEventsForStream(streamId);
-  const filteredEvents = allEvents.filter(event => event.id === strategyId);
-
-  const aggregate = filteredEvents.reduce((currentAggregate, event) => {
-    switch (event.type) {
-      case 'STRATEGY_CREATED':
-        return {
-          ...currentAggregate,
-          id: event.id,
-          stream_id: event.stream_id,
-          previous_strategy_id: event.previous_strategy_id,
-          version: event.version,
-          timestamp: event.timestamp,
-          state: event.state,
-          name: event.name,
-          description: event.description,
-        };
-
-      case 'STRATEGY_CLOSED':
-        return {
-          ...currentAggregate,
-          state: event.state,
-          timestamp: event.timestamp,
-        };
-
-      default:
-        console.warn(`Unhandled event type: ${event.type}`);
-        return currentAggregate;
-    }
-  }, {});
-
-  console.log("Replay Strategy - Rehydrated aggregate:", aggregate);
-  return aggregate;
-};

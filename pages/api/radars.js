@@ -2,17 +2,18 @@ import { handleRadarCreation } from "../radars/model/radarsCreate"; // Adjust th
 import { fetchAllRadars, fetchRadarById } from "../radars/infrastructure/radarsDB"; // Adjust the path if necessary
 
 export default async function radarsHandler(req, res) {
+  console.log("api/radars.js: req.body :", req.body);
   try {
     if (req.method === "POST") {
       // Handle POST request: Create a new radar
-      const { name, description, level } = req.body;
+      const { name, purpose, level } = req.body;
 
-      if (!name || !description || typeof level !== "number") {
+      if (!name || !purpose || typeof level !== "number") {
         return res.status(400).json({ message: "Invalid input" });
       }
       // console.log("api/radars.js: radarsHandler: Received request body:", req.body);
       const command = {
-        payload: { name, description, level },
+        payload: { name, purpose, level },
       };
 
       const result = await handleRadarCreation(command);

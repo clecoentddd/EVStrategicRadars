@@ -1,14 +1,14 @@
 // Service to create a radar entry into the organisation
 
 // services/updateRadarIndex.js
-export default async function updateRadar(radarId, name, description, level) {
+export default async function updateRadar(radarId, name, purpose, level) {
     try {
       const response = await fetch(`/api/radars-update?${radarId}`, { 
         method: "PUT", 
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ radarId, name, description, level }),
+        body: JSON.stringify({ radarId, name, purpose, level }),
       });
   
       if (!response.ok) {

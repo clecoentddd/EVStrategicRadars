@@ -1,4 +1,5 @@
-import {createStreamHandler} from '../application/streamHandler';
+import {createStreamHandler} from '../application/streamCreateHandler';
+import {updateStreamHandler} from '../application/streamupdateHandler';
 
 export async function interfaceCreateStream(command) {
 
@@ -15,3 +16,19 @@ export async function interfaceCreateStream(command) {
             }
           }
         };
+
+export async function interfaceUpdateStream(command) {
+
+    console.log("PushAndSub updateStream with command :", command);
+
+    if (command.eventType === "RADAR_UPDATED" ) {
+        try {
+            const stream = await updateStreamHandler(command.payload);
+        
+            // ... use the created stream
+            console.log ("interfaceUpdateStream stream is: ", stream);
+            } catch (error) {
+              console.error('An unexpected error occurred in interfaceUpdateStream:', error);
+           }
+    }
+};

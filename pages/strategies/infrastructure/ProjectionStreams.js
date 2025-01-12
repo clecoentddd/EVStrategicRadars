@@ -25,6 +25,28 @@ export async function projectStreamToSupabase(strategicStream) {
 
     if (existingItem != undefined) {
       // Update the existing stream if it matches the event type
+
+      if (strategicStream.event === "STREAM_UPDATED_WITH_NEW_NAME") {
+
+        const { data, error } = await supabase
+          .from("strategic_streams")
+          .update({
+            id: strategicStream.id,
+            name: strategicStream.name,
+            updated_at: new Date().toISOString(),
+            event: strategicStream.event,
+          })
+          .eq("id", strategicStream.id)
+          .select("*"); // Request updated data to be returned
+
+          if (error) {
+            console.error("Error updating strategic stream:", error.message);
+            throw new Error("(Update) Failed to update strategic stream in Supabase.");
+          }
+          console.log("Data (update name) from supabase", data);
+          return data; // Should now contain the updated row(s)
+      }
+
       if (strategicStream.event === "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED") {
         const { data, error } = await supabase
           .from("strategic_streams")
@@ -39,7 +61,7 @@ export async function projectStreamToSupabase(strategicStream) {
           .select("*"); // Request updated data to be returned
 
         if (error) {
-          console.error("Error updating strategic stream:", error.message);
+          console.error("Error updating strategic stream with latest strategy:", error.message);
           throw new Error("(Update) Failed to update strategic stream in Supabase.");
         }
         console.log("Data (update) from supabase", data);
