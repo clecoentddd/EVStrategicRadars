@@ -392,42 +392,7 @@ export default function StrategyStream() {
     }
   };
 
-  // Check if strategies is valid and is an array
-  console.log("Strategies:", streamData);
-
-  // Fallback to empty array if strategies is invalid
-  const validStates = ["Draft", "Published", "Closed", "Deleted"];
-
-  const groupedStrategies = (Array.isArray(streamData) ? streamData : []).reduce((acc, strategy, index) => {
-    // Log each strategy as it's processed
-    console.log(`Processing strategy at index ${index}:`, strategy);
-
-    // Validate the strategy and its state
-    if (!strategy || typeof strategy !== "object") {
-      console.warn(`Invalid strategy at index ${index}:`, strategy);
-      return acc; // Skip invalid strategies
-    }
-
-    const state = strategy.state;
-
-    if (!state || !validStates.includes(state)) {
-      console.warn(`Strategy at index ${index} has an invalid or missing state:`, strategy);
-      return acc; // Skip strategies with invalid or missing states
-    }
-
-    // Group the strategy by its valid state
-    if (!acc[state]) {
-      acc[state] = [];
-    }
-    acc[state].push(strategy);
-
-    return acc;
-  }, {});
-
-  // Log the final grouped strategies
-  console.log("Grouped strategies by state:", groupedStrategies);
-
-
+  
   const handleCreateElementChange  = (e) => {
     const { name, value } = e.target;
     setNewElement((prev) => ({
@@ -506,7 +471,7 @@ export default function StrategyStream() {
         return <div>No strategies available</div>;
       }
     
-      const validStates = [ "Published","Draft", "Closed", "Deleted"];
+      const validStates = [ "Draft","Published", "Closed", "Deleted"];
     
       // Group the strategies by state
       const groupedStrategies = (Array.isArray(strategies) ? strategies : []).reduce((acc, strategy) => {
