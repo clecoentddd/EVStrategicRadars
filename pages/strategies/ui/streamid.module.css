@@ -400,3 +400,63 @@
     background-color: #d32f2f;
   }
   
+  /* Define styles for the different states */
+
+  .strategyHeaderDraft {
+    background-color: rgb(244, 175, 246);
+    color: white;
+    padding: 0.75rem 1rem; /* Add padding for a modern look */
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 0.5rem; /* Add spacing below the header */
+    font-size: 1.2rem; /* Slightly larger font size */
+    font-weight: bold; /* Make the text stand out */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  }
+  
+  .strategyHeaderPublished {
+    background-color: violet;
+    color: white;
+    padding: 0.75rem 1rem; /* Add padding */
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 0.5rem; /* Add spacing */
+    font-size: 1.2rem; /* Larger font */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Consistent shadow */
+  }
+  
+  .strategyHeaderDefault {
+    background-color: grey;
+    color: black;
+    padding: 0.75rem 1rem; /* Add padding */
+    border-radius: 8px; /* Rounded corners */
+    margin-bottom: 0.5rem; /* Add spacing */
+    font-size: 1.2rem; /* Larger font */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  }
+  
+
+/* styles.module.css */
+.strategyGroup {
+  margin-bottom: 2rem; /* Add spacing between groups */
+  padding: 1rem; /* Add padding inside the group */
+  border: 1px solid #ddd; /* Add a border around the group */
+  border-radius: 8px; /* Round the edges */
+  background-color: #f9f9f9; /* Light background color for the group */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.strategyGroup h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333; /* Darker color for headings */
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: capitalize; /* Capitalize the group name */
+  border-bottom: 2px solid #ddd; /* Underline the group title */
+  padding-bottom: 0.5rem;
+}
+
+.strategyGroup .strategy {
+  margin-bottom: 1rem; /* Add spacing between strategies */
+}

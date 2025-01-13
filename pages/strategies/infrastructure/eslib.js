@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const eventsDirectory = path.join(process.cwd(), process.env.EVENTS_DIRECTORY || 'pages/strategies/events');
+const eventsDirectory = path.join(process.cwd(), process.env.EVENTS_DIRECTORY || 'pages/strategies/_events');
 
 console.log("Path I am using to store streams:", eventsDirectory);
 
