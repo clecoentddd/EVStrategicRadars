@@ -27,6 +27,9 @@ export default function StrategyStream() {
 
   const [availableTags, setAvailableTags] = useState([]); // Tags fetched from API
 
+  const [collapsedStrategies, setCollapsedStrategies] = useState({});
+  const [targetStrategy, setTargetStrategy] = useState(null);
+
   const handleEditClick = async (strategy,element) => {
     setEditableElementId(element.id);
 
@@ -201,6 +204,13 @@ export default function StrategyStream() {
     setExpandedElementId(expandedElementId === elementId ? null : elementId);
   };
 
+  const toggleStrategyCollapse = (strategyId) => {
+    setCollapsedStrategies((prev) => ({
+      ...prev,
+      [strategyId]: !prev[strategyId], // Toggle the collapse state
+    }));
+  };
+
   const handleEditToggle = async (elementId) => {
     if (editableElementId === elementId) {
       // Save the changes
@@ -348,19 +358,19 @@ export default function StrategyStream() {
 
   const handleCreateElementSubmit = async (e) => {
     e.preventDefault();
-    const openStrategy = streamData?.data.find(item => item.type === 'STRATEGY' && item.state === "Open");
-    if (!openStrategy) {
-      alert('No open strategy found to add an element to.');
+
+    if (!targetStrategy) {
+      console.error("No target strategy selected for creating an element.");
       return;
     }
-
+   
     try {
       const response = await fetch(`/api/strategy-items`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           stream_id: streamid,
-          strategy_id: openStrategy.id, // Pass the open strategy ID
+          strategy_id: targetStrategy.id, // Pass the open strategy ID
           name: newElement.name,
           description: newElement.description,
         }),
@@ -375,8 +385,7 @@ export default function StrategyStream() {
       setShowCreateElementForm(false);
       setNewElement({ name: '', description: '' });
       setStreamData((prev) => ({
-        ...prev,
-        data: [...prev.data, data],
+        ...prev.data, data,
       }));
     } catch (err) {
       alert(`Error: ${err.message}`);
@@ -419,7 +428,7 @@ export default function StrategyStream() {
   console.log("Grouped strategies by state:", groupedStrategies);
 
 
-  const handleCreateElementChange = (e) => {
+  const handleCreateElementChange  = (e) => {
     const { name, value } = e.target;
     setNewElement((prev) => ({
       ...prev,
@@ -532,26 +541,56 @@ export default function StrategyStream() {
                 : styles.strategyHeaderDefault
             }
             onClick={() => {
+              toggleStrategyCollapse(strategy.id);
               const elementsDiv = document.getElementById(`elements-${strategy.id}`);
               elementsDiv.style.display = elementsDiv.style.display === "none" ? "block" : "none";
             }}
           >
             <span style={strategyTitleStyle}>{`${strategy.name} (${strategy.state})`}</span>
           </div>
+          
+           {/* Add Element Button */}
+        {collapsedStrategies[strategy.id] && (
+          <div className={styles.addElementContainer}>
+            <button
+              className={styles.createStrategyButtonStyle}
+              
+              onClick={() => {
+                setTargetStrategy(strategy); // Track the strategy ID
+                console.log("setTargetStrategy(strategy)", strategy);
+                setShowCreateElementForm(true);  // Show the form
+              }}
+            >
+              Add Element
+            </button>
+          </div>
+        )}
+
+        {/* Show elements only if the strategy is collapsed */}
+        {collapsedStrategies[strategy.id] && (
+          <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
+            {strategy.elements.map((element) => (
+              <div key={element.id} className={styles.element} style={elementStyle}>
+                <span>{element.name}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
               <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
                 {strategy.elements.map((element) => (
                   <div key={element.id} className="element" style={elementStyle}>
                     <div
-                      className="element-header"
+                      className="elementHeader"
                       style={{
                         ...elementHeaderStyle,
-                        backgroundColor: strategy.state === "Open" ? "Plum" : "Gainsboro",
+                        backgroundColor: strategy.state !== "Closed" ? "Plum" : "Gainsboro",
                       }}
                       onClick={() => handleElementExpand(element.id)}
                     >
                       <span style={elementTitleStyle}>{`${element.name} (${element.state})`}</span>
                     </div>
-    
+                       
                     {expandedElementId === element.id && (
                       <div className="element-details" style={elementDetailsStyle}>
                         {/* Name Field */}
@@ -795,33 +834,42 @@ return (
         </form>
       )}
 
-      {showCreateElementForm && (
-        <form style={formStyle} onSubmit={handleCreateElementSubmit}>
-          <h3>Create Strategy Element</h3>
+      {showCreateElementForm && targetStrategy && (
+        <form style={formStyle} onSubmit={(e) => handleCreateElementSubmit(e)}>
+          {/* Display the strategy name dynamically */}
+          <h3>Add Element to {targetStrategy.name}</h3>
+
+          {/* Input for Element Name */}
           <input
             type="text"
             name="name"
             value={newElement.name}
-            onChange={handleCreateElementChange}
+            onChange={(e) => handleCreateElementChange(e)}
             placeholder="Name"
             required
           />
+
+          {/* Textarea for Element Description */}
           <textarea
             name="description"
             value={newElement.description}
-            onChange={handleCreateElementChange}
+            onChange={(e) => handleCreateElementChange(e)}
             placeholder="Description"
             rows="3"
             required
           ></textarea>
+
+          {/* Textarea for What We Will Not Do */}
           <textarea
             name="whatwewillnotdo"
             value={newElement.whatwewillnotdo}
-            onChange={handleCreateElementChange}
+            onChange={(e) => handleCreateElementChange(e)}
             placeholder="What we will not do"
             rows="3"
             required
           ></textarea>
+
+          {/* Buttons for Submit and Cancel */}
           <div className={styles.buttonContainerStyle}>
             <button type="submit" className={styles.saveButton}>
               Create
@@ -829,13 +877,14 @@ return (
             <button
               type="button"
               className={styles.cancelButton}
-              onClick={handleCancelCreateElement}
+              onClick={() => handleCancelCreateElement()}
             >
               Cancel
             </button>
           </div>
         </form>
       )}
+
 
       {loading && <p>Loading stream data...</p>}
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
@@ -868,16 +917,7 @@ return (
     margin: '20px auto',
   };
   
-  const strategyStyle = {
-    marginBottom: '20px',
-  };
-
-  const strategyHeaderStyle = {
-    color: 'white', // Adjust text color for readability
-    padding: '10px',
-    cursor: 'pointer',
-  };
-  
+ 
   const elementsStyle = {
     display: 'none',
     marginLeft: '10px',
