@@ -6,9 +6,449 @@
     "payload": {
       "level": 2,
       "name": "SWE",
-      "description": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. \nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast.",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. \nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast.",
       "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d"
     },
     "eventStoreId": "1da61514-f735-448e-8d79-8363253b55a5"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Event Sourcing",
+      "detect": "New approach",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Business",
+      "distance": "Detected",
+      "impact": "High",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1735983954418,
+      "id": "c0233e5d-5355-41c5-ba43-ac94974ea14a"
+    },
+    "eventStoreId": "0b27f096-322a-4d0a-bb20-3b45f1e93d94"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Hard parts of software architecture",
+      "detect": "Huge legacy apps where \"migrating\" to new architecture would be big business: we need to build capabilities in that domain",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Business",
+      "distance": "Detected",
+      "impact": "High",
+      "tolerance": "High",
+      "zoom_in": null,
+      "timestamp": 1735984335537,
+      "id": "518ab255-d68c-4faa-8faa-11d37746f067"
+    },
+    "eventStoreId": "686dc195-6bda-49a3-8d6c-0b42528238d9"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Business Modeling",
+      "detect": "We are using Water-Scrum-Fall lacking of business modeling so we end up with problems towards the middle-end of the projet",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Business",
+      "distance": "Assessing",
+      "impact": "High",
+      "tolerance": "High",
+      "zoom_in": null,
+      "timestamp": 1736029619772,
+      "id": "b329ade5-6fe1-4581-bfe1-869769138452"
+    },
+    "eventStoreId": "2f26d251-e169-40d8-ba6b-090baa2ef4e3"
+  },
+  {
+    "event": "RADAR_ITEM_UPDATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "id": "518ab255-d68c-4faa-8faa-11d37746f067",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Hard parts of software architecture",
+      "detect": "Huge legacy apps where \"migrating\" to new architecture would be big business: we need to build capabilities in that domain",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Operating Model",
+      "distance": "Detected",
+      "impact": "High",
+      "tolerance": "High",
+      "zoom_in": null,
+      "timestamp": 1736029644942
+    },
+    "eventStoreId": "375aa324-3772-49a2-b413-52ecebd89218"
+  },
+  {
+    "event": "RADAR_ITEM_UPDATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "id": "b329ade5-6fe1-4581-bfe1-869769138452",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Business Modeling",
+      "detect": "We are using Water-Scrum-Fall lacking of business modeling so we end up with problems towards the middle-end of the projet",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Business",
+      "distance": "Assessing",
+      "impact": "High",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1736029670098
+    },
+    "eventStoreId": "5d63335e-7e96-419a-95d1-aa3266105ae6"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Lack of trainings",
+      "detect": "Trainings are too generic. We get external trainings but this is not aligned with our goals.",
+      "assess": "",
+      "respond": "",
+      "type": "Problem",
+      "category": "People and Knowledge",
+      "distance": "Assessed",
+      "impact": "Medium",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1736029834637,
+      "id": "936a656b-e010-4003-94e1-254f7fa8eaba"
+    },
+    "eventStoreId": "87159eca-5c59-46b8-94d4-971f7a2f0902"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Learn it all",
+      "detect": "We need to change from \"know it all\" to \"learn it all\"",
+      "assess": "",
+      "respond": "",
+      "type": "Problem",
+      "category": "People and Knowledge",
+      "distance": "Assessing",
+      "impact": "High",
+      "tolerance": "High",
+      "zoom_in": null,
+      "timestamp": 1736030041574,
+      "id": "7c66c4a6-2d52-439f-9678-3c9e6ec4a787"
+    },
+    "eventStoreId": "6a993bfa-7ac3-4ef4-9e17-1936a6f2d9b7"
+  },
+  {
+    "event": "RADAR_ITEM_UPDATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "id": "7c66c4a6-2d52-439f-9678-3c9e6ec4a787",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Learn it all",
+      "detect": "We need to change from \"know it all\" to \"learn it all\"",
+      "assess": "",
+      "respond": "",
+      "type": "Problem",
+      "category": "People and Knowledge",
+      "distance": "Assessing",
+      "impact": "Low",
+      "tolerance": "High",
+      "zoom_in": null,
+      "timestamp": 1736030056251
+    },
+    "eventStoreId": "ec8368aa-0f41-4613-8cfe-9ac01c413e3d"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Lean IT ",
+      "detect": "Lean IT could help improve across the organisation",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Operating Model",
+      "distance": "Detected",
+      "impact": "Medium",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1736070589998,
+      "id": "8163653e-7258-4331-98e6-35652a57bec7"
+    },
+    "eventStoreId": "0405e6e1-9170-403d-acc8-3e635e9c610f"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Legacy",
+      "detect": "We support our customers with legacy systems that are more and more expensive to maintain: ROI is dropping sharply and investment for future solutions is eaten by legacy.",
+      "assess": "",
+      "respond": "",
+      "type": "Problem",
+      "category": "Business",
+      "distance": "Assessing",
+      "impact": "High",
+      "tolerance": "Low",
+      "zoom_in": null,
+      "timestamp": 1736070725911,
+      "id": "36825eb0-2f06-420f-885e-77a9ca2cd6a6"
+    },
+    "eventStoreId": "8753742c-9d7d-45d5-861e-b3e9a58ae9e8"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "Lack of AI",
+      "detect": "We are passively resisting AI... We need to build capabilities around AI.",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Capabilities",
+      "distance": "Detected",
+      "impact": "Medium",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1736070823705,
+      "id": "9e71c9c4-905f-485d-afef-5b9aa4089606"
+    },
+    "eventStoreId": "a33a9649-7945-4394-a477-f9d4405901bf"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "CI/CD",
+      "detect": "CI/CD is not implemented as it should be. The end2end process is slow, relying on hands-off",
+      "assess": "",
+      "respond": "",
+      "type": "Problem",
+      "category": "Capabilities",
+      "distance": "Detected",
+      "impact": "High",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1736072388665,
+      "id": "c53653f2-fa07-4bc8-9d3d-deab0fa5f6ae"
+    },
+    "eventStoreId": "b8a74e03-33be-41b2-a3de-952f69c007d1"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "name": "IDP",
+      "detect": "To get a software project started takes ages, we reinvent the wheel all the time. That is expensive. We need to deliver a software platform on demand ",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Capabilities",
+      "distance": "Detected",
+      "impact": "Medium",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1736072527862,
+      "id": "d1636dd1-f8ef-48ca-abf1-b07ad9d1e8c7"
+    },
+    "eventStoreId": "a0f78ffa-3299-4ea9-98e5-f46b47d3d54c"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736548124737,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. \nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "b5a03bab-2f42-4159-aee2-42854bc6df2f"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736580680814,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "30c782b9-d36f-4298-850b-413c8e2f7bb8"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736580793764,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "0ea5a5b4-240a-4251-b6d2-fdfd5abe35fd"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736580842136,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "f0544d56-560b-4a66-8e71-5dbf6912ad47"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736581096924,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "71dc1c24-b391-4774-b62a-b1b6b6342954"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736581908318,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "17af76da-8fe1-47ff-b941-d9bf88b40119"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736582046620,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "92c4fd6d-b55b-4d5a-84f4-c21d03643437"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736582411941,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "e1bab4e9-26d1-4962-8d75-e267ecd655f6"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736582472857,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "5637e4b3-776d-4a05-b7b9-29e1785f6ead"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736583174625,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "7621c80b-45be-40b7-831a-cc146ed3ffce"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736583519635,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "1e7b60b3-c8ef-4ccf-b697-367d88695e69"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736583586649,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "8943cf6c-f8a8-41db-9753-dc76a15445f6"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736583818618,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "fbf1c7df-e37c-4319-b53f-a6178623d869"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736593121967,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "75355fc8-4a04-4923-b315-496c4ae94e2c"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736672128985,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
+    },
+    "eventStoreId": "61b6ab64-e73d-4432-804b-802ccedc60bc"
   }
 ]

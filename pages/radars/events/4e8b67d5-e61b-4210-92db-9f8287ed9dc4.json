@@ -1,0 +1,26 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1736547802218,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 1,
+      "name": "CEO1",
+      "purpose": "Driving customer focused - not just listening, mine knowledge. If we have one hour to solve a problem, we spend 50 minutes on the the problem and we build options for solutions. Learning is what makes us finding good solutions.",
+      "id": "4e8b67d5-e61b-4210-92db-9f8287ed9dc4"
+    },
+    "eventStoreId": "9d694c07-a09e-4d73-bffc-c2f4c8e95106"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1736547872190,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "4e8b67d5-e61b-4210-92db-9f8287ed9dc4",
+      "level": 1,
+      "name": "CEO",
+      "purpose": "Driving customer focused - not just listening, mine knowledge. If we have one hour to solve a problem, we spend 50 minutes on the the problem and we build options for solutions. Learning is what makes us finding good solutions."
+    },
+    "eventStoreId": "d9a37aa6-739f-421a-ad02-b43108630d65"
+  }
+]

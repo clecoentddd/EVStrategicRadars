@@ -1,0 +1,14 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1736630363447,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 1,
+      "name": "createupdate1",
+      "purpose": "er1",
+      "id": "55cd28ad-9941-4e3f-94e8-df41b40309da"
+    },
+    "eventStoreId": "1c851ed0-2b80-46cb-89c9-44b28ef86ac4"
+  }
+]

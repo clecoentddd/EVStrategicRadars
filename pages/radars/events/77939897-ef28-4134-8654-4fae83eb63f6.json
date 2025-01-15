@@ -7,7 +7,7 @@
       "id": "77939897-ef28-4134-8654-4fae83eb63f6",
       "level": 1,
       "name": "chatgpt1",
-      "description": "test chat"
+      "purpose": "test chat"
     },
     "eventStoreId": "beb6717b-006c-4e3b-8a66-1cacb428cd67"
   },
@@ -45,50 +45,34 @@
   },
   {
     "eventType": "RADAR_UPDATED",
-    "timestamp": 1735665769936,
-    "aggregateType": "RADAR",
-    "payload": {
-      "id": "77939897-ef28-4134-8654-4fae83eb63f6",
-      "level": 1,
-      "name": "Company Tech Radar",
-      "description": "where gap in knowledge is identified, where changes are creating these gaps. We stop knowing, we start learning. \nQuantity of learnings provide Quality of knowledge.\n\n\"Think before you speak, read before you think!"
-    },
-    "eventStoreId": "a310c2bd-c36f-4932-b3e6-ad93ae5546fd"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735666859601,
-    "aggregateType": "RADAR",
-    "payload": {
-      "id": "77939897-ef28-4134-8654-4fae83eb63f6",
-      "level": 1,
-      "name": "Company Tech Radar",
-      "description": "where gap in knowledge is identified, where changes are creating these gaps. We stop knowing, we start learning. \nQuantity of learnings provide Quality of knowledge.\n\n\"Think before you speak, read before you think!"
-    },
-    "eventStoreId": "d8c6febf-f68c-4f11-b85d-70c68cdbc08a"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735667031281,
-    "aggregateType": "RADAR",
-    "payload": {
-      "id": "77939897-ef28-4134-8654-4fae83eb63f6",
-      "level": 1,
-      "name": "Company Tech Radar",
-      "description": "Where gap in knowledge is identified, where changes are creating these gaps. We stop knowing, we start learning. \nQuantity of learnings provide Quality of knowledge.\n\n\"Think before you speak, read before you think!"
-    },
-    "eventStoreId": "c3d20352-4692-4dd8-8898-d6f53f772a16"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
     "timestamp": 1735667555687,
     "aggregateType": "RADAR",
     "payload": {
       "id": "77939897-ef28-4134-8654-4fae83eb63f6",
       "level": 1,
       "name": "Company Tech Radar",
-      "description": "Where gap in knowledge is identified, where changes are creating these gaps. We stop knowing, we start learning. \n\nQuantity of learnings provide Quality of knowledge.\n\n\"Think before you speak, read before you think!"
+      "purpose": "Where gap in knowledge is identified, where changes are creating these gaps. We stop knowing, we start learning. \n\nQuantity of learnings provide Quality of knowledge.\n\n\"Think before you speak, read before you think!"
     },
     "eventStoreId": "1447459e-a2b3-49c2-8577-dce4f27be9d0"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "77939897-ef28-4134-8654-4fae83eb63f6",
+      "name": "DataMesh",
+      "detect": "New opportunity to change the way we make data available and how we design your software applications to produce data",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Capabilities",
+      "distance": "Detected",
+      "impact": "Medium",
+      "tolerance": "Medium",
+      "zoom_in": null,
+      "timestamp": 1736971575500,
+      "id": "142fe566-369c-4521-a087-5065b9cac29c"
+    },
+    "eventStoreId": "e3fd378d-d73d-4c65-97b7-3e8c7c73dcf8"
   }
 ]

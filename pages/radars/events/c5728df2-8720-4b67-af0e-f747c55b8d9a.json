@@ -6,7 +6,7 @@
     "payload": {
       "level": 1,
       "name": "chatgpt1",
-      "description": "test chat",
+      "purpose": "test chat",
       "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a"
     },
     "eventStoreId": "beb6717b-006c-4e3b-8a66-1cacb428cd67"
@@ -133,50 +133,14 @@
   },
   {
     "eventType": "RADAR_UPDATED",
-    "timestamp": 1735651059031,
+    "timestamp": 1736548102894,
     "aggregateType": "RADAR",
     "payload": {
       "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 1,
+      "level": 2,
       "name": "Corporate Governance",
-      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
+      "purpose": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
     },
-    "eventStoreId": "560c4d05-5c53-41a4-8ba1-6d862a865ecf"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735651289953,
-    "aggregateType": "RADAR",
-    "payload": {
-      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 1,
-      "name": "Corporate Governance",
-      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
-    },
-    "eventStoreId": "c16f80c0-da00-4cf9-a3e6-416a9fab0428"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735665885787,
-    "aggregateType": "RADAR",
-    "payload": {
-      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 1,
-      "name": "Corporate Governance",
-      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
-    },
-    "eventStoreId": "bf70e45d-b676-49b1-8cd3-0fd06745e454"
-  },
-  {
-    "eventType": "RADAR_UPDATED",
-    "timestamp": 1735666052488,
-    "aggregateType": "RADAR",
-    "payload": {
-      "id": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
-      "level": 1,
-      "name": "Corporate Governance",
-      "description": "We need agility which we mean to build the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win: where winning is bringing learnings - first - and new approaches and technologies to make speed, quality and low cost compatible to serve our customers. Lean is not a word, it is a way of thinking.\n\nWe are engaging every team to take part into this change!"
-    },
-    "eventStoreId": "9b24dc9b-34ef-498e-ad01-4e0a8d485269"
+    "eventStoreId": "e008e277-df73-4eab-add6-70b0b7200101"
   }
 ]
