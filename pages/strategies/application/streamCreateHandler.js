@@ -1,5 +1,4 @@
 import { createStream } from '../model/createStrategyStream';
-// import { replayStream } from '../infrastructure/eventStoreStream.js';
 
 export async function createStreamHandler(command) {
     // Implement your strategy creation logic here

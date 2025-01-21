@@ -1,13 +1,13 @@
-import { sendStrategyCreated, replayStrategy } from '../infrastructure/eventStoreStrategies.js';
+import { sendStrategyCreated, replayStrategy } from '../service/eventStoreStrategies.js';
 
 export async function createStrategy(command) {
     // Implement your strategy creation logic here
-    console.log('Creating new version of strategy with payload:', command);
+    console.log('createStrategy: Creating new version of strategy with payload:', command);
     // ... other logic to create the strategy
 
     // Validate inputs
     if (!command.stream_id || !command.name ) {
-      return { success: false, message: "Missing required fields to create a new version" };
+      return { success: false, message: "createStrategy: Missing required fields to create a new version" };
     }
     const newStrategy = {
       // ... other properties based on your needs
@@ -17,9 +17,8 @@ export async function createStrategy(command) {
       description: command.description,
       whatwewillnotdo: command.whatwewillnotdo,
     };
-  
     
-    console.log ("Strategy about to create as new version with what we will not do: ", newStrategy);
+    console.log ("createStrategy: Strategy about to create as new version with what we will not do: ", newStrategy);
   
     // Save the strategy item (replace with your actual saving logic)
   let savedStrategy;

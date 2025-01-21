@@ -1,5 +1,5 @@
 // model/StratregicElements.js
-import {sendItemCreated, sendItemUpdated, sendItemDeleted} from '../infrastructure/eventStoreElements';
+import {sendItemCreated, sendItemUpdated, sendItemDeleted} from '../service/eventStoreElements';
 
 const validateStratregicElementCreation = (command) => {
     if (!command.strategy_id) throw new Error('Strategy version ID is required.');

@@ -1,4 +1,4 @@
-import { sendStreamUpdated } from '../infrastructure/eventStoreStream.js';
+import { sendStreamUpdated } from '../service/eventStoreStream.js';
 
 export async function updateStream(command) {
     // Implement your strategy creation logic here

@@ -188,6 +188,18 @@
   }
 
   .createStrategyButtonStyle {
+    background-color: #688aef;
+    color: white;
+    margin-left: 5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 8px;
+    border-bottom: none;
+    border-color: #688aef;
+  }
+
+  .createElementButtonStyle {
     background-color: plum;
     color: white;
     margin-left: 5px;

@@ -1,5 +1,5 @@
 import {GetStrategyById } from '../strategies/model/strategyStrategies';
-import {createStrategyHandler} from '../strategies/application/strategyHandler';
+import {createStrategyHandler} from '../strategies/application/strategyCreateHandler';
 
 export default async function handler(req, res) {
     console.log("handler: API Version of Strategy", req.body);

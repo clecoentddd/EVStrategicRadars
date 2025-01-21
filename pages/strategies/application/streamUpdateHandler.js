@@ -1,5 +1,5 @@
 import { updateStream} from '../model/updateStrategyStream';
-import { getStreamByRadarId} from '../infrastructure/readModelStrategicElements';
+import { getStreamByRadarId} from '../service/readModelStrategicElements';
 
 
 export async function updateStreamHandler(command) {

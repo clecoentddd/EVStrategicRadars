@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './streamid.module.css';
 import Navbar from "./navbar"; 
-import { EXPORT_DETAIL } from 'next/dist/shared/lib/constants';
+// import { EXPORT_DETAIL } from 'next/dist/shared/lib/constants';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 export default function StrategyStream() {
@@ -301,53 +301,7 @@ export default function StrategyStream() {
       alert(`Error: ${err.message}`);
     }
   };
-  
-  const handleSaveClick1 = async () => {
-    if (editableElementId && tempData) {
-      // Create updatedData outside of setStreamData
-      const updatedData = streamData.map((item) =>
-        item.id === editableElementId ? { ...tempData } : item
-      );
-  
-      // Update state with updatedData
-      setStreamData((prevData) => ({
-        ...prevData,
-        updatedData,
-      }));
-  
-      // Make the API call using updatedData
-      try {
-        const response = await fetch(`/api/strategy-items?elementid=${editableElementId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            stream_id: tempData.stream_id,
-            strategy_id: tempData.strategy_id,
-            diagnosis: tempData.diagnosis,
-            overall_approach: tempData.overall_approach,
-            set_of_coherent_actions: tempData.set_of_coherent_actions,
-            proximate_objectives: tempData.proximate_objectives,
-            name: tempData.name,
-            description: tempData.description,
-            tags: tempData.tags,
-          }),
-        });
-  
-        if (!response.ok) {
-          throw new Error('Failed to save changes');
-        }
-  
-        alert('Changes saved successfully!');
-      } catch (err) {
-        alert(`Error: ${err.message}`);
-      }
-  
-      // Exit edit mode and clear temporary data
-      setEditableElementId(null);
-      setTempData(null);
-    }
-  };
-      
+       
   const handleCreateStrategyChange = (e) => {
     const { name, value } = e.target;
     setNewStrategy((prev) => ({
@@ -382,11 +336,33 @@ export default function StrategyStream() {
 
       const data = await response.json();
       alert('Strategy element created successfully!');
+      console.log("Optimistic UI with data", data);
+      console.log("Optimistic UI with prev.data", streamData);
       setShowCreateElementForm(false);
       setNewElement({ name: '', description: '' });
-      setStreamData((prev) => ({
-        ...prev.data, data,
-      }));
+
+       // Step 2: Update `streamData` only if the API call succeeds
+       setStreamData((prevData) => {
+        console.log("New Data to Insert:", data); // Log the `data` object being inserted
+        console.log("Target Strategy ID:", targetStrategy.id); // Log the target strategy ID
+      
+        return prevData.map((strat) => {
+          console.log("Processing Strategy:", strat); // Log the current strategy being processed
+          if (strat.id === targetStrategy.id) {
+            console.log("Match Found! Updating Strategy:", strat.id); // Log if a match is found
+            const updatedStrat = {
+              ...strat,
+              elements: [...(strat.elements || []), data.createdItem], // Add or update the `data` field
+            };
+            console.log("Updated Strategy:", updatedStrat); // Log the updated strategy object
+            return updatedStrat;
+          }
+          console.log("No Match for Strategy ID:", strat.id); // Log if no match is found
+          return strat; // Return the unchanged strategy
+        });
+      });
+      
+      console.log("Optimistic UI with new data", streamData);
     } catch (err) {
       alert(`Error: ${err.message}`);
     }
@@ -421,7 +397,7 @@ export default function StrategyStream() {
       }
 
       const eventData = await response.json();
-      alert('Strategy created successfully!');
+      console.log('Strategy result :', eventData);
       
       /* format data for updating data on the screen */
       const newStrategyData = {
@@ -518,7 +494,7 @@ export default function StrategyStream() {
         {collapsedStrategies[strategy.id] && (
           <div className={styles.addElementContainer}>
             <button
-              className={styles.createStrategyButtonStyle}
+              className={styles.createElementButtonStyle}
               
               onClick={() => {
                 setTargetStrategy(strategy); // Track the strategy ID
@@ -744,7 +720,7 @@ return (
     <h1>
       {streamAggregate && streamAggregate.name ? streamAggregate.name : "Loading..."}
     </h1>
-    <h2>This is about strategic thinking now</h2>
+      <h2>This is about strategic thinking now</h2>
   </div>
 </div>
 
@@ -754,12 +730,6 @@ return (
         onClick={() => setShowCreateStrategyForm(true)}
       >
         Create Strategy
-      </button>
-      <button
-        className={styles.createStrategyButtonStyle}
-        onClick={() => setShowCreateElementForm(true)}
-      >
-        Create a Strategy Element
       </button>
 
       {showCreateStrategyForm && (
@@ -824,17 +794,7 @@ return (
             required
           ></textarea>
 
-          {/* Textarea for What We Will Not Do */}
-          <textarea
-            name="whatwewillnotdo"
-            value={newElement.whatwewillnotdo}
-            onChange={(e) => handleCreateElementChange(e)}
-            placeholder="What we will not do"
-            rows="3"
-            required
-          ></textarea>
-
-          {/* Buttons for Submit and Cancel */}
+         {/* Buttons for Submit and Cancel */}
           <div className={styles.buttonContainerStyle}>
             <button type="submit" className={styles.saveButton}>
               Create

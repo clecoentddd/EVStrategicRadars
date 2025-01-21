@@ -5,7 +5,7 @@ import {
     getStreamByRadarId,
     getAllStreamData,
     getStreamDataFromStreamId,
-  } from "../strategies/infrastructure/readModelStrategicElements";
+  } from "../strategies/service/readModelStrategicElements";
   
   export default async function handler(req, res) {
     const { method, query } = req;

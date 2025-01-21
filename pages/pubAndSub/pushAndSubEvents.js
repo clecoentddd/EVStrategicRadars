@@ -1,4 +1,4 @@
-import { interfaceCreateStream, interfaceUpdateStream } from '../strategies/infrastructure/pubAndSubInterface';
+import { interfaceCreateStream, interfaceUpdateStream } from '../strategies/service/pubAndSubInterface';
 
 const EventEmitter = require('events');
 

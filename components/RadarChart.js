@@ -193,7 +193,7 @@ const categoryLabels = Object.values(ValueCategory).map((category, index) => {
               .attr('font-weight', 'bold'); // Optional: Make the text bold
 
             // Fetch the radar name based on zoom_in
-            let tooltipText = `<strong>${item.name}</strong><br/>Category: ${item.category}</strong><br/>Type: ${item.type}</strong><br/>Description: ${item.detect}</strong><br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}</strong><br/>Distance: ${item.distance}<br/>Distance to radius : ${distanceToRadius[item.distance]}`;
+            let tooltipText = `Title: ${item.name}<br/>Category: ${item.category}<br/>Type: ${item.type}<br/>Description: ${item.detect}<br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}<br/>Distance: ${item.distance}<br/>`;
 
             if (item.zoom_in) {
               const radar = await fetchRadarName(item.zoom_in);
@@ -272,30 +272,72 @@ const categoryLabels = Object.values(ValueCategory).map((category, index) => {
     }
   };
 
-  // Function to display tooltip
-  const renderTooltip = () => {
-    if (!tooltipData) return null;
+ // Function to display tooltip
+ const renderTooltip = () => {
+  if (!tooltipData) return null;
 
-    const { text, xPos, yPos } = tooltipData;
+  const { text, xPos, yPos } = tooltipData;
 
+  // Split text into lines
+  const tooltipLines = text.split('<br/>').map((line, index) => {
+    // Check if the line contains a link
+    if (line.includes('<a href=')) {
+      const linkMatch = line.match(/<a href='(.*?)'.*?>(.*?)<\/a>/);
+      if (linkMatch) {
+        const [, href, anchorText] = linkMatch;
+        return (
+          <div key={index} className={styles['tooltip-pair']}>
+            <span className={styles['tooltip-key']}>Zoom in into radar:</span>{' '}
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'blue', textDecoration: 'underline' }}
+            >
+              {anchorText}
+            </a>
+          </div>
+        );
+      }
+    }
+
+    // For key-value pairs
+    if (line.includes(':')) {
+      const [key, value] = line.split(':', 2);
+      return (
+        <div key={index} className={styles['tooltip-pair']}>
+          <span className={styles['tooltip-key']}>{key.trim()}:</span>{' '}
+          <span className={styles['tooltip-value']}>{value.trim()}</span>
+        </div>
+      );
+    }
+
+    // Fallback for plain text lines
     return (
-      <div className={styles.tooltip} style={{
-        position: 'absolute',
-        top: `${yPos - 140}px`, // Adjust tooltip position relative to the circle (above it)
-        left: `${xPos + 15}px`, // Position the tooltip to the right of the circle
-        visibility: tooltipData ? 'visible' : 'hidden',
-        width: '200px',
-        maxWidth: '300px', // Limit tooltip width to fit in the grey area
-        padding: '10px',
-        backgroundColor: 'white',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        <div dangerouslySetInnerHTML={{ __html: text }} />
+      <div key={index} className={styles['tooltip-pair']}>
+        {line}
       </div>
     );
-  };
+  });
+
+  return (
+    <div
+      className={styles.tooltip}
+      style={{
+        position: 'absolute',
+        top: `${yPos - 140}px`,
+        left: `${xPos + 15}px`,
+        visibility: tooltipData ? 'visible' : 'hidden',
+      }}
+    >
+      {tooltipLines}
+    </div>
+  );
+};
+
+
+
+
 
   return (
     <div style={{ position: 'relative' }}>
