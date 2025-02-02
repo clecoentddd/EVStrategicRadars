@@ -96,6 +96,43 @@ export const sendStrategyCreated = async (event) => {
   }
 };
 
+export const sendStrategyUpdated= async (event) => {
+  console.log("ES - sendStrategyUpdated entering with event...", event);
+  
+  const currentStream = replayStream(event.stream_id);
+
+  console.log("ES - sendStrategyUpdated: appendEventToFile", currentStream);
+     
+    const updatedStrategy = {
+      event: "STRATEGY_UPDATED",
+      type: "STRATEGY",
+      stream_id: event.stream_id,
+      id: event.id,
+      timestamp: new Date().toISOString(),
+      state: event.state,
+      name: event.name,
+      description: event.description,
+      whatwewillnotdo: event.whatwewillnotdo,
+    };
+
+    // Ready to add events to file
+    console.log ("ES - appendEventToFile", updatedStrategy);
+    appendEventToFile(currentStream.id, updatedStrategy);
+
+    // handle projections
+    console.log("ES- Am I here?", updatedStrategy);
+    
+
+    try {
+      await projectStrategyToSupabase(updatedStrategy);
+    } catch (error) {
+      console.warn('Warning: Projection of new strategy failed:', error);
+    }
+
+    // Always return the new strategy
+    return updatedStrategy;
+};
+
 export const replayStrategy = async (streamId, strategyId) => {
   const allEvents = await getEventsForStream(streamId);
   const filteredEvents = allEvents.filter(event => event.id === strategyId);

@@ -41,6 +41,33 @@ export async function projectStrategyToSupabase(strategy) {
 
         console.log("Data (update) from Supabase:", data);
         return data; // Should now contain the updated row(s)
+      } else if (strategy.event === "STRATEGY_UPDATED") {
+        const { data, error } = await supabase
+          .from("strategic_strategies")
+          .update([
+            {
+              id: strategy.id,
+              event: strategy.event,
+              type: strategy.type,
+              stream_id: strategy.stream_id,
+              previous_strategy_id: strategy.previous_strategy_id,
+              name: strategy.name,
+              description: strategy.description,
+              whatwewillnotdo: strategy.whatwewillnotdo,
+              state: strategy.state,
+              updated_at: new Date().toISOString(),
+            },
+          ])
+          .eq("id", strategy.id) // Add a where clause to specify the row to update
+          .select("*"); // Request inserted data to be returned
+
+        if (error) {
+          console.error("Error inserting strategic strategy:", error.message);
+          throw new Error("Failed to insert strategic strategy into Supabase.");
+        }
+
+        console.log("Data (create) from Supabase:", data);
+        return data; // Should now contain the inserted row(s)
       }
     } else {
       // Insert a new strategy if it doesn't exist

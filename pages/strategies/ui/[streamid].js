@@ -30,6 +30,58 @@ export default function StrategyStream() {
   const [collapsedStrategies, setCollapsedStrategies] = useState({});
   const [targetStrategy, setTargetStrategy] = useState(null);
 
+  // Strategy Edit & Save
+  const [editableStrategyId, setEditableStrategyId] = useState(null); // Track which strategy is being edited
+  const [tempStrategyData, setTempStrategyData] = useState(null); // Temporary data for editing
+
+
+  // Handle Edit Strategy Click
+const handleEditStrategyClick = (strategy) => {
+  setEditableStrategyId(strategy.id);
+  setTempStrategyData({
+    name: strategy.name,
+    description: strategy.description,
+    whatwewillnotdo: strategy.whatwewillnotdo,
+    state: strategy.state,
+  });
+};
+
+// Handle Save Strategy Click
+const handleSaveStrategyClick = async (e, strategy) => {
+  e.preventDefault();
+  try {
+      // Ensure stream_id is available (e.g., from the router or state)
+      const streamId = streamid; // Assuming stream_id is available in the router query
+      console.log("handleSaveStrategyClick with streamID",streamid );
+      if (!streamId) {
+          throw new Error("streamId is required");
+      }
+
+      // Call the API to update the strategy
+      const response = await fetch(`/api/strategy-strategies?strategyId=${strategy.id}&streamId=${streamId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(tempStrategyData),
+      });
+
+      if (!response.ok) {
+          throw new Error("Failed to update strategy");
+      }
+
+      // Update the UI with the new strategy data
+      setStreamData((prevData) =>
+          prevData.map((strat) =>
+              strat.id === strategy.id ? { ...strat, ...tempStrategyData } : strat
+          )
+      );
+
+      alert("Strategy updated successfully!");
+      setEditableStrategyId(null); // Exit edit mode
+  } catch (err) {
+      alert(`Error: ${err.message}`);
+  }
+};
+
   const handleEditClick = async (strategy,element) => {
     setEditableElementId(element.id);
 
@@ -40,8 +92,8 @@ export default function StrategyStream() {
     console.log ("handleEditClick currentRow", currentRow);
     setTempData({ ...currentRow });
 
-      // Fetch available tags when entering edit mode
-      try {
+      
+    try {
         const response = await fetch(`/api/radar-items?radarId=${streamAggregate.radarId}`, {
           method: 'GET',
           headers: {
@@ -54,7 +106,7 @@ export default function StrategyStream() {
           throw new Error(`Failed to fetch radar items: ${response.statusText}`);
         }
     
-        console.log("get radar items", response.text);
+        console.log("handleEditClick get radar items", response.text);
         const data = await response.json();
     
         // Validate the structure of the returned data (example below)
@@ -490,11 +542,17 @@ export default function StrategyStream() {
             <span style={strategyTitleStyle}>{`${strategy.name} (${strategy.state})`}</span>
           </div>
           
-           {/* Add Element Button */}
+           {/* Add Initiative buton */}
         {collapsedStrategies[strategy.id] && (
           <div className={styles.addElementContainer}>
             <button
-              className={styles.createElementButtonStyle}
+              className={styles.editStrategyButton}
+              onClick={() => handleEditStrategyClick(strategy)}
+            >
+              Edit
+            </button>
+            <button
+              className={styles.createInitiativeButtonStyle}
               
               onClick={() => {
                 setTargetStrategy(strategy); // Track the strategy ID
@@ -502,21 +560,93 @@ export default function StrategyStream() {
                 setShowCreateElementForm(true);  // Show the form
               }}
             >
-              Add Element
+              Add Initiative
             </button>
           </div>
         )}
 
-        {/* Show elements only if the strategy is collapsed */}
-        {collapsedStrategies[strategy.id] && (
-          <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
-            {strategy.elements.map((element) => (
-              <div key={element.id} className={styles.element} style={elementStyle}>
-                <span>{element.name}</span>
-              </div>
-            ))}
-          </div>
+        {/* Edit Strategy Form */}
+        {editableStrategyId === strategy.id && (
+          <form className={styles.editStrategyForm} onSubmit={(e) => handleSaveStrategyClick(e, strategy)}>
+            <h3>Edit Strategy</h3>
+            <label>
+              Name
+              <input
+                type="text"
+                name="name"
+                value={tempStrategyData?.name || strategy.name}
+                onChange={(e) => setTempStrategyData({ ...tempStrategyData, name: e.target.value })}
+                required
+              />
+            </label>
+            <label>
+              Description
+              <textarea
+                name="description"
+                value={tempStrategyData?.description || strategy.description}
+                onChange={(e) => setTempStrategyData({ ...tempStrategyData, description: e.target.value })}
+                rows="3"
+                required
+              />
+            </label>
+            <label>
+              What We Will Not Do
+              <textarea
+                name="whatwewillnotdo"
+                value={tempStrategyData?.whatwewillnotdo || strategy.whatwewillnotdo}
+                onChange={(e) => setTempStrategyData({ ...tempStrategyData, whatwewillnotdo: e.target.value })}
+                rows="3"
+              />
+            </label>
+            <label>
+              Status
+              <select
+                name="state"
+                value={tempStrategyData?.state || strategy.state}
+                onChange={(e) => setTempStrategyData({ ...tempStrategyData, state: e.target.value })}
+              >
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+                <option value="Closed">Closed</option>
+                <option value="Deleted">Deleted</option>
+              </select>
+            </label>
+            <div className={styles.formButtons}>
+              <button type="submit" className={styles.saveButton}>
+                Save
+              </button>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => setEditableStrategyId(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         )}
+
+        {/* Show elements only if the strategy is collapsed */}
+          {collapsedStrategies[strategy.id] && (
+            <>
+              {/* What We Will Not Do Section */}
+              <div className={styles.boldTitle}>
+              <strong>Description</strong>
+              <p>{strategy.description}</p>
+                <strong>What We Will Not Do</strong>
+                <p>{strategy.whatwewillnotdo}</p>
+              </div>
+
+              {/* Elements Section */}
+              <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
+                {strategy.elements.map((element) => (
+                  <div key={element.id} className={styles.element} style={elementStyle}>
+                    <span>{element.name}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
               <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
                 {strategy.elements.map((element) => (
@@ -531,13 +661,13 @@ export default function StrategyStream() {
                     >
                       <span style={elementTitleStyle}>{`${element.name} (${element.state})`}</span>
                     </div>
-                       
+    
                     {expandedElementId === element.id && (
                       <div className="element-details" style={elementDetailsStyle}>
-                        {/* Name Field */}
+                        {/* Name and Description Fields */}
                         <div className={styles.horizontalAlignmentWrapper}>
                           <label className={styles.labelElementStyle}>
-                            Name
+                            Name of the initiative
                             <textarea
                               value={tempData?.name || element.name || ""}
                               onChange={(e) => handleFieldChange("name", e.target.value)}
@@ -549,7 +679,7 @@ export default function StrategyStream() {
                               }
                             />
                           </label>
-    
+
                           <label className={styles.labelElementStyle}>
                             Description
                             <textarea
@@ -564,7 +694,7 @@ export default function StrategyStream() {
                             />
                           </label>
                         </div>
-    
+
                         {/* Table Fields */}
                         <table className={styles.tableStyle}>
                           <thead>
@@ -601,28 +731,95 @@ export default function StrategyStream() {
                             </tr>
                           </tbody>
                         </table>
-    
+
                         {/* Tooltips for the header elements */}
                         <ReactTooltip
                           anchorId="diagnosis"
                           place="top"
                           content={
                             <span>
-                              We need facts and data. Be very mindful of biases like the echo chamber.<br />
-                              Be careful of logical arguments.<br />
-                              Tools such as Wardley mapping can be used here.
+                              We need facts and data. Be very mindful of biases like the echo chamber.
+                              <br />
+                              Be careful of logical arguments.
+                              <br />
+                              Tools such as Wardley mapping can be used here. Remmember WTP/WTS as willingness to pay and sell: how are you going to create vakue for customers?
                             </span>
                           }
                           className={styles.customTooltip}
                         />
-                        {/* Repeat tooltips for other columns as shown above */}
-    
+                        <ReactTooltip
+                          anchorId="overallApproach"
+                          place="top"
+                          content={
+                            <span>
+                              The overall approach for overcoming the obstacles highlighted by the diagnosis. It channels actions in certain directions without defining exactly what shall be done.<br />
+                              It directs and constraints action without fully defining its content.<br />
+                              And it defines a method of grappling with the situation and rouling out a vast array of possible actions
+                              approach.
+                            </span>
+                          }
+                          className={styles.customTooltip}
+                        />
+                        <ReactTooltip
+                          anchorId="coherentActions"
+                          place="top"
+                          content={<span>Ensure you have a set of coherent actions</span>}
+                          className={styles.customTooltip}
+                        />
+                        <ReactTooltip
+                          anchorId="proximateObjectives"
+                          place="top"
+                          content={
+                            <span>
+                              You want to make your strategy concrete, executable in the very short-term so
+                              people can believe you are walking the talk
+                            </span>
+                          }
+                          className={styles.customTooltip}
+                        />
+
                         {/* Tags Field */}
                         <div className={styles.tagsContainer}>
                           <strong>Tags</strong>
                           <div>
                             {editableElementId === element.id ? (
                               <div>
+                                {/* Dropdown for Adding Tags */}
+                                <select
+                                  value="" // Controlled component
+                                  onChange={(e) => {
+                                    const selectedTagId = e.target.value;
+                                    const selectedTag = availableTags.find((tag) => tag.id === selectedTagId);
+
+                                    if (selectedTag) {
+                                      // Check if the tag is already added
+                                      const currentTags = Array.isArray(tempData?.tags)
+                                        ? tempData.tags
+                                        : JSON.parse(tempData?.tags || "[]");
+
+                                      const isDuplicate = currentTags.some((tag) => tag.id === selectedTag.id);
+
+                                      if (!isDuplicate) {
+                                        // Add the new tag
+                                        const updatedTags = [...currentTags, selectedTag];
+                                        setTempData((prev) => ({
+                                          ...prev,
+                                          tags: updatedTags,
+                                        }));
+                                      }
+                                    }
+                                  }}
+                                  className={styles.tagDropdown}
+                                >
+                                  <option value="">Select a tag</option>
+                                  {availableTags.map((tag) => (
+                                    <option key={tag.id} value={tag.id}>
+                                      {tag.name}
+                                    </option>
+                                  ))}
+                                </select>
+
+                                {/* Display Selected Tags */}
                                 <ul className={styles.tagsList}>
                                   {(Array.isArray(tempData?.tags)
                                     ? tempData.tags
@@ -639,7 +836,7 @@ export default function StrategyStream() {
                                               ? tempData.tags
                                               : JSON.parse(tempData?.tags || "[]")
                                           ).filter((t) => t.id !== tag.id);
-    
+
                                           setTempData((prev) => ({
                                             ...prev,
                                             tags: updatedTags,
@@ -673,23 +870,24 @@ export default function StrategyStream() {
                             )}
                           </div>
                         </div>
-    
+
+                        {/* Save and Cancel Buttons */}
                         <div className={styles.rowButtonsEditCancelSave}>
                           {editableElementId === element.id ? (
                             <>
                               <button
-                                className={styles.saveButton}
+                                className={styles.saveElementButton}
                                 onClick={() => handleSaveClick(strategy, element)}
                               >
                                 Save
                               </button>
-                              <button className={styles.saveButton} onClick={handleCancelClick}>
+                              <button className={styles.cancelElementButton} onClick={handleCancelClick}>
                                 Cancel
                               </button>
                             </>
                           ) : (
                             <button
-                              className={styles.editButton}
+                              className={styles.editElementButton}
                               onClick={() => handleEditClick(strategy, element)}
                             >
                               Edit
@@ -772,7 +970,7 @@ return (
       {showCreateElementForm && targetStrategy && (
         <form style={formStyle} onSubmit={(e) => handleCreateElementSubmit(e)}>
           {/* Display the strategy name dynamically */}
-          <h3>Add Element to {targetStrategy.name}</h3>
+          <h3>For {targetStrategy.name} : Add a new Initiative that is value creation driven:</h3>
 
           {/* Input for Element Name */}
           <input

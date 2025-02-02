@@ -1,0 +1,129 @@
+[
+  {
+    "event": "STREAM_CREATED",
+    "type": "STREAM",
+    "id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "radarId": "94fb5ca0-7918-4531-8c50-de441c64094d",
+    "name": "Infra",
+    "timestamp": "2025-01-20T16:19:36.130Z",
+    "state": "Draft",
+    "active_strategy_id": null
+  },
+  {
+    "event": "STRATEGY_CREATED",
+    "type": "STRATEGY",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "id": "f025c282-f8df-4be1-8264-ce10e1b42316",
+    "previous_strategy_id": null,
+    "version": 1,
+    "timestamp": "2025-01-21T19:30:03.856Z",
+    "state": "Draft",
+    "name": "Cloud",
+    "description": "des",
+    "whatwewillnotdo": "what"
+  },
+  {
+    "event": "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
+    "type": "STREAM",
+    "id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "active_strategy_id": "f025c282-f8df-4be1-8264-ce10e1b42316",
+    "timestamp": "2025-01-21T19:30:03.857Z"
+  },
+  {
+    "event": "STRATEGIC_ELEMENT_UPDATED",
+    "type": "STRATEGIC_ELEMENT",
+    "id": "45aaee82-2b55-44d8-a532-6dda7a2a7de0",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "version": 2,
+    "timeStamp": "2025-01-31T19:41:49.470Z",
+    "state": "Updated",
+    "strategy_id": "f025c282-f8df-4be1-8264-ce10e1b42316",
+    "diagnosis": "We need to embrace new emergent practices",
+    "overall_approach": "Implement with conviction this is going to work: bring expertise to ramp up with confidence",
+    "set_of_coherent_actions": "Hire consultants, set up trainings, set up a community of practice\n\n- Recruit people who have the skills and experience we need\n- Set up training plan",
+    "proximate_objectives": "Identify people who are already \"capable\": motivated and self-driven\n\n- Train people with nebuilt.de and with A.D.",
+    "name": "Building systems with Event Modeling / Event Sourcing / CQRS",
+    "description": "We have been dragging our feet with old approaches thinking they were good practices in a complex environment. We need emergent practices to deal with complexity",
+    "tags": [
+      {
+        "name": "Event Sourcing",
+        "id": "c0233e5d-5355-41c5-ba43-ac94974ea14a"
+      },
+      {
+        "name": "Business Modeling",
+        "id": "b329ade5-6fe1-4581-bfe1-869769138452"
+      },
+      {
+        "name": "Lack of trainings",
+        "id": "936a656b-e010-4003-94e1-254f7fa8eaba"
+      },
+      {
+        "name": "Lack of AI",
+        "id": "9e71c9c4-905f-485d-afef-5b9aa4089606"
+      }
+    ]
+  },
+  {
+    "event": "STRATEGY_UPDATED",
+    "type": "STRATEGY",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "id": "f025c282-f8df-4be1-8264-ce10e1b42316",
+    "timestamp": "2025-02-01T13:51:35.603Z",
+    "state": "Draft",
+    "name": "Strategy 2025 to 2026",
+    "description": "des17",
+    "whatwewillnotdo": "this is also what we will not do17"
+  },
+  {
+    "event": "STRATEGY_UPDATED",
+    "type": "STRATEGY",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "id": "f025c282-f8df-4be1-8264-ce10e1b42316",
+    "timestamp": "2025-02-01T14:01:30.611Z",
+    "state": "Draft",
+    "name": "Strategy 2025 to 2026",
+    "description": "des20",
+    "whatwewillnotdo": "this is also what we will not do20"
+  },
+  {
+    "event": "STRATEGY_UPDATED",
+    "type": "STRATEGY",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "id": "f025c282-f8df-4be1-8264-ce10e1b42316",
+    "timestamp": "2025-02-01T14:06:05.411Z",
+    "state": "Draft",
+    "name": "Strategy 2025 to 2026",
+    "description": "des21",
+    "whatwewillnotdo": "this is also what we will not do21"
+  },
+  {
+    "event": "STRATEGY_CREATED",
+    "type": "STRATEGY",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "id": "44e47c52-8f40-4735-be32-b3b07f4a19ac",
+    "version": null,
+    "timestamp": "2025-02-01T14:16:26.328Z",
+    "state": "Draft",
+    "name": "Strategy 2025 Q2-Q3",
+    "description": "An interim attempt to create urgency and reshape our software. Focus is on operational and revenue retention",
+    "whatwewillnotdo": "Invest in generating new revnues"
+  },
+  {
+    "event": "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
+    "type": "STREAM",
+    "id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "active_strategy_id": "44e47c52-8f40-4735-be32-b3b07f4a19ac",
+    "timestamp": "2025-02-01T14:16:26.328Z"
+  },
+  {
+    "event": "STRATEGY_UPDATED",
+    "type": "STRATEGY",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "id": "f025c282-f8df-4be1-8264-ce10e1b42316",
+    "timestamp": "2025-02-01T15:19:10.717Z",
+    "state": "Draft",
+    "name": "Strategy 2025 to 2026",
+    "description": "We've been building inertia and entropy in our organisation. We need to revive the organiation and gives it back a healthy hearbeat",
+    "whatwewillnotdo": "We cannot pursue all our goals. We will prioritise based on economic value"
+  }
+]

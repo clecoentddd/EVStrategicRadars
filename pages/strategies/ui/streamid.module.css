@@ -199,8 +199,8 @@
     border-color: #688aef;
   }
 
-  .createElementButtonStyle {
-    background-color: plum;
+  .createInitiativeButtonStyle {
+    background-color: purple;
     color: white;
     margin-left: 5px;
     margin-top: 20px;
@@ -398,12 +398,14 @@
   }
   
   .cancelButton {
-    background-color: #f44336;
+    background-color: plum;
     color: white;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 4px;
+    margin-left: 5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 8px;
+    border-bottom: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
@@ -412,6 +414,16 @@
     background-color: #d32f2f;
   }
   
+  .saveButton {
+    background-color: violet;
+    color: white;
+    margin-left: 5px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 8px;
+    border-bottom: none;
+  }
   /* Define styles for the different states */
 
   .strategyHeaderDraft {
@@ -471,4 +483,109 @@
 
 .strategyGroup .strategy {
   margin-bottom: 1rem; /* Add spacing between strategies */
+}
+
+.tagDropdown {
+  margin-top: 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.cancelElementButton {
+  background-color: #688aef;
+  color: white;
+  margin-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 8px;
+  border-bottom: none;
+}
+
+.saveElementButton{
+  background-color: violet;
+  color: white;
+  margin-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 8px;
+  border-bottom: none;
+}
+
+.editElementButton{
+  background-color: violet;
+  color: white;
+  margin-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 8px;
+  border-bottom: none;
+}
+
+.editStrategyButton {
+  background-color: violet;
+  color: white;
+  margin-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 8px;
+  border-bottom: none;
+}
+
+
+.strategyButtons {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.editStrategyForm {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  gap: 16px; /* Add spacing between form fields */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.editStrategyForm label {
+  display: flex;
+  flex-direction: column; /* Stack label text and input vertically */
+  gap: 8px; /* Add spacing between label text and input */
+  font-family: 'Orbitron', sans-serif;
+}
+
+.editStrategyForm input,
+.editStrategyForm textarea,
+.editStrategyForm select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.editStrategyForm textarea {
+  resize: vertical; /* Allow vertical resizing of textarea */
+}
+
+.editStrategyForm .formButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+.boldTitle {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }

@@ -1,4 +1,4 @@
-import { createStrategy } from '../model/strategyStrategies';
+import { createStrategy } from '../model/createStrategy';
 import { replayStream } from '../service/eventStoreStream';
 
 export async function createStrategyHandler(command) {
