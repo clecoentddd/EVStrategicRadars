@@ -3,6 +3,11 @@ import styles from './styles/index.module.css';
 import createRadar from './services/createRadarIndex';
 import updateRadar from './services/updateRadarIndex';
 import deleteRadar from './services/deleteRadarIndex';
+import callAICoach from './services/callAICoach';
+
+// spiner from react
+import { ClipLoader } from 'react-spinners';
+
 
 function HomePage() {
   const [radars, setRadars] = useState([]);
@@ -13,6 +18,12 @@ function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [formMode, setFormMode] = useState('create'); // 'create' or 'update'
   const [radarToUpdate, setRadarToUpdate] = useState(null);
+  const [loading, setLoading] = useState(false); // Spining when calling AI API
+
+  // AI Coach
+  const [aiCoachVisible, setAICoachVisible] = useState({}); // Track which radar's AI Coach is open
+  const [aiCoachData, setAICoachData] = useState({});
+
 
   useEffect(() => {
     const fetchRadars = async () => {
@@ -33,6 +44,60 @@ function HomePage() {
     fetchRadars();
     checkSyncStatus();
   }, []);
+
+  // Toggle AI Coach sub-menu visibility
+  const toggleAICoach = (radarId) => {
+    setAICoachVisible((prev) => ({
+      ...prev,
+      [radarId]: !prev[radarId],
+    }));
+  };
+
+  // Handle "Call AI Coach" button click
+  const handleCallAICoach = async (radarId) => {
+    try {
+      setLoading(true); // Show the spinner
+  
+      const radar = radars.find((r) => r.id === radarId);
+      if (!radar) {
+        throw new Error('Radar not found');
+      }
+  
+      const response = await callAICoach(radarId, radar.purpose);
+      console.log('AI Coach Response:', response);
+  
+      // Update the state for the specific radar
+      setAICoachData((prev) => ({
+        ...prev,
+        [radarId]: {
+          potentialNPS: response.potentialNPS || '',
+          comments: response.comments || '',
+          suggestions: response.suggestions || '',
+        },
+      }));
+  
+      alert('AI Coach called successfully!');
+    } catch (error) {
+      console.error('Error calling AI Coach:', error.message);
+      alert('Failed to call AI Coach. Please try again.');
+    } finally {
+      setLoading(false); // Hide the spinner
+    }
+  };
+
+  // Manage NPS score color
+  const getNPSColor = (nps) => {
+
+    console.log ("NPS is ", nps);
+    if (nps > 4.5) return 'darkgreen';
+    if (nps > 4) return 'green';
+    if (nps > 3.5) return 'lightgreen';
+    if (nps > 3) return 'orange';
+    if (nps > 2.5) return 'darkorange';
+    if (nps >=0) return 'red';
+    return 'white'; // default value
+  };
+
 
   const handleCreate = async (event) => {
     event.preventDefault();
@@ -278,127 +343,217 @@ function HomePage() {
             <div key={levelGroup.level}>
               <h2 className={styles.levelHeader}>Level {levelGroup.level}</h2>
               {levelGroup.radars.map((radar) => (
-  <div key={radar.id} className={styles.radarItem}>
-    <div className={styles.radarHeader}>
-      <h3 onClick={() => toggleRadar(radar.id)}>
-        {radar.name}
-        <br />
-        <span className={styles.radarPurpose}>{radar.purpose}</span>
-      </h3>
-    </div>
-    <div
-      className={styles.radarDetails}
-      style={{
-        display: expandedRadars[radar.id] ? 'block' : 'none',
-      }}
-    >
-      <button
-        className={styles.buttonViewRadar}
-        onClick={() => viewRadar(radar.name, radar.id)}
-      >
-        View Radar
-      </button>
-      <button
-        className={styles.buttonUpdate}
-        onClick={() => {
-          toggleForm('update', radar);
-          setRadarToUpdate(radar); // Set the radar to be updated
-        }}
-      >
-        Update
-      </button>
-      <button
-        className={styles.buttonDelete}
-        onClick={() => buttonDeleteRadar(radar.id)}
-      >
-        Delete
-      </button>
-      <button
-        className={styles.buttonViewStrategy}
-        onClick={() => viewStream(radar.id)}
-      >
-        View Strategies
-      </button>
+                <div key={radar.id} className={styles.radarItem}>
+                  <div className={styles.radarHeader}>
+                    <h3 onClick={() => toggleRadar(radar.id)}>
+                      {radar.name}
+                      <br />
+                      <span className={styles.radarPurpose}>{radar.purpose}</span>
+                    </h3>
+                  </div>
+                  <div
+                    className={styles.radarDetails}
+                    style={{
+                      display: expandedRadars[radar.id] ? 'block' : 'none',
+                    }}
+                >
+                <button
+                    className={styles.buttonAICoach}
+                    onClick={() => toggleAICoach(radar.id)}
+                    disabled={loading} // Disable the button while loading
+                  >
+                    AI Coach
+                  </button>
+                  {aiCoachVisible[radar.id] && (
+                    <div className={styles.aiCoachSubMenu}>
+                      <div>
+                        <label>Potential NPS:</label>
+                        <input
+                          type="text"
+                          value={aiCoachData[radar.id]?.potentialNPS || ''}
+                          onChange={(e) =>
+                            setAICoachData((prev) => ({
+                              ...prev,
+                              [radar.id]: {
+                                ...prev[radar.id],
+                                potentialNPS: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder="Potential NPS Value"
+                          style={{
+                            backgroundColor: getNPSColor(aiCoachData[radar.id]?.potentialNPS || 0),
+                            color: 'white',
+                            fontWeight: 'bold',
+                            padding: '8px',
+                            border: 'none',
+                            borderRadius: '4px',
+                          }}
+                        />
+                        {aiCoachData[radar.id]?.potentialNPS && (
+                          <span
+                            style={{
+                              backgroundColor: getNPSColor(aiCoachData[radar.id]?.potentialNPS || 0),
+                              padding: '4px',
+                              borderRadius: '4px',
+                              color: 'white',
+                            }}
+                          >
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <label>Comments:</label>
+                        <textarea
+                          value={aiCoachData[radar.id]?.comments || ''}
+                          onChange={(e) =>
+                            setAICoachData((prev) => ({
+                              ...prev,
+                              [radar.id]: {
+                                ...prev[radar.id],
+                                comments: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder="Enter comments"
+                        />
+                      </div>
+                      <div>
+                        <label>Suggestions:</label>
+                        <textarea
+                          value={aiCoachData[radar.id]?.suggestions || ''}
+                          onChange={(e) =>
+                            setAICoachData((prev) => ({
+                              ...prev,
+                              [radar.id]: {
+                                ...prev[radar.id],
+                                suggestions: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder="Enter suggestions"
+                        />
+                      </div>
+                      <div className={styles.aiCoachContainer}>
+                        <button
+                          className={styles.buttonCallAICoach}
+                          onClick={() => handleCallAICoach(radar.id)}
+                          disabled={loading} // Disable the button while loading
+                        >
+                          Call AI Coach
+                        </button>
+                        {loading && <ClipLoader color="#09f" loading={loading} size={20} />} {/* Show spinner */}
+                      </div>
+                    </div>
+                  )}
+                <button
+                  className={styles.buttonViewRadar}
+                  onClick={() => viewRadar(radar.name, radar.id)}
+                >
+                  View Radar
+                </button>
+                <button
+                  className={styles.buttonUpdate}
+                  onClick={() => {
+                    toggleForm('update', radar);
+                    setRadarToUpdate(radar); // Set the radar to be updated
+                  }}
+                  
+                >
+                  Update
+                </button>
+                <button
+                  className={styles.buttonDelete}
+                  onClick={() => buttonDeleteRadar(radar.id)}
+                >
+                  Delete
+                </button>
+                <button
+                  className={styles.buttonViewStrategy}
+                  onClick={() => viewStream(radar.id)}
+                >
+                  View Strategies
+                </button>
 
-      {/* Render the Update Form for the Selected Radar */}
-      {formMode === 'update' && radarToUpdate?.id === radar.id && (
-        <div className={styles.updateFormContainer}>
-          <h2>Update Radar</h2>
-          <form onSubmit={handleUpdate}>
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Name</label>
-              <br />
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                value={radarToUpdate.name || ''}
-                onChange={(e) =>
-                  setRadarToUpdate((prev) => ({
-                    ...prev,
-                    name: e.target.value,
-                  }))
-                }
-              />
+                {/* Render the Update Form for the Selected Radar */}
+                {formMode === 'update' && radarToUpdate?.id === radar.id && (
+                  <div className={styles.updateFormContainer}>
+                    <h2>Update Radar</h2>
+                    <form onSubmit={handleUpdate}>
+                      <div className={styles.formGroup}>
+                        <label htmlFor="name">Name</label>
+                        <br />
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          required
+                          value={radarToUpdate.name || ''}
+                          onChange={(e) =>
+                            setRadarToUpdate((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label htmlFor="level">Level</label>
+                        <br />
+                        <input
+                          type="number"
+                          id="level"
+                          name="level"
+                          min="1"
+                          required
+                          style={{ width: '50px' }}
+                          value={radarToUpdate.level || ''}
+                          onChange={(e) =>
+                            setRadarToUpdate((prev) => ({
+                              ...prev,
+                              level: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
+                        <br />
+                        <textarea
+                          id="purpose"
+                          name="purpose"
+                          required
+                          rows="5"
+                          className={styles.purposeTextarea}
+                          value={radarToUpdate.purpose || ''}
+                          onChange={(e) =>
+                            setRadarToUpdate((prev) => ({
+                              ...prev,
+                              purpose: e.target.value,
+                            }))
+                          }
+                        ></textarea>
+                      </div>
+                      <div className={styles.buttonGroup}>
+                        <button type="submit" className={styles.button}>
+                          Update
+                        </button>
+                        <button
+                          type="button"
+                          className={styles.button}
+                          onClick={() => {
+                            setIsFormVisible(false);
+                            setRadarToUpdate(null); // Reset the form
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="level">Level</label>
-              <br />
-              <input
-                type="number"
-                id="level"
-                name="level"
-                min="1"
-                required
-                style={{ width: '50px' }}
-                value={radarToUpdate.level || ''}
-                onChange={(e) =>
-                  setRadarToUpdate((prev) => ({
-                    ...prev,
-                    level: e.target.value,
-                  }))
-                }
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
-              <br />
-              <textarea
-                id="purpose"
-                name="purpose"
-                required
-                rows="5"
-                className={styles.purposeTextarea}
-                value={radarToUpdate.purpose || ''}
-                onChange={(e) =>
-                  setRadarToUpdate((prev) => ({
-                    ...prev,
-                    purpose: e.target.value,
-                  }))
-                }
-              ></textarea>
-            </div>
-            <div className={styles.buttonGroup}>
-              <button type="submit" className={styles.button}>
-                Update
-              </button>
-              <button
-                type="button"
-                className={styles.button}
-                onClick={() => {
-                  setIsFormVisible(false);
-                  setRadarToUpdate(null); // Reset the form
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-    </div>
-  </div>
               ))}
             </div>
           ))}

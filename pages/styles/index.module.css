@@ -223,4 +223,52 @@
     background-color: plum;
     width: 100px;
   }
-  /* ... rest of your CSS styles ... */
+  /* AI COACH */
+  .buttonAICoach {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+  
+  .aiCoachSubMenu {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+  
+  .aiCoachSubMenu label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .aiCoachSubMenu input,
+  .aiCoachSubMenu textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .buttonCallAICoach {
+    background-color: #2196F3; /* Blue */
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* styles/index.module.css */
+.aiCoachContainer {
+  display: flex;
+  align-items: center; /* Vertically center the button and spinner */
+  gap: 8px; /* Add some space between the button and spinner */
+}
