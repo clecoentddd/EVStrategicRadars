@@ -80,69 +80,15 @@ export default async function handler(req, res) {
   
     // Parse the Mistral response
     const responseText = responseData.choices[0].message.content;
+
+    console.log("AI response in full is: ", responseText);
   
   // Extract NPS, comments, and suggestions from the response
   const npsMatch = responseText.match(/NPS Rating:\s*(\d+(\.\d+)?)/);
-  const commentsMatch = responseText.match(/Comments:\s*([\s\S]*?)(?=\n- Suggestions:|$)/);
+  const commentsMatch = responseText.match(/Comments:([\s\S]*?)(?=\n- Suggestions:|$)/);
   const suggestionsMatch = responseText.match(/Suggestions:\s*([\s\S]*)/);
-  
-    const nps = npsMatch ? parseFloat(npsMatch[1]) : null;
-    const comments = commentsMatch ? commentsMatch[1].trim() : '';
-    const suggestions = suggestionsMatch ? suggestionsMatch[1].trim() : 'Job done';
-  
-    return {
-      potentialNPS: nps,
-      comments,
-      suggestions,
-    };
-  }
-  // Function to call OpenAI API using fetch
-  async function callOpenAI(purpose) {
-    const prompt = `Assess the following purpose and provide:
-1. An NPS rating between 0 to 5.
-2. Comments on the purpose's clarity, inspiration, and actionability, with a focus on:
-   - Whether the purpose evokes emotions that would create loyalty for customers.
-   - Whether the purpose evokes emotions that would create loyalty for employees.
-   - Whether the purpose is inward-focused (employees), outward-focused (customers), or well-balanced.
-3. If the NPS is below 4.5, provide 3 suggestions to improve the purpose. If the NPS is 4.5 or above, return "Job done".
 
-**Purpose:** ${purpose}
-
-**Response Format:**
-- NPS Rating: [Rating between 0 and 5]
-- Comments: [Your feedback on the purpose, including emotional impact and focus]
-- Suggestions: [3 suggestions if NPS < 4.5, otherwise "Job done"]`;
-  
-    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Store your API key in .env
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo', // Use GPT-3.5 or GPT-4
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-      }),
-    });
-  
-    if (!openAIResponse.ok) {
-      throw new Error(`OpenAI API error! Status: ${openAIResponse.status}`);
-    }
-  
-    const responseData = await openAIResponse.json();
-  
-    // Parse the OpenAI response
-    const responseText = responseData.choices[0].message.content;
-  
-    // Extract NPS, comments, and suggestions from the response
-    const npsMatch = responseText.match(/NPS Rating:\s*(\d+(\.\d+)?)/);
-    const commentsMatch = responseText.match(/Comments:\s*([\s\S]*?)/);
-    const suggestionsMatch = responseText.match(/Suggestions:\s*([\s\S]*)/);
+  console.log("AI Comments response in full is: ", commentsMatch);
   
     const nps = npsMatch ? parseFloat(npsMatch[1]) : null;
     const comments = commentsMatch ? commentsMatch[1].trim() : '';

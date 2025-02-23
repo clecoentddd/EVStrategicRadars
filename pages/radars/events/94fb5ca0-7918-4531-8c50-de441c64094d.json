@@ -450,5 +450,29 @@
       "purpose": "To drive new approaches with strong opinions, held lightly. Embracing lean. Hence learning. No best practices when emerging practices are required. And emergent is what we want to master.\nWe cannot learn without experimenting and options. Failure is acceptable, just fail fast, learn fast."
     },
     "eventStoreId": "61b6ab64-e73d-4432-804b-802ccedc60bc"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740345068008,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To drive new approaches that consistently delight our customers by learning from their evolving needs and embracing lean, emergent practices"
+    },
+    "eventStoreId": "ce422ecd-1974-46dc-bec4-52cb660454ae"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740345109679,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "94fb5ca0-7918-4531-8c50-de441c64094d",
+      "level": 2,
+      "name": "Software Engineering",
+      "purpose": "To relentlessly innovate and create exceptional experiences that captivate our customers, fueled by our deep understanding of their evolving needs and our commitment to lean and emergent practices."
+    },
+    "eventStoreId": "46c94b4c-6829-48b5-b397-40dbcab2c45b"
   }
 ]

@@ -114,7 +114,6 @@ function HomePage() {
         },
       }));
 
-      alert('AI Coach called successfully!');
     } catch (error) {
       console.error('Error calling AI Coach:', error.message);
       alert('Failed to call AI Coach. Please try again.');

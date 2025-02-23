@@ -136,5 +136,19 @@
     "name": "Strategy 2024 to 2025",
     "description": "Start using strategic tools to help build strategies that work",
     "whatwewillnotdo": "No fluffy strategies, No \"strategies\" that nobody believes in"
+  },
+  {
+    "id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "name": "Software Engineering",
+    "event": "STREAM_UPDATED_WITH_NEW_NAME",
+    "timestamp": "2025-02-23T21:11:08.322Z",
+    "type": "STREAM"
+  },
+  {
+    "id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "name": "Software Engineering",
+    "event": "STREAM_UPDATED_WITH_NEW_NAME",
+    "timestamp": "2025-02-23T21:11:49.919Z",
+    "type": "STREAM"
   }
 ]
