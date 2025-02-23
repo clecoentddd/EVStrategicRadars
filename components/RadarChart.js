@@ -175,9 +175,9 @@ const categoryLabels = Object.values(ValueCategory).map((category, index) => {
            };
          } else if (item.type === 'Opportunity') {
            circleStyle = {
-             fill: color,
+             fill: 'none',
              stroke: color,
-             strokeWidth: 2,
+             strokeWidth: 3,
            };
          }
         // Append group for each item
@@ -228,12 +228,31 @@ const categoryLabels = Object.values(ValueCategory).map((category, index) => {
           .attr('fill', circleStyle.fill) // Use the determined fill color
           .attr('stroke', circleStyle.stroke) // Use the determined stroke color
           .attr('stroke-width', circleStyle.strokeWidth); 
-          
 
+          if (item.type === 'Problem') {
+            const triangleSize = size * 0.6; // Size of the triangle relative to the circle
+            const trianglePoints = [
+              [x, y - triangleSize], // Top point
+              [x - triangleSize * 0.866, y + triangleSize * 0.5], // Bottom-left point
+              [x + triangleSize * 0.866, y + triangleSize * 0.5], // Bottom-right point
+            ];
+          
+            // Draw the triangle
+            itemGroup.append('polygon')
+              .attr('points', trianglePoints.map(point => point.join(',')).join(' '))
+              .attr('fill', darkenColor(color, -20)) // Slightly darker color
+              .attr('stroke', 'none');
+          }
           // Add glow effect if item type is "Opportunity" 
           if (item.type === 'Opportunity') 
             { 
-              itemCircle.attr('filter', 'url(#sofGlow)'); // Apply the glow filter for Opportunity circles
+              itemGroup.append('circle')
+              .attr('cx', x)
+              .attr('cy', y)
+              .attr('r', size * 0.7) // Smaller radius for the inner circle
+              .attr('fill', color) // Fill with the same color
+              .attr('stroke', 'none');
+              //itemCircle.attr('filter', 'url(#sofGlow)'); // Apply the glow filter for Opportunity circles
             }
 
         // Draw item name
@@ -374,6 +393,23 @@ const getSizeByTolerance = (tolerance) => {
     default:
       return 10;
   }
+};
+
+// Helper function to darken a color
+const darkenColor = (color, percent) => {
+  const num = parseInt(color.slice(1), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) + amt;
+  const G = ((num >> 8) & 0x00FF) + amt;
+  const B = (num & 0x0000FF) + amt;
+  return `#${(
+    0x1000000 +
+    (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+    (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+    (B < 255 ? (B < 1 ? 0 : B) : 255)
+  )
+    .toString(16)
+    .slice(1)}`;
 };
 
 export default RadarChart;
