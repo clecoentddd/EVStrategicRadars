@@ -12,7 +12,7 @@
     <section>
         <h2>Select Radar ID</h2>
         <form id="selectRadarForm">
-            <input type="text" id="radar_id" placeholder="Radar ID" required><br>
+            <input type="text" id="radarId" placeholder="Radar ID" required><br>
             <button type="submit">Set Radar</button>
         </form>
         <p id="selectedRadar"></p>
@@ -83,7 +83,7 @@
         // Set radar ID
         document.getElementById('selectRadarForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            selectedRadarId = document.getElementById('radar_id').value;
+            selectedRadarId = document.getElementById('radarId').value;
             document.getElementById('selectedRadar').textContent = `Selected Radar ID: ${selectedRadarId}`;
             document.getElementById('strategyStreamSection').style.display = 'block';
         });
@@ -92,7 +92,7 @@
         document.getElementById('createStrategyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
-                radar_id: selectedRadarId,
+                radarId: selectedRadarId,
                 name: document.getElementById('stream_name').value,
                 description: document.getElementById('stream_description').value,
             };

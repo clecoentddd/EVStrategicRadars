@@ -7,7 +7,7 @@
   <script>
     async function createRadarItem() {
       // Get input values from the form
-      const radar_id = document.getElementById("radar_id").value;  // Use value from the input field
+      const radarId = document.getElementById("radarId").value;  // Use value from the input field
       const name = document.getElementById("name").value;
       const description = document.getElementById("description").value || null;
       const type = document.getElementById("type").value;
@@ -22,7 +22,7 @@
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ radar_id, name, description, type, category, impact, tolerance, zoom_in }),
+        body: JSON.stringify({ radarId, name, description, type, category, impact, tolerance, zoom_in }),
       });
 
       const resultDiv = document.getElementById("result");
@@ -49,8 +49,8 @@
 <body>
   <h1>Create a Radar Item</h1>
   <form onsubmit="event.preventDefault(); createRadarItem();">
-    <label for="radar_id">Radar ID:</label>
-    <input type="text" id="radar_id" required />
+    <label for="radarId">Radar ID:</label>
+    <input type="text" id="radarId" required />
     <br />
     <label for="name">Name:</label>
     <input type="text" id="name" required />

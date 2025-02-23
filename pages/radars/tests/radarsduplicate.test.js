@@ -8,7 +8,7 @@ console.log('RadarTest Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 import { handleRadarCreation } from "../model/radars"; // Import the function
 import { clearEventStore } from "../infrastructure/eventStoreRadars"; // Import the helper to clear events
 import { getEvents } from "../infrastructure/eventStoreRadars"; 
-import { getStrategiesFromEventSource , getNumberofEventsInEventSource } from '../../strategies/infrastructure/eventStoreStream'
+import { getStrategiesFromEventSource , getNumberofEventsInEventSource } from '../../strategies/service/eventStoreStream'
 
 const radarName = "Radar1"; // Change the radar name here for all tests
 

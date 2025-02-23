@@ -3,7 +3,7 @@
     "event": "STREAM_CREATED",
     "type": "STREAM",
     "id": "84026ea5-f07d-4b15-92d3-72c2ddaf8bde",
-    "radar_id": "9573ace9-48f7-4410-9b21-3e52a3be3e7a",
+    "radarId": "9573ace9-48f7-4410-9b21-3e52a3be3e7a",
     "name": "Strategy Stream v1.0",
     "timestamp": "2024-12-11T21:27:02.901Z",
     "state": "Open",

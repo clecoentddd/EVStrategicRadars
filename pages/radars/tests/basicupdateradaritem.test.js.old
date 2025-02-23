@@ -67,7 +67,7 @@ test('Radar item name update test', async () => {
       tolerance: "medium",
       impact: "high",
       distance: "short",
-      radar_id: radarId, // Using the generated radar_id
+      radarId: radarId, // Using the generated radarId
     };
 
     // Create the radar item via POST request
@@ -76,8 +76,8 @@ test('Radar item name update test', async () => {
     console.log("radar Item returns by api is", createdItem);
     
     
-    // Then: The created radar item should have the expected radar_id
-    expect(createdItem.radar_id).toBe(radarId);
+    // Then: The created radar item should have the expected radarId
+    expect(createdItem.radarId).toBe(radarId);
 
     // Step 2: Update the name of the radar item
     createdItem.name = "New Name";
@@ -94,7 +94,7 @@ test('Radar item name update test', async () => {
       tolerance: "medium",
       impact: "high",
       distance: "short",
-      radar_id: radarId, // Using the generated radar_id
+      radarId: radarId, // Using the generated radarId
     };
 
     console.log ("Test -> trying a PUT...", itemToUpdate);
@@ -106,7 +106,7 @@ test('Radar item name update test', async () => {
 
     // Step 3: Fetch the updated radar item and check if the name was updated
     const fetchedItem = await makeRequest(
-      `http://localhost:3000/api/radar-items?radar_id=${itemToUpdate.radar_id}&id=${itemToUpdate.id}`,
+      `http://localhost:3000/api/radar-items?radarId=${itemToUpdate.radarId}&id=${itemToUpdate.id}`,
       'GET'
     );
     // const fetchedItem = await makeRequest(`http://localhost:3000/api/radar-items?${radarId}/${itemToUpdate.payload.id}`, 'GET', itemToUpdate.payload.rada_id);

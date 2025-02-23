@@ -7,7 +7,7 @@ const eventsDirectory = path.join(__dirname, '../events'); // Target directory f
 
 describe('replayStrategy', () => {
   const stream_id = '84026ea5-f07d-4b15-92d3-72c2ddaf8bde';
-  const radar_id = '9573ace9-48f7-4410-9b21-3e52a3be3e7a';
+  const radarId = '9573ace9-48f7-4410-9b21-3e52a3be3e7a';
   const active_strategy_id = 'a18fe481-1a9f-4244-b97d-064857bac924';
   const strategy_id = 'a18fe481-1a9f-4244-b97d-064857bac924';
   const element_id = '65b3b1fa-f07e-4dee-917f-6781a14a297c';

@@ -14,7 +14,7 @@ describe('Strategy Stream Tests', () => {
 
   it('should create the stream first', async () => {
     const streamCommand = {
-      radar_id: 'id_radar_1234',
+      radarId: 'id_radar_1234',
       name: 'Strategy Stream v1.0',
       description: 'Description of the strategy stream',
       level: '1',

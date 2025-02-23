@@ -12,7 +12,7 @@ describe('Supabase Stream Tests', () => {
     streamId = uuidv4();
     const streamCommand = {
       id: streamId , // Make sure to set a unique ID
-      radar_id: '9573ace9-48f7-4410-9b21-3e52a3be3e00',
+      radarId: '9573ace9-48f7-4410-9b21-3e52a3be3e00',
       type: "STREAM",
       name: 'Test Stream for Supabase',
       description: 'A test stream for Supabase integration',

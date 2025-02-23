@@ -7,7 +7,7 @@ let firstStrategyId;
 describe('Strategy Stream Tests', () => {
   it('should create a new stream', async () => {
     const streamCommand = {
-      radar_id: 'radar-123',
+      radarId: 'radar-123',
       name: 'Test Strategy Stream',
       description: 'Description of purpose',
       level: '1',

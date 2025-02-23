@@ -11,7 +11,7 @@
     <section>
         <h2>Create Strategy Stream</h2>
         <form id="createStrategyForm">
-            <input type="text" id="radar_id" placeholder="Radar ID" required><br>
+            <input type="text" id="radarId" placeholder="Radar ID" required><br>
             <input type="text" id="name" placeholder="Name" required><br>
             <input type="text" id="description" placeholder="Description"><br>
             <button type="submit">Create</button>
@@ -69,7 +69,7 @@
         document.getElementById('createStrategyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const data = {
-                radar_id: document.getElementById('radar_id').value,
+                radarId: document.getElementById('radarId').value,
                 name: document.getElementById('name').value,
                 description: document.getElementById('description').value
             };
