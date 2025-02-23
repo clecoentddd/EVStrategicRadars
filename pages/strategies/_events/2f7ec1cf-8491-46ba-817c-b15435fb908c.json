@@ -125,5 +125,16 @@
     "name": "Strategy 2025 to 2026",
     "description": "We've been building inertia and entropy in our organisation. We need to revive the organiation and gives it back a healthy hearbeat",
     "whatwewillnotdo": "We cannot pursue all our goals. We will prioritise based on economic value"
+  },
+  {
+    "event": "STRATEGY_UPDATED",
+    "type": "STRATEGY",
+    "stream_id": "2f7ec1cf-8491-46ba-817c-b15435fb908c",
+    "id": "ac445304-ad54-4ba6-9d5f-79570c154c16",
+    "timestamp": "2025-02-13T20:35:26.621Z",
+    "state": "Published",
+    "name": "Strategy 2024 to 2025",
+    "description": "Start using strategic tools to help build strategies that work",
+    "whatwewillnotdo": "No fluffy strategies, No \"strategies\" that nobody believes in"
   }
 ]

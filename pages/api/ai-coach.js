@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     2.5 Alignment with Values:
     - Does it align with the organization's core values and mission?
     - How well does it reflect the organization's identity and goals?
-  3. If the NPS is below 4.5, provide 3 suggestions to improve the purpose. If the NPS is 4.5 or above, return "Job done".
+  3. If the NPS is below 4.5, provide 3 suggestions to improve the purpose. If the NPS is 4.5 or above, return "Job done". Suggestions have to better examples of the purpose.
   
   **Purpose:** ${purpose}
   

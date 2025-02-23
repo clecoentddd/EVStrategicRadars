@@ -1,0 +1,12 @@
+[
+    {
+      "event": "STREAM_CREATED",
+      "type": "STREAM",
+      "id": "63a5cdf1-f03d-48e1-bc85-1f6100977b79",
+      "radarId": "c5728df2-8720-4b67-af0e-f747c55b8d9a",
+      "name": "test",
+      "timestamp": "2024-12-31T09:37:51.178Z",
+      "state": "Open",
+      "active_strategy_id": null
+    }
+  ]
