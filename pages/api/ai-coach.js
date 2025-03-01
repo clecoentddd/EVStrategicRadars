@@ -1,11 +1,11 @@
 // pages/api/ai-coach.js
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-      const { radarId, purpose } = req.body;
+      const { radarId, purpose, context } = req.body;
   
       try {
         // Call Mistral API with the purpose
-        const response = await callMistral(purpose);
+        const response = await callMistral(purpose, context);
   
         // Return the response
         res.status(200).json({
@@ -25,8 +25,8 @@ export default async function handler(req, res) {
   }
 
   // Function to call Mistral API using fetch
-  async function callMistral(purpose) {
-    const prompt = `Assess the following purpose and provide:
+  async function callMistral(purpose, context) {
+    const prompt = `Assess the following purpose based on the context of the organisation - its activities and goals - and provide:
   1. An NPS rating between 0 to 5.
   2. Comments on the purpose:: Evaluation Criteria (please do rate each of these 5 sections of them 0 to 5- do not reuse numbering)
     2.1 Inspiration and Motivation:
@@ -47,11 +47,15 @@ export default async function handler(req, res) {
   3. If the NPS is below 4.5, provide 3 suggestions to improve the purpose. If the NPS is 4.5 or above, return "Job done". Suggestions have to better examples of the purpose.
   
   **Purpose:** ${purpose}
+
+  **Context:** ${context}
   
   **Response Format:**
-  - NPS Rating: [Rating between 0 and 5]
-  - Comments: [Your feedback on the purpose, including emotional impact and focus]
-  - Suggestions: [3 suggestions if NPS < 4.5, otherwise "Job done"]`;
+  - And please do stick to this format as I am parsing your response:
+  - 1. NPS Rating: [Rating between 0 and 5]
+  - 2. Evaluation Criteria: [Your feedback on the purpose, including emotional impact and focus]
+  - 3. Suggestions: [3 suggestions if NPS < 4.5, otherwise "Job done"]`
+
   
     const mistralResponse = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
@@ -84,9 +88,9 @@ export default async function handler(req, res) {
     console.log("AI response in full is: ", responseText);
   
   // Extract NPS, comments, and suggestions from the response
-  const npsMatch = responseText.match(/NPS Rating:\s*(\d+(\.\d+)?)/);
-  const commentsMatch = responseText.match(/Comments:([\s\S]*?)(?=\n- Suggestions:|$)/);
-  const suggestionsMatch = responseText.match(/Suggestions:\s*([\s\S]*)/);
+  const npsMatch = responseText.match(/1. NPS Rating:\s*(\d+(\.\d+)?)/);
+  const commentsMatch = responseText.match(/2. Evaluation Criteria:([\s\S]*?)(?=\n-3. Suggestions:|$)/);
+  const suggestionsMatch = responseText.match(/3. Suggestions:\s*([\s\S]*)/);
 
   console.log("AI Comments response in full is: ", commentsMatch);
   

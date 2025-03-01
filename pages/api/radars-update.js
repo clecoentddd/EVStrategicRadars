@@ -5,14 +5,14 @@ export default async function updateRadarHandler(req, res) {
   try {
     if (req.method === "PUT") {
       // Handle POST request: Create a new radar
-      const { radarId, name, purpose, level } = req.body;
+      const { radarId, name, purpose, context, level } = req.body;
 
       if (!radarId || !name || !purpose || typeof level !== "number") {
         return res.status(400).json({ message: "Invalid input" });
       }
       // console.log("api/radars.js: radarsHandler: Received request body:", req.body);
       const command = {
-        payload: { radarId, name, purpose, level },
+        payload: { radarId, name, purpose, context, level },
       };
 
       console.log ("To implement handleRadarUpdate: ", command.payload);
