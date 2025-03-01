@@ -1,13 +1,13 @@
 // Service to create a radar entry into the organisation
 
-async function createRadar(name, purpose, level) {
+async function createRadar(name, purpose, context, level) {
   try {
     const response = await fetch("/api/radars", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, purpose, level }),
+      body: JSON.stringify({ name, purpose, context, level }),
     });
 
     if (!response.ok) {

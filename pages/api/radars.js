@@ -6,14 +6,14 @@ export default async function radarsHandler(req, res) {
   try {
     if (req.method === "POST") {
       // Handle POST request: Create a new radar
-      const { name, purpose, level } = req.body;
+      const { name, purpose, context, level } = req.body;
 
       if (!name || !purpose || typeof level !== "number") {
         return res.status(400).json({ message: "Invalid input" });
       }
       // console.log("api/radars.js: radarsHandler: Received request body:", req.body);
       const command = {
-        payload: { name, purpose, level },
+        payload: { name, purpose, context, level },
       };
 
       const result = await handleRadarCreation(command);

@@ -22,6 +22,7 @@ export const sendRadarCreated = async (event) => {
     level: event.level,
     name: event.name,
     purpose: event.purpose,
+    context: event.context,
     id: uuidv4(),
     }
   };

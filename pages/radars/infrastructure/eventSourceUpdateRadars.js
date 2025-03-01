@@ -21,11 +21,12 @@ export const sendRadarUpdated = async (event) => {
       level: event.level,
       name: event.name,
       purpose: event.purpose,
+      context: event.context,
       }
     };
   
-    if (replayRadarAggregate(event.id) === null) {
-        console.log ("Radar Aggregate not found");
+    if (replayRadarAggregate(event.radarId) === null) {
+        console.log ("sendRadarUpdated - Radar Aggregate not found", event.radarId);
         return null;
     }
   
@@ -56,5 +57,7 @@ export const sendRadarUpdated = async (event) => {
     }
 
     // Explicitly return the saved event with the id
+    //const resp = await  replayRadarAggregate( radarUpdated.payload.id);
+    //console.log ("sendRadarUpdated: events replayed:", resp);
     return radarUpdated;
   }

@@ -101,7 +101,7 @@ function HomePage() {
         throw new Error('Radar not found');
       }
 
-      const response = await callAICoach(radarId, radar.purpose);
+      const response = await callAICoach(radarId, radar.purpose, radar.context);
       console.log('AI Coach Response:', response);
 
       // Update the state for the specific radar
@@ -139,10 +139,11 @@ function HomePage() {
 
     const name = event.target.name.value;
     const purpose = event.target.purpose.value;
+    const context = event.target.context.value;
     const level = parseInt(event.target.level.value, 10);
 
     try {
-      const newRadar = await createRadar(name, purpose, level);
+      const newRadar = await createRadar(name, purpose, context, level);
       console.log('final preparing reading result for setRadars', newRadar);
 
       // Correctly add the new radar to the array
@@ -166,16 +167,17 @@ function HomePage() {
 
     const name = event.target.name.value;
     const purpose = event.target.purpose.value;
+    const context = event.target.context.value;
     const level = parseInt(event.target.level.value, 10);
 
     try {
       if (radarToUpdate) {
-        const result = await updateRadar(radarToUpdate.id, name, purpose, level);
+        const result = await updateRadar(radarToUpdate.id, name, purpose, context, level);
 
         // Update the radar in the state
         setRadars((prevRadars) =>
           prevRadars.map((radar) =>
-            radar.id === radarToUpdate.id ? { ...radar, name, purpose, level } : radar
+            radar.id === radarToUpdate.id ? { ...radar, name, purpose, context, level } : radar
           )
         );
 
@@ -324,6 +326,21 @@ function HomePage() {
               value={radarToUpdate?.purpose || ''}
               onChange={(e) =>
                 setRadarToUpdate((prev) => ({ ...prev, purpose: e.target.value }))
+              }
+            ></textarea>
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="context">What is your context? Could you describe what activities you cover?</label>
+            <br />
+            <textarea
+              id="context"
+              name="context"
+              required
+              rows="5"
+              className={styles.purposeTextarea}
+              value={radarToUpdate?.context || ''}
+              onChange={(e) =>
+                setRadarToUpdate((prev) => ({ ...prev, context: e.target.value }))
               }
             ></textarea>
           </div>
@@ -564,6 +581,24 @@ function HomePage() {
                                 setRadarToUpdate((prev) => ({
                                   ...prev,
                                   purpose: e.target.value,
+                                }))
+                              }
+                            ></textarea>
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label htmlFor="context">What is your context? What are the key activities?</label>
+                            <br />
+                            <textarea
+                              id="context"
+                              name="context"
+                              required
+                              rows="5"
+                              className={styles.purposeTextarea}
+                              value={radarToUpdate.context || ''}
+                              onChange={(e) =>
+                                setRadarToUpdate((prev) => ({
+                                  ...prev,
+                                  context: e.target.value,
                                 }))
                               }
                             ></textarea>

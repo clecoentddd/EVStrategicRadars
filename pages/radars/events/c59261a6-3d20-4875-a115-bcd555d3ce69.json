@@ -1,0 +1,153 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1740774038699,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose",
+      "context": "test context",
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69"
+    },
+    "eventStoreId": "f5b56b1a-e00d-4d25-a44d-60abb68b7892"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740774242481,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose"
+    },
+    "eventStoreId": "3c8b209e-9981-4f23-9fe6-c2975d9ad40a"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740774411709,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose"
+    },
+    "eventStoreId": "476067ef-ba63-4f20-bd53-76b00896a660"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740774456376,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose"
+    },
+    "eventStoreId": "9aea6f04-89f6-45b4-9799-6d76ee17f97e"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740774752479,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose"
+    },
+    "eventStoreId": "d0b2c0e1-bb09-4510-b328-8894cd9108c6"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740775030476,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose 1"
+    },
+    "eventStoreId": "e0861342-6d71-42fb-a136-3d77041ed6c7"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740775876262,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose 1",
+      "context": "test context 3"
+    },
+    "eventStoreId": "49cef6ad-f2ed-4fb1-b625-2a17f13b5c0f"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740812845304,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose 5",
+      "context": "test context 5"
+    },
+    "eventStoreId": "a24817b2-da41-415d-87d4-034e19e68de7"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740813584933,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose 6",
+      "context": "test context 6"
+    },
+    "eventStoreId": "194de6d5-9d5d-4d75-b3fd-c22db41f7471"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740813759348,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose 7",
+      "context": "test context 7"
+    },
+    "eventStoreId": "82435af7-67a4-48f2-870e-f0031b8f5bf2"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740813945352,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "context",
+      "purpose": "test purpose 8",
+      "context": "test context 8"
+    },
+    "eventStoreId": "39e2ddd9-705a-4475-9957-5b8ee47efadc"
+  },
+  {
+    "eventType": "RADAR_UPDATED",
+    "timestamp": 1740814622454,
+    "aggregateType": "RADAR",
+    "payload": {
+      "id": "c59261a6-3d20-4875-a115-bcd555d3ce69",
+      "level": 1,
+      "name": "MyComp",
+      "purpose": "We make it work",
+      "context": "We deliver custom software solutions and we proud ourselves of not giving up until the solution works for our customers assuming they still pay us for delays and changes on their side. Changes are due to changes in detailed specifications so we can trace changes from customers."
+    },
+    "eventStoreId": "865247ef-15c3-45be-86ec-b4853e311b2c"
+  }
+]

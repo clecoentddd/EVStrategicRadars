@@ -32,6 +32,7 @@ export async function replayRadarAggregate(aggregateId) {
               ...radar, 
               name: radarEvent.payload.name, 
               purpose: radarEvent.payload.purpose, 
+              context: radarEvent.payload.context,
               level: radarEvent.payload.level,
             };
           } else {

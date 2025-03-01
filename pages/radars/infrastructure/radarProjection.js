@@ -18,6 +18,7 @@ export async function projectRadarToSupabase(eventType, radar) {
             id: radar.id,
             name: radar.name,
             purpose: radar.purpose,
+            context: radar.context,
             level: radar.level,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
@@ -40,6 +41,7 @@ export async function projectRadarToSupabase(eventType, radar) {
       .update({
         name: radar.name,
         purpose: radar.purpose,
+        context: radar.context,
         level: radar.level,
         updated_at: new Date().toISOString(),
       })
