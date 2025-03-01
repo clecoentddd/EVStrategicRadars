@@ -1,13 +1,13 @@
 // services/callAICoach.js
-export default async function callAICoach(radarId, purpose) {
+export default async function callAICoach(radarId, purpose,context) {
     try {
-     console.log("Service callAICoach", purpose);
-      const response = await fetch("/api/ai-coach", {
+     console.log("Service callAICoach", purpose, context);
+      const response = await fetch("/api/ai-coach-get-nps", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ radarId, purpose }),
+        body: JSON.stringify({ radarId, purpose, context }),
       });
   
       if (!response.ok) {

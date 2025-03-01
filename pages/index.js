@@ -3,7 +3,7 @@ import styles from './styles/index.module.css';
 import createRadar from './services/createRadarIndex';
 import updateRadar from './services/updateRadarIndex';
 import deleteRadar from './services/deleteRadarIndex';
-import callAICoach from './services/callAICoach';
+import useAICoach from './indexAICoach';
 
 // Spinner from react
 import { ClipLoader } from 'react-spinners';
@@ -17,16 +17,20 @@ function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [formMode, setFormMode] = useState('create'); // 'create' or 'update'
   const [radarToUpdate, setRadarToUpdate] = useState(null);
-  const [loading, setLoading] = useState(false); // Spinner when calling AI API
 
-  // AI Coach
-  const [aiCoachVisible, setAICoachVisible] = useState({}); // Track which radar's AI Coach is open
-  const [aiCoachData, setAICoachData] = useState({});
-
-  // Refs for auto-resizing textareas
-  const commentsTextareaRefs = useRef({});
-  const suggestionsTextareaRefs = useRef({});
-
+   // Use the AI Coaching custom hook
+   const {
+    aiCoachVisible,
+    aiCoachData,
+    loading,
+    evaluationsTextareaRefs,
+    suggestionsTextareaRefs,
+    toggleAICoach,
+    handleCallAICoach,
+    getNPSColor,
+    handleSaveAICoachResponse,
+  } = useAICoach();
+  
   // Function to auto-resize textareas
   const autoResizeTextarea = (textareaRef) => {
     if (textareaRef.current) {
@@ -38,8 +42,8 @@ function HomePage() {
   // Effect to auto-resize textareas when AI Coach data changes
   useEffect(() => {
     Object.keys(aiCoachData).forEach((radarId) => {
-      if (commentsTextareaRefs.current[radarId]) {
-        autoResizeTextarea(commentsTextareaRefs.current[radarId]);
+      if (evaluationsTextareaRefs.current[radarId]) {
+        autoResizeTextarea(evaluationsTextareaRefs.current[radarId]);
       }
       if (suggestionsTextareaRefs.current[radarId]) {
         autoResizeTextarea(suggestionsTextareaRefs.current[radarId]);
@@ -83,57 +87,7 @@ function HomePage() {
     }
   };
 
-  // Toggle AI Coach sub-menu visibility
-  const toggleAICoach = (radarId) => {
-    setAICoachVisible((prev) => ({
-      ...prev,
-      [radarId]: !prev[radarId],
-    }));
-  };
-
-  // Handle "Call AI Coach" button click
-  const handleCallAICoach = async (radarId) => {
-    try {
-      setLoading(true); // Show the spinner
-
-      const radar = radars.find((r) => r.id === radarId);
-      if (!radar) {
-        throw new Error('Radar not found');
-      }
-
-      const response = await callAICoach(radarId, radar.purpose, radar.context);
-      console.log('AI Coach Response:', response);
-
-      // Update the state for the specific radar
-      setAICoachData((prev) => ({
-        ...prev,
-        [radarId]: {
-          potentialNPS: response.potentialNPS || '',
-          comments: response.comments || '',
-          suggestions: response.suggestions || '',
-        },
-      }));
-
-    } catch (error) {
-      console.error('Error calling AI Coach:', error.message);
-      alert('Failed to call AI Coach. Please try again.');
-    } finally {
-      setLoading(false); // Hide the spinner
-    }
-  };
-
-  // Manage NPS score color
-  const getNPSColor = (nps) => {
-    console.log('NPS is ', nps);
-    if (nps > 4.5) return 'darkgreen';
-    if (nps > 4) return 'green';
-    if (nps > 3.5) return 'lightgreen';
-    if (nps > 3) return 'orange';
-    if (nps > 2.5) return 'darkorange';
-    if (nps >= 0) return 'red';
-    return 'white'; // default value
-  };
-
+ 
   const handleCreate = async (event) => {
     event.preventDefault();
 
@@ -377,8 +331,8 @@ function HomePage() {
           <div key={levelGroup.level}>
             <h2 className={styles.levelHeader}>Level {levelGroup.level}</h2>
             {levelGroup.radars.map((radar) => {
-              // Initialize refs for comments and suggestions textareas
-              commentsTextareaRefs.current[radar.id] = commentsTextareaRefs.current[radar.id] || React.createRef();
+              // Initialize refs for evaluations and suggestions textareas
+              evaluationsTextareaRefs.current[radar.id] = evaluationsTextareaRefs.current[radar.id] || React.createRef();
               suggestionsTextareaRefs.current[radar.id] = suggestionsTextareaRefs.current[radar.id] || React.createRef();
 
               return (
@@ -406,7 +360,7 @@ function HomePage() {
                     {aiCoachVisible[radar.id] && (
                       <div className={styles.aiCoachSubMenu}>
                         <div>
-                          <label>Potential NPS:</label>
+                          <label>Potential NPS Score</label>
                           <input
                             type="text"
                             value={aiCoachData[radar.id]?.potentialNPS || ''}
@@ -441,20 +395,20 @@ function HomePage() {
                           )}
                         </div>
                         <div>
-                          <label>Comments:</label>
+                          <label>Evaluations</label>
                           <textarea
-                            ref={commentsTextareaRefs.current[radar.id]}
-                            value={aiCoachData[radar.id]?.comments || ''}
+                            ref={evaluationsTextareaRefs.current[radar.id]}
+                            value={aiCoachData[radar.id]?.evaluations || ''}
                             onChange={(e) =>
                               setAICoachData((prev) => ({
                                 ...prev,
                                 [radar.id]: {
                                   ...prev[radar.id],
-                                  comments: e.target.value,
+                                  evaluations: e.target.value,
                                 },
                               }))
                             }
-                            placeholder="Enter comments"
+                            placeholder="Enter evaluations"
                             rows={1}
                             style={{
                               width: '100%',
@@ -464,7 +418,7 @@ function HomePage() {
                           />
                         </div>
                         <div>
-                          <label>Suggestions:</label>
+                          <label>Suggestions</label>
                           <textarea
                             ref={suggestionsTextareaRefs.current[radar.id]}
                             value={aiCoachData[radar.id]?.suggestions || ''}
@@ -486,16 +440,28 @@ function HomePage() {
                             }}
                           />
                         </div>
-                        <div className={styles.aiCoachContainer}>
-                          <button
-                            className={styles.buttonCallAICoach}
-                            onClick={() => handleCallAICoach(radar.id)}
-                            disabled={loading} // Disable the button while loading
-                          >
-                            Call AI Coach
-                          </button>
-                          {loading && <ClipLoader color="#09f" loading={loading} size={20} />} {/* Show spinner */}
-                        </div>
+                      <div className={styles.aiCoachContainer}>
+  <button
+    className={styles.buttonCallAICoach}
+    onClick={() => handleCallAICoach(radar.id, radar.purpose, radar.context)}
+    disabled={loading} // Disable the button while loading
+  >
+    Call AI Coach
+  </button>
+  <button
+  className={styles.buttonSaveAICoach}
+  onClick={() => {
+    const potentialNPS = aiCoachData[radar.id]?.potentialNPS;
+    const evaluations = aiCoachData[radar.id]?.evaluations;
+    const suggestions = aiCoachData[radar.id]?.suggestions;
+    handleSaveAICoachResponse(radar.id, potentialNPS, evaluations, suggestions);
+  }}
+  disabled={loading} // Disable the button while loading
+>
+  Save
+</button>
+  {loading && <ClipLoader color="#09f" loading={loading} size={20} />} {/* Show spinner */}
+                      </div>
                       </div>
                     )}
                     <button
