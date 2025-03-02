@@ -154,5 +154,25 @@
       "id": "5540cae1-cba0-4799-8541-e33285331ddb"
     },
     "eventStoreId": "fcb73eba-1afe-45db-86e0-fc7230794659"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "77939897-ef28-4134-8654-4fae83eb63f6",
+      "name": "AI Speed",
+      "detect": "We need to understand harness AI, as it is improving on a daily basis",
+      "assess": "We need to think AI as an evolving system that is going faster and faster",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Capabilities",
+      "distance": "Detected",
+      "impact": "High",
+      "tolerance": "Medium",
+      "zoom_in": "0bf3786b-2375-4afe-9bb6-c75d802c687e",
+      "timestamp": 1740903435290,
+      "id": "1faf89eb-330e-4452-bace-01af176cb93e"
+    },
+    "eventStoreId": "19ca6868-f111-485a-8eac-7aa31756c81d"
   }
 ]

@@ -9,10 +9,10 @@ export default async function handler(req, res) {
 
     // Validate the request body
     if (!radarId || !potentialNPS || !evaluations || !suggestions) {
-      console.log("Found empty values for radarId:", radarId);
+      console.log("ai-coach-saving-nps : Found empty values for radarId:", radarId);
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields: radarId, potentialNPS, evaluations, or suggestions.',
+        message: 'ai-coach-saving-nps : ai-coach-saving-nps Missing required fields: radarId, potentialNPS, evaluations, or suggestions.',
       });
     }
 
@@ -31,23 +31,41 @@ export default async function handler(req, res) {
         .select();
 
       if (error) {
-        console.error('Error saving to Supabase:', error.message);
+        console.error('ai-coach-saving-nps : Error saving to Supabase:', error.message);
         throw error;
       }
+
+        // Update radars with NPS
+        const { data: NPSdata, error: NPSerror } = await supabase
+        .from('radars')
+        .update({
+            potentialNPS: potentialNPS, // Update potentialNPS
+            updated_at: new Date().toISOString(), // Update updated_at
+        })
+        .match({ id: radarId }) // Match the row with the given radarId
+        .select('*'); // Return the updated row
+
+        if (NPSerror) {
+            console.error('Error updating radars:', NPSerror.message);
+        } 
+
+        console.log('Updated radars table:', NPSdata);
 
       // Return success response
       res.status(200).json({
         success: true,
-        message: 'Data saved successfully.',
+        message: 'ai-coach-saving-nps - Data saved successfully.',
         data: data,
       });
     } catch (error) {
       console.error('Error:', error.message);
       res.status(500).json({
         success: false,
-        message: 'Failed to save data to Supabase.',
+        message: 'ai-coach-saving-nps : Failed to save data to Supabase.',
       });
     }
+
+  // handling GET 
   } else if (req.method === 'GET') {
     // Handle GET request (retrieve latest entry for a radarId)
     const { radarId } = req.query; // Get radarId from query parameters
@@ -69,11 +87,14 @@ export default async function handler(req, res) {
         .order('created_at', { ascending: false }) // Sort by created_at in descending order
         .limit(1); // Limit to 1 result (latest entry)
 
+
       if (error) {
         console.error('Error fetching from Supabase:', error.message);
         throw error;
+      } else {
+        console.log("AI NPS related data found for:", radarId);
       }
-
+      
       // Return success response with the fetched data
       res.status(200).json({
         success: true,

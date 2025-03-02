@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './styles/index.module.css';
-import createRadar from './services/createRadarIndex';
-import updateRadar from './services/updateRadarIndex';
-import deleteRadar from './services/deleteRadarIndex';
 import useAICoach from './indexAICoach';
+import createRadar from './services/createRadarIndex';
+import deleteRadar from './services/updateRadarIndex';
+import updateRadar from './services/deleteRadarIndex';
 
 // Spinner from react
 import { ClipLoader } from 'react-spinners';
@@ -116,6 +116,7 @@ function HomePage() {
     }
   };
 
+
   const handleUpdate = async (event) => {
     event.preventDefault();
 
@@ -155,6 +156,7 @@ function HomePage() {
     setRadarToUpdate(radar); // Set the radar to update if in update mode
   };
 
+
   const toggleRadar = (radarId) => {
     setExpandedRadars((prevExpanded) => ({
       ...prevExpanded,
@@ -191,8 +193,9 @@ function HomePage() {
     }
   };
 
-  const buttonDeleteRadar = async (radarId) => {
-    console.log('buttonDeleteRadar', radarId);
+  
+  const handleDelete = async (radarId) => {
+    console.log('handleDelete', radarId);
     const response = await deleteRadar(radarId);
 
     if (response) {
@@ -340,6 +343,19 @@ function HomePage() {
                   <div className={styles.radarHeader}>
                     <h3 onClick={() => toggleRadar(radar.id)}>
                       {radar.name}
+                      {/* Add the NPS circle here */}
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          width: '12px',
+                          height: '12px',
+                          borderRadius: '50%',
+                          backgroundColor: radar.potentialNPS === null ? 'grey' : getNPSColor(radar.potentialNPS || 0), // Grey if NPS is null
+                          marginLeft: '8px',
+                          verticalAlign: 'middle',
+                        }}
+                        title={`NPS: ${radar.potentialNPS || 0}`} // Tooltip to show the NPS value
+                      ></span>
                       <br />
                       <span className={styles.radarPurpose}>{radar.purpose}</span>
                     </h3>
@@ -481,7 +497,7 @@ function HomePage() {
                     </button>
                     <button
                       className={styles.buttonDelete}
-                      onClick={() => buttonDeleteRadar(radar.id)}
+                      onClick={() => handleDelete(radar.id)}
                     >
                       Delete
                     </button>

@@ -1,0 +1,66 @@
+[
+  {
+    "event": "STREAM_CREATED",
+    "type": "STREAM",
+    "id": "a0a3fadb-6a8b-4d2d-9bee-305f15eb7ba5",
+    "radarId": "0bf3786b-2375-4afe-9bb6-c75d802c687e",
+    "name": "AI & Data",
+    "timestamp": "2025-03-02T08:06:08.352Z",
+    "state": "Draft",
+    "active_strategy_id": null
+  },
+  {
+    "event": "STRATEGY_CREATED",
+    "type": "STRATEGY",
+    "stream_id": "a0a3fadb-6a8b-4d2d-9bee-305f15eb7ba5",
+    "id": "e1b1e7b5-6b1e-4d2a-b420-b1cd6eccc72f",
+    "previous_strategy_id": null,
+    "version": 1,
+    "timestamp": "2025-03-02T08:19:01.108Z",
+    "state": "Draft",
+    "name": "AI 2025",
+    "description": "AI is everywhere",
+    "whatwewillnotdo": "We will not develop solutions, we will use them"
+  },
+  {
+    "event": "STREAM_WITH_LATEST_STRATEGY_VERSION_UPDATED",
+    "type": "STREAM",
+    "id": "a0a3fadb-6a8b-4d2d-9bee-305f15eb7ba5",
+    "active_strategy_id": "e1b1e7b5-6b1e-4d2a-b420-b1cd6eccc72f",
+    "timestamp": "2025-03-02T08:19:01.108Z"
+  },
+  {
+    "event": "STRATEGIC_ELEMENT_CREATED",
+    "type": "STRATEGIC_ELEMENT",
+    "id": "f386285e-1309-434d-828b-67ff43f1794d",
+    "stream_id": "a0a3fadb-6a8b-4d2d-9bee-305f15eb7ba5",
+    "strategy_id": "e1b1e7b5-6b1e-4d2a-b420-b1cd6eccc72f",
+    "version": 1,
+    "timeStamp": "2025-03-02T08:21:15.379Z",
+    "state": "Created",
+    "name": "Data Mesh",
+    "description": "Help companies understand data that is not available is information we do not have to make better decision"
+  },
+  {
+    "event": "STRATEGIC_ELEMENT_UPDATED",
+    "type": "STRATEGIC_ELEMENT",
+    "id": "f386285e-1309-434d-828b-67ff43f1794d",
+    "stream_id": "a0a3fadb-6a8b-4d2d-9bee-305f15eb7ba5",
+    "version": 2,
+    "timeStamp": "2025-03-02T08:22:48.623Z",
+    "state": "Updated",
+    "strategy_id": "e1b1e7b5-6b1e-4d2a-b420-b1cd6eccc72f",
+    "diagnosis": null,
+    "overall_approach": null,
+    "set_of_coherent_actions": null,
+    "proximate_objectives": null,
+    "name": "Data Mesh",
+    "description": "Help companies understand data that is not available is information we do not have to make better decision",
+    "tags": [
+      {
+        "name": "Data Mesh",
+        "id": "f155b006-8863-448e-8161-9b79da8a636f"
+      }
+    ]
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1740902768313,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 2,
+      "name": "AI & Data",
+      "purpose": "Find unexploited information, turn this information into data, give them a voice to existing and new customers",
+      "context": "Data is often updated or deleted so we cannot exploit them. We need to change the way we think about data: data is an output of information. We need to capture information, turn it into data. Exploit and Industrialise.",
+      "id": "0bf3786b-2375-4afe-9bb6-c75d802c687e"
+    },
+    "eventStoreId": "82c04afb-b20c-46a4-92db-1a6bf7bb9ef6"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "0bf3786b-2375-4afe-9bb6-c75d802c687e",
+      "name": "Data Mesh",
+      "detect": "Data at the source",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Business",
+      "distance": "Assessing",
+      "impact": "Medium",
+      "tolerance": "Low",
+      "zoom_in": null,
+      "timestamp": 1740903749145,
+      "id": "f155b006-8863-448e-8161-9b79da8a636f"
+    },
+    "eventStoreId": "9b223614-b80e-46c0-bc5f-d4604d5044f0"
+  }
+]
