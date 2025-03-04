@@ -23,15 +23,15 @@ export default function StrategyStream() {
     try {
       setLoading(true);
 
-      console.log('fetchStreamData - what stream', streamid);
+      console.log('fetchStreamData - what stream: ', streamid);
       const aggregateResponse = await fetch(`/api/readmodel-strategies?stream_aggregate=${streamid}`);
       if (!aggregateResponse.ok) {
         throw new Error(`fetchStreamData: Failed to fetch aggregate data: ${aggregateResponse.statusText}`);
       }
       const aggregateStream = await aggregateResponse.json();
 
-      console.log("fetchStreamData: Stream Aggregate id fetched is", aggregateStream.radarId);
-      console.log("fetchStreamData: Stream Aggregate name fetched is", aggregateStream.name);
+      console.log("fetchStreamData: Stream Aggregate organisation id fetched is", aggregateStream.organisationId);
+      console.log("fetchStreamData: Stream Aggregate  organisation name fetched is", aggregateStream.organisationName);
 
       setStreamAggregate(aggregateStream || null);
 
@@ -61,12 +61,12 @@ export default function StrategyStream() {
   }, [router.isReady, streamid]);
 
   const getRadarUrl = (streamAggregate) => {
-    if (!streamAggregate || !streamAggregate.radarId) {
+    if (!streamAggregate || !streamAggregate.organisationId) {
       return '';
     }
-    const name = streamAggregate.name;
-    const radarId = streamAggregate.radarId;
-    return `/radars/ui/${encodeURIComponent(name)}?radarId=${encodeURIComponent(radarId)}`;
+    const organisationName = streamAggregate.organisationName;
+    const organisationId = streamAggregate.organisationId;
+    return `/radars/ui/${encodeURIComponent(organisationName)}?radarId=${encodeURIComponent(organisationId)}`;
   };
 
   return (
@@ -78,7 +78,7 @@ export default function StrategyStream() {
       <div className={styles.container}>
         <div className={styles.streamHeader}>
           <h1>
-            {streamAggregate && streamAggregate.name ? streamAggregate.name : "Loading..."}
+            {streamAggregate && streamAggregate.organisationName ? streamAggregate.organisationName : "Loading..."}
           </h1>
           <h2>This is about strategic thinking now</h2>
         </div>

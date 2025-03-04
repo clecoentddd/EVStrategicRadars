@@ -1,4 +1,4 @@
-import {sendOrganisationDeleted} from '../infrastructure/eventSourceDeleteRadars';
+import {sendOrganisationDeleted} from '../infrastructure/eventSourceDeleteOrganisation';
 
 export async function handleRadarDelete(command) {
   // console.log("Handling radar creation for:", command); // Log the received command

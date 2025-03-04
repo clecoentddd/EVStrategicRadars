@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from "../../../utils/supabaseClient";
+import './RelatedInitiatives.module.css';
 
 const RelatedInitiatives = ({ initiativeId }) => {
   const [related, setRelated] = useState([]);
@@ -16,6 +17,7 @@ const RelatedInitiatives = ({ initiativeId }) => {
     const { data, error } = await supabase
       .from('initiative_links')
       .select(`
+        id,
         target_initiative_id,
         projection_initiatives!target_initiative_id(id, name)
       `)
@@ -24,7 +26,7 @@ const RelatedInitiatives = ({ initiativeId }) => {
     if (error) {
       console.error('Error fetching links:', error);
     } else {
-      setRelated(data.map(d => d.projection_initiatives));
+      setRelated(data);
     }
   };
 
@@ -39,6 +41,8 @@ const RelatedInitiatives = ({ initiativeId }) => {
   };
 
   const addLink = async () => {
+    if (!selectedId) return;
+    
     setLoading(true);
     const { error } = await supabase.from('initiative_links').insert([
       { source_initiative_id: initiativeId, target_initiative_id: selectedId },
@@ -52,25 +56,52 @@ const RelatedInitiatives = ({ initiativeId }) => {
     setLoading(false);
   };
 
+  const removeLink = async (linkId) => {
+    if (!window.confirm('Are you sure you want to remove this link?')) return;
+    
+    setLoading(true);
+    const { error } = await supabase
+      .from('initiative_links')
+      .delete()
+      .eq('id', linkId);
+
+    if (error) {
+      alert('Error removing link');
+    } else {
+      fetchLinks(); // refresh
+    }
+    setLoading(false);
+  };
+
   return (
-    <div className="p-2 bg-gray-50 rounded border mt-4">
-      <h4 className="font-semibold mb-2">Related Initiatives</h4>
+    <div className="related-initiatives-container">
+      <h4 className="related-initiatives-title">Related Initiatives</h4>
 
       {related.length === 0 ? (
-        <p className="text-sm text-gray-500">No links yet.</p>
+        <p className="related-initiatives-empty">No links yet.</p>
       ) : (
-        <ul className="mb-2">
+        <ul className="related-initiatives-list">
           {related.map((item) => (
-            <li key={item.id} className="text-sm text-gray-800">• {item.name}</li>
+            <li key={item.id} className="related-initiatives-item">
+              <span>• {item.projection_initiatives.name}</span>
+              <button 
+                onClick={() => removeLink(item.id)}
+                className="related-initiatives-remove"
+                disabled={loading}
+              >
+                ×
+              </button>
+            </li>
           ))}
         </ul>
       )}
 
-      <div className="flex items-center gap-2">
+      <div className="related-initiatives-controls">
         <select
           value={selectedId}
           onChange={(e) => setSelectedId(e.target.value)}
-          className="border rounded px-2 py-1 text-sm"
+          className="related-initiatives-select"
+          disabled={loading}
         >
           <option value="">Select initiative</option>
           {allInitiatives.map((i) => (
@@ -82,9 +113,9 @@ const RelatedInitiatives = ({ initiativeId }) => {
         <button
           onClick={addLink}
           disabled={!selectedId || loading}
-          className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+          className="related-initiatives-add"
         >
-          Add Link
+          {loading ? 'Processing...' : 'Add Link'}
         </button>
       </div>
     </div>

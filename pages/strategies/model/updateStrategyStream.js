@@ -1,38 +1,34 @@
 import { sendStreamUpdated } from '../infrastructure/eventStoreStream.js';
 
-export async function updateStream(command) {
+export async function updateStreamFromChangeInOrganisation(streamAggregate, organisationAggregate) {
     // Implement your strategy creation logic here
-    console.log('Strategy stream updating with radar data:', command);
+    console.log('updateStreamFromChangeInOrganisation: Stream to update with organisation data:', streamAggregate);
     
-        // Dynamically construct the streamToUpdate object
+        // Dynamically construct the new stream object
+        streamAggregate.payload.organisationName = organisationAggregate.payload.name;
+        streamAggregate.payload.organisationLevel = organisationAggregate.payload.level;
 
-       if (!command.name) {
-        return { success: false, message: "updateStream: Missing required - name - fields in event data" };
+       if (!streamAggregate.payload.organisationLevel) {
+        return { success: false, message: "updateStreamFromChangeInOrganisation: Missing required - Level - fields in event data" };
        }    
         
-      const streamToUpdate = {
-                radarId: command.radarId,
-                id: command.id,
-                name: command.name,
-              }
-        
 
-    console.log ("Strategy stream... Stream to update based on radar id ", streamToUpdate);
+    console.log ("Stream... Stream to update based on organisation id ", streamAggregate);
   
     // Validate inputs
-    if (! streamToUpdate.radarId || !streamToUpdate.name ) {
-      return { success: false, message: "updateStream: Missing required - name - fields in event data" };
+    if (! streamAggregate.aggregateId || !streamAggregate.payload.organisationName ) {
+      return { success: false, message: "updateStreamFromChangeInOrganisation: Missing required - name - fields in event data" };
     }
   
-  console.log ("Strategy stream about to update", streamToUpdate);
+  console.log ("Strategy stream about to update", streamAggregate);
   
     // Save the strategy item (replace with your actual saving logic)
   let savedStrategyStream;
 
     try {
       console.log ("Strategy stream... saving");
-      savedStrategyStream = await sendStreamUpdated(streamToUpdate);
-      console.log ("Model updateStream saved", savedStrategyStream);
+      savedStrategyStream = await sendStreamUpdated(streamAggregate);
+      console.log ("updateStreamFromChangeInOrganisation saved", savedStrategyStream);
       return { ...savedStrategyStream };
     } catch (error) {
       return { success: false, message: `Error creating strategy stream : ${error.message}` };

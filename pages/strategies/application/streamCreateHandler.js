@@ -1,18 +1,18 @@
-import { createStream } from '../model/createStrategyStream';
+import { createStreamFromNewOrganisation } from '../model/createStrategyStream';
 
-export async function createStreamHandler(command) {
+export async function createStreamFromNewOrganisationHandler(command) {
     // Implement your strategy creation logic here
-    console.log('createStreamHandler: Strategy Creating with radar data:', command.aggregateId);
-    console.log('createStreamHandler: Strategy Creating with radar data:', command.payload.name);
+    console.log('createStreamFromNewOrganisationHandler: Strategy Creating with radar data:', command.aggregateId);
+    console.log('createStreamFromNewOrganisationHandler: Strategy Creating with radar data:', command.payload.name);
     
     if (!command.aggregateId || !command.payload.name ) {
-        return { success: false, message: "createStreamHandler: <Missing required fields in event data." + command.name };
+        return { success: false, message: "createStreamFromNewOrganisationHandler: <Missing required fields in event data." + command.name };
         }
     else
     {
-       const result = await createStream(command)
+       const result = await createStreamFromNewOrganisation(command)
 
-       console.log ("createStreamHandler: Strategy stream created", result);  
+       console.log ("createStreamFromNewOrganisationHandler: Strategy stream created", result);  
        return { result };     
     }
 }

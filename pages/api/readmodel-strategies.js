@@ -2,7 +2,7 @@ import {
     getByStreamId,
     getByStrategyId,
     getById,
-    getStreamByRadarId,
+    getStreamByOrganisationId,
     getAllStreamData,
     getStreamDataFromStreamId,
   } from "../strategies/infrastructure/readModelStreams";
@@ -30,8 +30,8 @@ import {
             const element = await getById(query.id);
             res.status(200).json(element);
           } else if (query.radarId) {
-            console.log ("Before calling getStreamByRadarId : ", query.radarId);
-            const streamElement = await getStreamByRadarId(query.radarId);
+            console.log ("Before calling getStreamByOrganisationId : ", query.radarId);
+            const streamElement = await getStreamByOrganisationId(query.radarId);
             res.status(200).json(streamElement);
           } else {
             res.status(400).json({ error: "Missing required query parameters." });

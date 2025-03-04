@@ -93,20 +93,20 @@ export async function getStreamDataFromStreamId(id) {
   }
 }
 
-export async function getStreamByRadarId(id) { 
-  console.log("getStreamByRadarId : getting stream for radarId = ", id);
+export async function getStreamByOrganisationId(organisationId) { 
+  console.log("getStreamByOrganisationId : getting stream for radarId = ", organisationId);
   try {
     const { data, error } = await supabase
       .from("projection_strategic_streams")
       .select("*")
-      .eq("radarId", id)
+      .eq("organisationId", organisationId)
       .single(); // Single ensures we get exactly one row or null
 
     if (error) {
-      console.error("Error fetching stream  based on radarId:", error.message);
-      throw new Error("Failed to fetch stream based on radarId:", id);
+      console.error("Error fetching stream  based on aggregateId:", error.message);
+      throw new Error("Failed to fetch stream based on aggregateId:", organisationId);
     }
-    console.error("getStreamByRadarId stream is: ", data);
+    console.error("getStreamByOrganisationId stream is: ", data);
     return data;
   } catch (err) {
     console.error("Unexpected error fetching stream based on radar id:", err.message);

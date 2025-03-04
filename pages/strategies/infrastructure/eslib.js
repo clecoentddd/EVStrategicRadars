@@ -30,7 +30,7 @@ export async function getEventsForStream(streamId) {
 }
 
 // Add an event to Supabase
-export async function appendEventToEventSourceDB(event) {
+export async function appendEventToStrategyEventSourceDB(event) {
   try {
     console.log("Append Stream event to ES: ", event);
     const { data, error } = await supabase
@@ -47,14 +47,14 @@ export async function appendEventToEventSourceDB(event) {
       .select();
 
     if (error) {
-      console.error('Error appending event to Supabase:', error);
+      console.error('appendEventToStrategyEventSourceDB: Error appending event to Supabase:', error);
     } else {
       console.log('Event appended successfully to Supabase for stream:', event.aggregateId);
-      console.log("appendEventToEventSourceDB: Event stored successfully", data);
+      console.log("appendEventToStrategyEventSourceDB: appendEventToStrategyEventSourceDB: Event stored successfully", data);
        return data;
     }
   } catch (error) {
-    console.error('Error appending event to Supabase:', error);
+    console.error('appendEventToStrategyEventSourceDB: Error appending event to Supabase:', error);
   }
 
 }

@@ -26,8 +26,9 @@ export async function projectStreamToSupabase(event) {
           .insert([
             {
               id: event.aggregateId,
-              name: event.payload.name,
-              radarId: event.payload.radarId,
+              organisationName: event.payload.organisationName,
+              organisationId: event.payload.organisationId,
+              organisationLevel: event.payload.organisationLevel,
               active_strategy_id: event.payload.active_strategy_id || null,
               state: event.payload.state || "Draft",
               updated_at: new Date().toISOString(),
@@ -43,7 +44,7 @@ export async function projectStreamToSupabase(event) {
         console.log("projectStreamToSupabase: Stream created successfully", createdData);
         return createdData;
 
-      case "STREAM_NAME_UPDATED":
+      case "STREAM_UPDATED":
       case "STREAM_STRATEGY_UPDATED":
         // For update events, check if the stream exists first
         const { data: existingItems, error: fetchError } = await supabase
@@ -64,8 +65,8 @@ export async function projectStreamToSupabase(event) {
 
         // Perform the update based on the event type
         const updatePayload =
-          event.eventType === "STREAM_NAME_UPDATED"
-            ? { name: event.payload.name }
+          event.eventType === "STREAM_UPDATED"
+            ? { organisationName: event.payload.organisationName, organisationLevel: event.payload.organisationLevel }
             : { active_strategy_id: event.payload.active_strategy_id };
 
         const { data: updatedData, error: updateError } = await supabase

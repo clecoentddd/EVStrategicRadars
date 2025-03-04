@@ -16,12 +16,12 @@ export const sendOrganisationCreated = async (event) => {
     eventType: "RADAR_CREATED", // Static value for eventType
     aggregateType: "RADAR", // Static value for aggregateType
     aggregateId: uuidv4(), // Generate a UUID for aggregateId
+    created_at: new Date().toISOString(), // Use the provided timestamp
     payload: { // JSON column with the specific fields
       name: event.name,
       level: event.level,
       purpose: event.purpose,
       context: event.context,
-      created_at: new Date().getTime(), // Use the provided timestamp
     },
   };
 

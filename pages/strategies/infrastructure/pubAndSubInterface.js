@@ -1,13 +1,13 @@
-import {createStreamHandler} from '../application/streamCreateHandler';
-import {updateStreamHandler} from '../application/streamupdateHandler';
+import {createStreamFromNewOrganisationHandler} from '../application/streamCreateHandler';
+import {updateStreamFromChangeInOrganisationHandler} from '../application/streamupdateHandler';
 
-export async function interfaceCreateStream(command) {
+export async function interfaceCreateStream(organisationAggregate) {
 
-    console.log("PushAndSub createStream with command :", command);
+    console.log("PushAndSub createStreamFromNewOrganisation with organisationAggregate :", organisationAggregate);
 
-    if (command.eventType === "RADAR_CREATED" ) {
+    if (organisationAggregate.eventType === "RADAR_CREATED" ) {
         try {
-            const stream = await createStreamHandler(command);
+            const stream = await createStreamFromNewOrganisationHandler(organisationAggregate);
         
             // ... use the created stream
             console.log ("interfaceCreateStream stream is: ", stream);
@@ -17,13 +17,13 @@ export async function interfaceCreateStream(command) {
           }
         };
 
-export async function interfaceUpdateStream(command) {
+export async function interfaceUpdateStream(organisationAggregate) {
 
-    console.log("PushAndSub updateStream with command :", command);
+    console.log("PushAndSub UpdateStream with organisationAggregate :", organisationAggregate);
 
-    if (command.eventType === "RADAR_UPDATED" ) {
+    if (organisationAggregate.eventType === "RADAR_UPDATED" ) {
         try {
-            const stream = await updateStreamHandler(command);
+            const stream = await updateStreamFromChangeInOrganisationHandler(organisationAggregate);
         
             // ... use the created stream
             console.log ("interfaceUpdateStream stream is: ", stream);

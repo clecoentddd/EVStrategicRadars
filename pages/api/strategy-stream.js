@@ -1,15 +1,16 @@
-import { createStream } from '../strategies/model/strategy';
+import { createStreamFromNewOrganisation } from '../strategies/model/strategy';
 import { getStrategiesFromEventSource } from '../strategies/infrastructure/eventStoreStream.js'
 
+
 export default async function handler(req, res) {
-    console.log ("API Call createStream API", req.method)
+    console.log ("API Call createStreamFromNewOrganisation API", req.method)
     try {
         if (req.method === 'POST') {
             if (req.url.endsWith('/strategy-stream')) {
                 // Handle Create Strategy Stream
                 const { payload } = req.body;
                 console.log ("checking payload before creating stream", payload);
-                const result = await createStream(payload);
+                const result = await createStreamFromNewOrganisation(payload);
                 return res.status(200).json(result);
             } else {
                 return res.status(404).json({ message: 'Not Found' });

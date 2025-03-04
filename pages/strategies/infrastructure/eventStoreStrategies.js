@@ -2,7 +2,7 @@ import { projectStrategyToSupabase } from "./ProjectionStrategies.js";
 import { projectStreamToSupabase } from "./ProjectionStreams.js";
 import { replayStream } from './eventStoreStream.js';
 import { v4 as uuidv4 } from 'uuid';
-import { appendEventToEventSourceDB, readEventsFromEventSourceDB } from './eslib.js';
+import { appendEventToStrategyEventSourceDB, readEventsFromEventSourceDB } from './eslib.js';
 
 /**
  * Send a STRATEGY_CREATED event.
@@ -34,8 +34,8 @@ export const sendStrategyCreated = async (event) => {
         },
       };
 
-      console.log("sendStrategyCreated: appendEventToEventSourceDB", closeStrategyEvent);
-      await appendEventToEventSourceDB(closeStrategyEvent);
+      console.log("sendStrategyCreated: appendEventToStrategyEventSourceDB", closeStrategyEvent);
+      await appendEventToStrategyEventSourceDB(closeStrategyEvent);
 
       // Projection (handle errors gracefully)
       try {
@@ -74,11 +74,11 @@ export const sendStrategyCreated = async (event) => {
     };
 
     // Append events to the event store
-    console.log("appendEventToEventSourceDB: newStrategyEvent: ", newStrategyEvent);
-    await appendEventToEventSourceDB(newStrategyEvent);
+    console.log("appendEventToStrategyEventSourceDB: newStrategyEvent: ", newStrategyEvent);
+    await appendEventToStrategyEventSourceDB(newStrategyEvent);
 
-    console.log("appendEventToEventSourceDB: updatedStreamEvent: ", updatedStreamEvent);
-    await appendEventToEventSourceDB(updatedStreamEvent);
+    console.log("appendEventToStrategyEventSourceDB: updatedStreamEvent: ", updatedStreamEvent);
+    await appendEventToStrategyEventSourceDB(updatedStreamEvent);
 
     // Handle projections (wrap each in a try-catch block)
     try {
@@ -124,8 +124,8 @@ export const sendStrategyUpdated = async (event) => {
   };
 
   // Append event to the event store
-  console.log("ES - appendEventToEventSourceDB", updatedStrategyEvent);
-  await appendEventToEventSourceDB(updatedStrategyEvent);
+  console.log("ES - appendEventToStrategyEventSourceDB", updatedStrategyEvent);
+  await appendEventToStrategyEventSourceDB(updatedStrategyEvent);
 
   // Handle projections
   console.log("ES- Am I here?", updatedStrategyEvent);

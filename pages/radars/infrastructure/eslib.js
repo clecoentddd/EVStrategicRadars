@@ -8,7 +8,7 @@ export async function getEventsForAnOrganisation(organisationId) {
   console.log ("getEventsForAnOrganisation", organisationId);
   const { data, error } = await supabase
     .from('organisation_events')
-    .select('payload, eventType')
+    .select('payload, eventType, created_at')
     .eq('aggregateId', organisationId)
     .eq('aggregateType', 'RADAR'); // Add filter for aggregateType
 
@@ -22,6 +22,7 @@ export async function getEventsForAnOrganisation(organisationId) {
   return data.map((row) => ({
     payload: row.payload,
     eventType: row.eventType, // Include eventType in the return object
+    created_at: row.created_at // Include the created_at value
   }));
 }
 
@@ -52,7 +53,7 @@ export async function getEventsForRadarItem(radarItemId) {
 export async function appendEventToRadatIemEventSourceDB(event) {
 
  
-  console.log("appendEventToEventSourceDB", event);
+  console.log("appendEventToRadatIemEventSourceDB", event);
 
   const { data, error } = await supabase
     .from('radar_items_events')
@@ -70,7 +71,7 @@ export async function appendEventToRadatIemEventSourceDB(event) {
 export async function appendEventToOrganisationsEventSourceDB(event) {
 
  
-  console.log("appendEventToEventSourceDB", event);
+  console.log("appendEventToOrganisationsEventSourceDB", event);
 
   const { data, error } = await supabase
     .from('organisation_events')
@@ -84,54 +85,3 @@ export async function appendEventToOrganisationsEventSourceDB(event) {
 
   return data[0];
 }
-
-/*
-
-// Read an event by its eventStoreId
-export async function readEventByEventStoreId(radarId, eventStoreId) {
-  const { data, error } = await supabase
-    .from('radar_events')
-    .select('payload')
-    .eq('radar_id', radarId)
-    .eq('id', eventStoreId)
-    .single();
-
-  if (error) {
-    console.error('Error fetching event by ID:', error);
-    return null;
-  }
-
-  return data.payload;
-}
-
-// Clear all events for a radar
-export async function clearEventStore(radarId) {
-  const { error } = await supabase
-    .from('radar_events')
-    .delete()
-    .eq('radar_id', radarId);
-
-  if (error) {
-    console.error('Error clearing events:', error);
-    return false;
-  }
-
-  console.log('Event store cleared.');
-  return true;
-}
-
-// Get the total number of events for a radar
-export async function getNumberOfEvents(radarId) {
-  const { count, error } = await supabase
-    .from('radar_events')
-    .select('*', { count: 'exact' })
-    .eq('radar_id', radarId);
-
-  if (error) {
-    console.error('Error counting events:', error);
-    return 0;
-  }
-
-  return count;
-}
-*/

@@ -16,7 +16,7 @@ export const saveRadarItemEvent = async (event) => {
     
   console.log("EVENTSTORE event is ", event.aggregateId);
     // Add timestamp
-    event.payload.timestamp = new Date().getTime();
+    event.created_at = new Date().getTime();
 
     console.log("Current Radar Item Events in Memory - eventType:", eventType);
 

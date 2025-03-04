@@ -1,6 +1,6 @@
 import { appendEventToEventSourceDB } from './eslib.js';
 import { projectOrganisationToSupabase } from './organisationsProjection.js'; // Import projection function
-import {replayRadarAggregate} from './eventReplayRadars.js';
+import {replayOrganisationAggregate} from './eventReplayOrganisation.js';
 
 export const sendOrganisationDeleted= async (event) => {
 
@@ -15,13 +15,13 @@ export const sendOrganisationDeleted= async (event) => {
     eventType: "RADAR_DELETED",
     aggregateType: "RADAR",
     aggregateId: event.radarId,
+    created_at: new Date().toISOString(),
       payload: {
         message: "radar deleted",
-        created_at: new Date().getTime(),
       }
     };
   
-    if (replayRadarAggregate(event.radarId) === null) {
+    if (replayOrganisationAggregate(event.radarId) === null) {
         console.log ("Radar Aggregate not found");
         return null;
     }

@@ -82,7 +82,8 @@ const setTargetStrategy = (strategy) => {
     setTempData({ ...currentRow });
 
     try {
-      const response = await fetch(`/api/radar-items?radarId=${stream.radarId}`, {
+      console.log("handleEditInitiative - Fetching radar items for stream", stream.organisationId);
+      const response = await fetch(`/api/radar-items?radarId=${stream.organisationId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

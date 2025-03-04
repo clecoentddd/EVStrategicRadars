@@ -545,11 +545,11 @@ function HomePage() {
                             min="0"
                             required
                             style={{ width: '50px' }}
-                            value={radarToUpdate.level || ''}
+                            value={radarToUpdate.level ?? ''}  // ← Use nullish coalescing instead
                             onChange={(e) =>
                               setRadarToUpdate((prev) => ({
                                 ...prev,
-                                level: e.target.value,
+                                level: parseInt(e.target.value, 10), // Also ensure it's a number
                               }))
                             }
                           />

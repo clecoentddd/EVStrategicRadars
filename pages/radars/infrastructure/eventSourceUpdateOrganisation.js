@@ -1,6 +1,6 @@
 import { appendEventToOrganisationsEventSourceDB } from './eslib.js';
 import { projectOrganisationToSupabase } from './organisationsProjection.js'; // Import projection function
-import {replayRadarAggregate} from './eventReplayRadars.js';
+import {replayOrganisationAggregate} from './eventReplayOrganisation.js';
 import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js';
 
 export const sendOrganisationUpdated = async (event) => {
@@ -16,12 +16,12 @@ export const sendOrganisationUpdated = async (event) => {
       eventType: "RADAR_UPDATED", // Static value for eventType
       aggregateType: "RADAR", // Static value for aggregateType
       aggregateId: event.radarId, // Generate a UUID for aggregateId
+      created_at: new Date().toISOString(), // Use the provided timestamp
       payload: { // JSON column with the specific fields
         name: event.name,
         level: event.level,
         purpose: event.purpose,
         context: event.context,
-        created_at: new Date().getTime(), // Use the provided timestamp
       },
     };
   
@@ -29,8 +29,8 @@ export const sendOrganisationUpdated = async (event) => {
 
     try {
 
-      // Store the result of replayRadarAggregate
-      const result = await replayRadarAggregate(event.radarId);
+      // Store the result of replayOrganisationAggregate
+      const result = await replayOrganisationAggregate(event.radarId);
 
       // Check if the result is null
       if (result === null) {
@@ -42,7 +42,7 @@ export const sendOrganisationUpdated = async (event) => {
       console.log("Replay successful. Result:", result);
 
     } catch (error) {
-      // Handle any errors that occur during replayRadarAggregate
+      // Handle any errors that occur during replayOrganisationAggregate
       console.error("Error replaying radar aggregate:", error);
 
       // Optionally, you can return a specific error object or rethrow the error

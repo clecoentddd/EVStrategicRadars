@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { appendEventToEventSourceDB, readEventsFromEventSourceDB } from './eslib.js';
+import { appendEventToStrategyEventSourceDB, readEventsFromEventSourceDB } from './eslib.js';
 // import { replayStrategy } from './eventStoreStream';
 import { projectElementToSupabase } from './ProjectionInitiatives.js';
 
@@ -19,7 +19,7 @@ export const sendInitativeCreated = async (eventPayload) => {
     }
   };
 
-  await appendEventToEventSourceDB(event);
+  await appendEventToStrategyEventSourceDB(event);
 
   await projectElementToSupabase(event);
 
@@ -42,7 +42,7 @@ export const sendInitativeUpdated = async (eventPayload) => {
     }
   };
 
-  await appendEventToEventSourceDB(event);
+  await appendEventToStrategyEventSourceDB(event);
 
   // handle projection
   await projectElementToSupabase(event);
@@ -80,7 +80,7 @@ export const sendInitativeDeleted = async (initative) => {
   };
 
   console.log("sendInitativeDeleted: Element about to delete:", deletedElement);
-  appendEventToEventSourceDB(deletedElement.stream_id, deletedElement);
+  appendEventToStrategyEventSourceDB(deletedElement.stream_id, deletedElement);
 
   // project update
   await projectElementToSupabase(deletedElement);
