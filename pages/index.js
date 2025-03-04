@@ -497,7 +497,7 @@ function HomePage() {
                     </button>
                     <button
                       className={styles.buttonDelete}
-                      onClick={() => handleDelete(radar.id)}
+                      onClick={() => handleUpdate(radar.id)}
                     >
                       Delete
                     </button>

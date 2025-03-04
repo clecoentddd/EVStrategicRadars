@@ -1,0 +1,15 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1741000657149,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 2,
+      "name": "Marketing",
+      "purpose": "Enjoy life with customers",
+      "context": "Marketing",
+      "id": "9f651ef3-6424-41ca-8b5e-777d19e8d4f0"
+    },
+    "eventStoreId": "6d34b419-7130-44c2-990a-fa59b52107ba"
+  }
+]

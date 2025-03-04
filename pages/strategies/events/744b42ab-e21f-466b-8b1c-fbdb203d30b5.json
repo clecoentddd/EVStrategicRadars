@@ -1,0 +1,12 @@
+[
+  {
+    "event": "STREAM_CREATED",
+    "type": "STREAM",
+    "id": "744b42ab-e21f-466b-8b1c-fbdb203d30b5",
+    "radarId": "0639335f-1e54-4138-9314-bb8b9b2a45d4",
+    "name": "CEO",
+    "timestamp": "2025-03-03T08:42:04.927Z",
+    "state": "Draft",
+    "active_strategy_id": null
+  }
+]

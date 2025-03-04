@@ -1,0 +1,35 @@
+[
+  {
+    "eventType": "RADAR_CREATED",
+    "timestamp": 1740991324903,
+    "aggregateType": "RADAR",
+    "payload": {
+      "level": 1,
+      "name": "CEO",
+      "purpose": "We make it work",
+      "context": "IT consulting company for more than 50 years. Strong identify on engineering. Customers NPS are not that good though.",
+      "id": "0639335f-1e54-4138-9314-bb8b9b2a45d4"
+    },
+    "eventStoreId": "9b95a688-c36b-4bb9-b0ac-cb8cbc5d33da"
+  },
+  {
+    "event": "RADAR_ITEM_CREATED",
+    "payload": {
+      "aggregate_type": "RADAR_ITEM",
+      "radarId": "0639335f-1e54-4138-9314-bb8b9b2a45d4",
+      "name": "AI ",
+      "detect": "AI",
+      "assess": "",
+      "respond": "",
+      "type": "Opportunity",
+      "category": "Business",
+      "distance": "Detected",
+      "impact": "Medium",
+      "tolerance": "Medium",
+      "zoom_in": "0bf3786b-2375-4afe-9bb6-c75d802c687e",
+      "timestamp": 1740999962657,
+      "id": "406f91c5-c40e-4650-a583-4f22af756d4d"
+    },
+    "eventStoreId": "958734c1-1045-4463-8d2c-e43ada48fdab"
+  }
+]

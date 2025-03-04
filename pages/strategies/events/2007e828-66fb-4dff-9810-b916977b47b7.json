@@ -1,0 +1,12 @@
+[
+  {
+    "event": "STREAM_CREATED",
+    "type": "STREAM",
+    "id": "2007e828-66fb-4dff-9810-b916977b47b7",
+    "radarId": "9f651ef3-6424-41ca-8b5e-777d19e8d4f0",
+    "name": "Marketing",
+    "timestamp": "2025-03-03T11:17:37.171Z",
+    "state": "Draft",
+    "active_strategy_id": null
+  }
+]

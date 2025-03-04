@@ -62,5 +62,22 @@
         "id": "f155b006-8863-448e-8161-9b79da8a636f"
       }
     ]
+  },
+  {
+    "event": "STRATEGIC_ELEMENT_UPDATED",
+    "type": "STRATEGIC_ELEMENT",
+    "id": "f386285e-1309-434d-828b-67ff43f1794d",
+    "stream_id": "a0a3fadb-6a8b-4d2d-9bee-305f15eb7ba5",
+    "version": 2,
+    "timeStamp": "2025-03-03T11:07:27.951Z",
+    "state": "Updated",
+    "strategy_id": "e1b1e7b5-6b1e-4d2a-b420-b1cd6eccc72f",
+    "diagnosis": null,
+    "overall_approach": null,
+    "set_of_coherent_actions": null,
+    "proximate_objectives": null,
+    "name": "Data Mesh",
+    "description": "Help companies understand data that is not available is information we do not have to make better decision",
+    "tags": "[{\"name\":\"Data Mesh\",\"id\":\"f155b006-8863-448e-8161-9b79da8a636f\"}]"
   }
 ]
