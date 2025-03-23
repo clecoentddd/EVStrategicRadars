@@ -1,25 +1,25 @@
 import { supabase } from "../../../utils/supabaseClient";
 
-export async function projectRadarToSupabase(eventType, radar) {
+export async function projectRadarToSupabase(radar) {
   try {
     console.log("projectRadarToSupabase - data to insert:", radar);
-    console.log("projectRadarToSupabase - eventType is:", eventType);
+   
     // Validate radar object
-    if (!radar.id) {
+    if (!radar.aggregateId) {
       throw new Error("Invalid radar object received. Missing payload.");
     }
 
     // Handle RADAR_CREATED event
-    if (eventType === "RADAR_CREATED") {
+    if (radar.eventType === "RADAR_CREATED") {
       const { data, error } = await supabase
-        .from('radars')
+        .from('projection_radars_list')
         .insert([
           {
-            id: radar.id,
-            name: radar.name,
-            purpose: radar.purpose,
-            context: radar.context,
-            level: radar.level,
+            id: radar.aggregateId,
+            name: radar.payload.name,
+            purpose: radar.payload.purpose,
+            context: radar.payload.context,
+            level: radar.payload.level,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           },
@@ -35,17 +35,17 @@ export async function projectRadarToSupabase(eventType, radar) {
     }
 
     // Handle RADAR_UPDATED event (or default behavior)
-    if (eventType === "RADAR_UPDATED") {
+    if (radar.eventType === "RADAR_UPDATED") {
     const { data, error } = await supabase
-      .from('radars')
+      .from('projection_radars_list')
       .update({
-        name: radar.name,
-        purpose: radar.purpose,
-        context: radar.context,
-        level: radar.level,
+        name: radar.payload.name,
+        purpose: radar.payload.purpose,
+        context: radar.payload.context,
+        level: radar.payload.level,
         updated_at: new Date().toISOString(),
       })
-      .match({ id: radar.id })
+      .match({ id: radar.aggregateId })
       .select('*');
       
       console.log("projectRadarToSupabase - data returned from supabase:", data);
@@ -57,17 +57,12 @@ export async function projectRadarToSupabase(eventType, radar) {
   }
 
       // Handle RADAR_UPDATED event (or default behavior)
-      if (eventType === "RADAR_DELETED") {
+      if (radar.eventType === "RADAR_DELETED") {
         const { data, error } = await supabase
-          .from('radars')
-          .delete({
-            name: radar.name,
-            purpose: radar.purpose,
-            level: radar.level,
-            updated_at: new Date().toISOString(),
-          })
-          .match({ id: radar.id })
-          .select('*');
+          .from('projection_radars_list')
+          .delete()
+          .match({ id: radar.aggregateId })
+          .select('*'); // Returns the deleted row
     
         if (error) {
           console.log("Error updating radar in Supabase:", error.message);
@@ -80,33 +75,4 @@ export async function projectRadarToSupabase(eventType, radar) {
     console.error("Error upserting radar:", error.message);
     throw error;
   }
-
 }
-export async function projectRadarToSupabase2(eventType, radar) {
-  // console.log("Entering Projection: Radar to project to Supabase:", radar);
-    if (!radar.id) {
-      throw new Error("Invalid radar object received. Missing payload.");
-    }
-    console.log("About to delete in supabase item whose id is: ", radar.id);
-    try {
-      if (eventType === "RADAR_DELETED") { 
-        const { error } = await supabase
-          .from('radars')
-          .delete()
-          .match({ id: radar.id });
-  
-        if (error) {
-          console.log("Error deleting radar:", error.message);
-          throw new Error(`Error deleting radar in Supabase: ${error.message}`);
-        }
-  
-        return true; // Indicate successful deletion
-      } else {
-        console.warn("Received unexpected event type for deletion:", eventType);
-        return false; // Indicate that no deletion was performed
-      }
-    } catch (error) {
-      console.error("Error deleting radar:", error.message);
-      throw error; 
-    }
-  }

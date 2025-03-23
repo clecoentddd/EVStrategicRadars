@@ -12,7 +12,7 @@ export async function fetchAllRadarItemsByRadarId(radarId) {
     console.log ("radarItemsDB: get all radar items for radar id", radarId);
     // Query the radar_items table for all items with the given radarId
     const { data, error } = await supabase
-      .from("radar_items")
+      .from("projection_radar_items_list")
       .select("*")
       .eq("radarId", radarId);  // Filter by radarId
 

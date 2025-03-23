@@ -1,16 +1,15 @@
-import { readEventsFromFile } from './eslib';
+import { getEventsForRadar } from './eslib';
 
 export async function replayRadarAggregate(aggregateId) {
   try {
+    console.log("Replay Radar: ", aggregateId);
     // Get all events for the given aggregateId
-    const events = await readEventsFromFile(aggregateId);
+    const events = await getEventsForRadar(aggregateId);
 
     // Filter events based on the conditions
-    const filteredEvents = events.filter(
-      (event) => event.aggregateType === 'RADAR' && event.payload.id === aggregateId
-    );
-    console.log("Events before replay", filteredEvents);
-    const sortedFilteredEvents = filteredEvents.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // Example using timestamp
+   
+    console.log("Events before replay", events);
+    const sortedFilteredEvents = events.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)); // Example using timestamp
 
     
     // Replay events to reconstruct the radar state
@@ -20,7 +19,7 @@ export async function replayRadarAggregate(aggregateId) {
       switch (radarEvent.eventType) {
         case 'RADAR_CREATED':
           radar = {
-            id: radarEvent.payload.id,
+            radarId: aggregateId,
             name: radarEvent.payload.name,
             purpose: radarEvent.payload.purpose,
             level: radarEvent.payload.level,

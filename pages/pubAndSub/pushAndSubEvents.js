@@ -1,4 +1,4 @@
-import { interfaceCreateStream, interfaceUpdateStream } from '../strategies/service/pubAndSubInterface';
+import { interfaceCreateStream, interfaceUpdateStream } from '../strategies/infrastructure/pubAndSubInterface';
 
 const EventEmitter = require('events');
 
@@ -29,6 +29,6 @@ subscribeToIntegrationEvents((eventData) => {
       break;
 
     default:
-      console.warn(`Unhandled event type: ${eventData.eventType}`);
+      console.warn(`Unhandled event type: ${eventType}`);
   }
 });

@@ -2,7 +2,7 @@
 import { fetchAllRadarItemsByRadarId } from "../radars/infrastructure/radarItemsDB"; // Adjust the path if necessary
 
 // WRITE of CQRS
-import {handleRadarItemCreation, updateRadarItem, getRadarItem} from "../radars/model/radarItems"
+import {handleRadarItemCreate, handleRadarItemUpdate, getRadarItem} from "../radars/model/radarItems"
 
 export default async function handler(req, res) {
   // console.log("Body received:", req.body);
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         // Handle the new GET API for fetching radar item aggregate
         try {
           console.log("API Fetching radar item aggregate for:", id);
-          const radarItem = await getRadarItem(radarId, id); // Call the model method
+          const radarItem = await getRadarItem(id); // Call the model method
           console.log ("API -> ready to return aggregate :",radarItem);
 
           if (radarItem) {
@@ -66,10 +66,35 @@ export default async function handler(req, res) {
 
       try {
         console.log ("API Creating the radar item: ", command )
-        const radarItem = await handleRadarItemCreation(command);
+        const radarItem = await handleRadarItemCreate(command);
         console.log("API -> let us see what is in result.radarItem", radarItem)
+
+        // Get response format ready for the front end
         if (radarItem.success) {
-          return res.status(201).json(radarItem);
+          // Transform the radarItem (original response) for optimistic UI
+        const transformedResponse = {
+          success: true,
+          message: "Radar item created successfully",
+          data: {
+            id: radarItem.aggregateId,
+            name: radarItem.payload.name,
+            assess: radarItem.payload.assess,
+            detect: radarItem.payload.detect,
+            respond: radarItem.payload.respond,
+            type: radarItem.payload.type,
+            impact: radarItem.payload.impact,
+            radarId: radarItem.payload.radarId,
+            category: radarItem.payload.category,
+            distance: radarItem.payload.distance,
+            tolerance: radarItem.payload.tolerance,
+            zoom_in: radarItem.payload.zoom_in,
+            created_at: radarItem.created_at
+          }
+        };
+
+        // Return the transformed response
+        return res.status(201).json(transformedResponse);
+
         } else {
           return res.status(400).json({ message: result.message });
         }
@@ -97,10 +122,34 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: "Payload is required" });
       }
       console.log ("API -> updating the item")
-      const radarItem = await updateRadarItem(command);
+      const radarItem = await handleRadarItemUpdate(command);
 
-      if (radarItem) {
-        return res.status(200).json(radarItem); // Respond with the updated radar item
+      if (radarItem.success) {
+        // Transform the radarItem (original response) for optimistic UI
+        console.log ("API -> item updated - ready to send to front-end", radarItem);
+      const transformedResponse = {
+        success: true,
+        message: "Radar item updated successfully",
+        data: {
+          id: radarItem.aggregateId,
+          name: radarItem.payload.name,
+          assess: radarItem.payload.assess,
+          detect: radarItem.payload.detect,
+          respond: radarItem.payload.respond,
+          type: radarItem.payload.type,
+          impact: radarItem.payload.impact,
+          radarId: radarItem.payload.radarId,
+          category: radarItem.payload.category,
+          distance: radarItem.payload.distance,
+          tolerance: radarItem.payload.tolerance,
+          zoom_in: radarItem.payload.zoom_in,
+          created_at: radarItem.created_at
+        }
+      };
+
+      // Return the transformed response
+      return res.status(201).json(transformedResponse);
+
       } else {
         return res.status(404).json({ message: "Radar item not found or failed to update" });
       }
@@ -113,4 +162,22 @@ export default async function handler(req, res) {
     console.error("Unexpected error:", error);
     return res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
+}
+
+function transformResponse(originalResponse) {
+  return {
+    success: originalResponse.success,
+    message: originalResponse.message,
+    data: {
+      id: originalResponse.aggregateId,
+      name: originalResponse.payload.name,
+      type: originalResponse.payload.type,
+      impact: originalResponse.payload.impact,
+      radarId: originalResponse.payload.radarId,
+      category: originalResponse.payload.category,
+      distance: originalResponse.payload.distance,
+      tolerance: originalResponse.payload.tolerance,
+      createdAt: originalResponse.created_at
+    }
+  };
 }

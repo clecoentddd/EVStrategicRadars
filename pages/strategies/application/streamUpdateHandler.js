@@ -1,26 +1,26 @@
 import { updateStream} from '../model/updateStrategyStream';
-import { getStreamByRadarId} from '../service/readModelStrategicElements';
+import { getStreamByRadarId} from '../infrastructure/readModelStreams';
 
 
 export async function updateStreamHandler(command) {
     // Implement your strategy update logic here
-    console.log('updateStreamHandler: Stream updating with radar data:', command.id);
+    console.log('updateStreamHandler: Stream updating with radar data:', command);
    
-    if (!command.id || !command.name ) {
+    if (!command.aggregateId || !command.payload.name ) {
         return { success: false, message: "updateStreamHandler: <Missing required fields in event data." + command.name };
         }
     else
     {
         // return stream with RadarId = command.id
-        const streamToUpdate = await getStreamByRadarId(command.id);
+        const streamToUpdate = await getStreamByRadarId(command.aggregateId);
         console.log ("updateStreamHandler: Stream to update based on radar id ", streamToUpdate);
 
-        if (streamToUpdate.id === null || command.id !== streamToUpdate.radarId)
+        if (streamToUpdate.aggreagateId === null)
         {
-            return { success: false, message: "updateStreamHandler: <Stream not found with radar id: " + command.id };
+            return { success: false, message: "updateStreamHandler: <Stream not found with radar id: " + command.aggregateId };
         }
         else {
-            streamToUpdate.name = command.name;
+            streamToUpdate.name = command.payload.name;
             const result = await updateStream(streamToUpdate);
             console.log ("updateStreamHandler: Strategy stream updated", result);   
             return result

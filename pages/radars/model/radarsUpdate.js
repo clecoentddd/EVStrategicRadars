@@ -16,7 +16,7 @@ export async function handleRadarUpdate(command) {
   try {
     console.log("MODEL Updating Radar: calling sendRadarCreated:",command);
     savedEvent = await sendRadarUpdated({ ...command.payload });
-    // console.log("MODEL123 SaveEvent created:",savedEvent);
+    console.log("MODEL123 SaveEvent saved:",savedEvent);
 } catch (error) {
     console.error("Error in saveEvent:", error.message);
     throw new Error("Failed to save new radar");
@@ -24,5 +24,11 @@ export async function handleRadarUpdate(command) {
   
   // Return the result including the generated UUID from the event store
   // console.log("MODEL HandleRadarCreation - return SavedEvent.payload:",savedEvent.payload);
-  return { success: true, radar: savedEvent.payload };
+  return { 
+    success: true, 
+    radar: {
+      id: savedEvent.aggregateId, // Key-value pair
+      ...savedEvent.payload    // Key-value pair
+    }
+  };
 }

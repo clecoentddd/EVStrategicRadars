@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
 import { projectRadarToSupabase } from './radarProjection.js';
 import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js'
-import { appendEventToFile, readEventsFromFile } from './eslib.js';
+import { appendEventToEventSourceDB, readEventsFromFile } from './eslib.js';
 
 const eventStore = []; // In-memory event storage
 
@@ -30,7 +30,7 @@ export const sendRadarCreated = async (event) => {
   console.log ("eventstoreRadars.js publishing events 1", radarToCreate);
 
   //eventStore.push(eventWithId); // Push the new event with the ID into the event store
-  const radarCreated = appendEventToFile(radarToCreate.payload.radarId, radarToCreate);
+  const radarCreated = appendEventToEventSourceDB(radarToCreate.payload.radarId, radarToCreate);
 
   // Publish integration event
   console.log ("eventstore.js publishing events", radarCreated);

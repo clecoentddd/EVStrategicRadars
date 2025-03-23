@@ -1,4 +1,4 @@
-import { sendStreamUpdated } from '../service/eventStoreStream.js';
+import { sendStreamUpdated } from '../infrastructure/eventStoreStream.js';
 
 export async function updateStream(command) {
     // Implement your strategy creation logic here
@@ -32,7 +32,7 @@ export async function updateStream(command) {
     try {
       console.log ("Strategy stream... saving");
       savedStrategyStream = await sendStreamUpdated(streamToUpdate);
-      console.log ("Model createStream saved", savedStrategyStream);
+      console.log ("Model updateStream saved", savedStrategyStream);
       return { ...savedStrategyStream };
     } catch (error) {
       return { success: false, message: `Error creating strategy stream : ${error.message}` };

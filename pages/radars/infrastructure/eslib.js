@@ -1,105 +1,115 @@
-import fs from 'fs';
-import path from 'path';
+import { supabase } from "../../../utils/supabaseClient";
 import { v4 as uuidv4 } from 'uuid';
+import eventStoreInitiatives from "../../strategies/infrastructure/eventStoreInitiatives";
 
-const eventsDirectory = path.join(process.cwd(), process.env.EVENTS_DIRECTORY || 'pages/radars/events');
+// Get events for a specific radar
+export async function getEventsForRadar(radarId) {
+  
+  console.log ("getEventsForRadar", radarId);
+  const { data, error } = await supabase
+    .from('radar_events')
+    .select('payload, eventType')
+    .eq('aggregateId', radarId)
+    .eq('aggregateType', 'RADAR'); // Add filter for aggregateType
 
-console.log("Path I am using to store radar events:", eventsDirectory);
-
-// Create the events directory if it doesn't exist
-if (!fs.existsSync(eventsDirectory)) {
-  fs.mkdirSync(eventsDirectory);
-}
-
-// Helper function to read events from a file
-export function readEventsFromFile(radarId) {
-  console.log ("readEventsFromFile entering", eventsDirectory );
-  const filePath = path.join(eventsDirectory, `${radarId}.json`);
-  console.log("readEventsFromFile: Path", filePath);
-
-  try {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    console.log("readEventsFromFile: ", data);
-    return JSON.parse(data);
-  } catch (error) {
-    console.error(`Error reading events from file ${filePath}:`, error);
-    return []; // Return an empty array if the file doesn't exist or fails to read
-  }
-}
-
-// Helper function to write events to a file
-export function writeEventsToFile(radarId, events) {
-  const filePath = path.join(eventsDirectory, `${radarId}.json`);
-
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(events, null, 2));
-    console.log("Radars events written successfully to:", filePath);
-  } catch (error) {
-    console.error(`Error writing radar events to file ${filePath}:`, error);
-  }
-}
-
-// Get events for a specific stream
-export function getEventsForRadar(radarId) {
-  return readEventsFromFile(radarId);
-}
-
-// Add an event to the file associated with a stream
-export function appendEventToFile(radarId, event) {
-  const filePath = path.join(eventsDirectory, `${radarId}.json`);
-
-  // Adding an id to the event
-  const eventId = uuidv4(); 
-  event.eventStoreId = eventId; // Add eventId to the event object
-
-  // Check if the file exists
-  if (!fs.existsSync(filePath)) {
-    console.log(`File does not exist. Creating a new file: ${filePath}`);
-    fs.writeFileSync(filePath, JSON.stringify([])); // Create the file with an empty array
+  if (error) {
+    console.error('Error fetching events:', error);
+    return [];
   }
 
-  const currentEvents = readEventsFromFile(radarId);
-  currentEvents.push(event);
-  writeEventsToFile(radarId, currentEvents);
+  console.log ("getEventsForRadar: events retreived", data);
 
-  // Check and return the event
-  const newEventStored = readEventByEventStoreId(radarId, eventId);
-  console.log("Read event back from eventStore",newEventStored );
-  return newEventStored
-}
-
-export function readEventByEventStoreId(radarId, eventStoreId) {
-  const filePath = path.join(eventsDirectory, `${radarId}.json`);
-  try {
-    const events = readEventsFromFile(radarId);
-    console.log("Reading all events from file", events);
-    return events.find(event => event.eventStoreId === eventStoreId); 
-  } catch (error) {
-    console.error(`Error reading event by ID: ${error}`);
-    return null; 
-  }
+  return data.map((row) => ({
+    payload: row.payload,
+    eventType: row.eventType, // Include eventType in the return object
+  }));
 }
 
 
-// Clear all events in the event store
-export function clearEventStore() {
-  const allFiles = fs.readdirSync(eventsDirectory);
-  for (const file of allFiles) {
-    const filePath = path.join(eventsDirectory, file);
-    fs.unlinkSync(filePath);
+export async function getEventsForRadarItem(radarItemId) {
+  
+  console.log ("getEventsForRadarItem", radarItemId);
+  const { data, error } = await supabase
+    .from('radar_events')
+    .select('payload, eventType')
+    .eq('aggregateId', radarItemId)
+    .eq('aggregateType', 'RADAR_ITEM'); // Add filter for aggregateType
+
+  if (error) {
+    console.error(': getEventsForRadarItemError fetching events:', error);
+    return [];
   }
-  console.log("Event store cleared.");
+
+  console.log ("getEventsForRadarItem: events retreived", data);
+
+  return data.map((row) => ({
+    payload: row.payload,
+    eventType: row.eventType, // Include eventType in the return object
+  }));
+}
+// Add an event to the database
+export async function appendEventToEventSourceDB(event) {
+
+ 
+  console.log("appendEventToEventSourceDB", event);
+
+  const { data, error } = await supabase
+    .from('radar_events')
+    .insert([event])
+    .select();
+
+  if (error) {
+    console.error('Error inserting event:', error);
+    return null;
+  }
+
+  return data[0];
 }
 
-// Get the total number of events in the event store
-export function getNumberOfEvents() {
-  const allFiles = fs.readdirSync(eventsDirectory);
-  let totalEvents = 0;
+// Read an event by its eventStoreId
+export async function readEventByEventStoreId(radarId, eventStoreId) {
+  const { data, error } = await supabase
+    .from('radar_events')
+    .select('payload')
+    .eq('radar_id', radarId)
+    .eq('id', eventStoreId)
+    .single();
 
-  for (const file of allFiles) {
-    const filePath = path.join(eventsDirectory, file);
-    const events = readEventsFromFile(file.replace('.json', '')); // Remove the `.json` extension
-    totalEvents += events.length;
+  if (error) {
+    console.error('Error fetching event by ID:', error);
+    return null;
   }
-  return totalEvents;
+
+  return data.payload;
+}
+
+// Clear all events for a radar
+export async function clearEventStore(radarId) {
+  const { error } = await supabase
+    .from('radar_events')
+    .delete()
+    .eq('radar_id', radarId);
+
+  if (error) {
+    console.error('Error clearing events:', error);
+    return false;
+  }
+
+  console.log('Event store cleared.');
+  return true;
+}
+
+// Get the total number of events for a radar
+export async function getNumberOfEvents(radarId) {
+  const { count, error } = await supabase
+    .from('radar_events')
+    .select('*', { count: 'exact' })
+    .eq('radar_id', radarId);
+
+  if (error) {
+    console.error('Error counting events:', error);
+    return 0;
+  }
+
+  return count;
 }

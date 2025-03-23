@@ -1,4 +1,4 @@
-import { sendStrategyCreated, replayStrategy } from '../service/eventStoreStrategies.js';
+import { sendStrategyCreated, replayStrategy } from '../infrastructure/eventStoreStrategies.js';
 
 export async function createStrategy(command) {
     // Implement your strategy creation logic here

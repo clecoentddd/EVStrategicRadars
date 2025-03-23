@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './styles/index.module.css';
 import useAICoach from './indexAICoach';
 import createRadar from './services/createRadarIndex';
-import deleteRadar from './services/updateRadarIndex';
-import updateRadar from './services/deleteRadarIndex';
+import updateRadar from './services/updateRadarIndex';
+import deleteRadar from './services/deleteRadarIndex';
 
 // Spinner from react
 import { ClipLoader } from 'react-spinners';
@@ -14,8 +14,8 @@ function HomePage() {
   const [successMessage, setSuccessMessage] = useState(null);
   const [isSynced, setIsSynced] = useState(false);
   const [expandedRadars, setExpandedRadars] = useState({});
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [formMode, setFormMode] = useState('create'); // 'create' or 'update'
+  const [isCreateFormVisible, setIsCreateFormVisible] = useState(false); // For Create form
+  const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false); // For Update form
   const [radarToUpdate, setRadarToUpdate] = useState(null);
 
    // Use the AI Coaching custom hook
@@ -51,11 +51,15 @@ function HomePage() {
     });
   }, [aiCoachData]);
 
+  useEffect(() => {
+    console.log(`isCreateFormVisible updated to: ${isCreateFormVisible}`); // Debugging log
+  }, [isCreateFormVisible]);
+
   // Fetch radars on component mount
   useEffect(() => {
     const fetchRadars = async () => {
       try {
-        const response = await fetch('/api/radars');
+        const response = await fetch('/api/radars-fetch');
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -90,24 +94,24 @@ function HomePage() {
  
   const handleCreate = async (event) => {
     event.preventDefault();
-
+  
     const name = event.target.name.value;
     const purpose = event.target.purpose.value;
     const context = event.target.context.value;
     const level = parseInt(event.target.level.value, 10);
-
+  
     try {
       const newRadar = await createRadar(name, purpose, context, level);
       console.log('final preparing reading result for setRadars', newRadar);
-
+  
       // Correctly add the new radar to the array
       const updatedRadars = [...radars, newRadar];
-
+  
       console.log('Updated radars:', updatedRadars); // Log the updated radars array
       setRadars(updatedRadars); // Update the state with the new array
-
+  
       setErrorMessage(null);
-      setIsFormVisible(false); // Close the form
+      setIsCreateFormVisible(false); // Close the form
       setSuccessMessage(`Radar "${newRadar.name}" created successfully!`);
     } catch (error) {
       console.error('Error saving radar:', error.message);
@@ -128,32 +132,51 @@ function HomePage() {
     try {
       if (radarToUpdate) {
         const result = await updateRadar(radarToUpdate.id, name, purpose, context, level);
-
+        console.log('index.js - radarToUpdate result from update is', result.name);
+        
+        // Log the new values from the result object
+        console.log('index.js - New values for update - Name:', result.name, 'Purpose:', result.purpose, 'Context:', result.context, 'Level:', result.level);
+        
         // Update the radar in the state
-        setRadars((prevRadars) =>
-          prevRadars.map((radar) =>
-            radar.id === radarToUpdate.id ? { ...radar, name, purpose, context, level } : radar
-          )
-        );
+        setRadars((prevRadars) => {
+          console.log("handleUpdateRadar: Previous radars before update:", prevRadars);
+        
+          // Use the result object to update the radar
+          const updatedRadars = prevRadars.map((radar) =>
+            radar.id === radarToUpdate.id ? { ...radar, name: result.name, purpose: result.purpose, context: result.context, level: result.level } : radar
+          );
+        
+          console.log("handleUpdateRadar: Updated radars after update:", updatedRadars);
+          return updatedRadars;
+        });
 
-        setSuccessMessage(`Radar "${result.radar.name}" updated successfully!`);
-        setIsFormVisible(false); // Close the form
+        setSuccessMessage(`Radar "${result.name}" updated successfully!`);
+        setIsUpdateFormVisible(false); // Close the form
         setRadarToUpdate(null); // Clear radarToUpdate
       } else {
         console.error('Error: No radar selected for update.');
         setErrorMessage('Error updating radar...');
       }
     } catch (error) {
-      console.error('Error updating radar:', error.message);
+      console.error('index.js Error updating radar:', error.message);
       setErrorMessage('Error updating radar. Please try again.');
     }
   };
 
   const toggleForm = (mode, radar = null) => {
-    console.log('toggleForm', mode, radar);
-    setIsFormVisible(true); // Always open the form when toggling
-    setFormMode(mode);
-    setRadarToUpdate(radar); // Set the radar to update if in update mode
+    console.log(`toggleForm called with mode: ${mode}`); // Debugging log
+    if (mode === 'create') {
+      console.log('Setting isCreateFormVisible to true'); // Debugging log
+      setIsCreateFormVisible(true); // Show Create form
+      console.log('Setting isCreateFormVisible set to :', isCreateFormVisible); // Debugging log
+      setIsUpdateFormVisible(false); // Hide Update form
+      setRadarToUpdate(null); // Clear radar data
+    } else if (mode === 'update') {
+      console.log('Setting isUpdateFormVisible to true'); // Debugging log
+      setIsUpdateFormVisible(true); // Show Update form
+      setIsCreateFormVisible(false); // Hide Create form
+      setRadarToUpdate(radar); // Set radar data for editing
+    }
   };
 
 
@@ -202,8 +225,6 @@ function HomePage() {
       if (response) {
         // Radar successfully deleted
         setSuccessMessage('Radar deleted successfully!');
-        // Option 1: Close the form (if applicable)
-        setIsFormVisible(false);
         // Option 2: Refresh the page
         window.location.reload();
       } else {
@@ -234,90 +255,80 @@ function HomePage() {
       <button
         id="create-radar-button"
         className={styles.buttonCreateRadar}
-        onClick={() => toggleForm('create')}
+        onClick={() => {
+          toggleForm('create');
+        }}
       >
         Create a new organisation
       </button>
-      <div id="create-form" className={styles.createFormContainer} style={{ display: isFormVisible ? 'block' : 'none' }}>
-        <h2>{formMode === 'create' ? 'Create Radar' : `Update Radar: ${radarToUpdate?.name || ''}`}</h2>
-        <form onSubmit={formMode === 'create' ? handleCreate : handleUpdate}>
-          <div className={styles.formGroup}>
-            <label htmlFor="name">Name</label>
-            <br />
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              value={radarToUpdate?.name || ''}
-              onChange={(e) =>
-                setRadarToUpdate((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="level">Level</label>
-            <br />
-            <input
-              type="number"
-              id="level"
-              name="level"
-              min="1"
-              required
-              style={{ width: '50px' }}
-              value={radarToUpdate?.level || ''}
-              onChange={(e) =>
-                setRadarToUpdate((prev) => ({ ...prev, level: e.target.value }))
-              }
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
-            <br />
-            <textarea
-              id="purpose"
-              name="purpose"
-              required
-              rows="5"
-              className={styles.purposeTextarea}
-              value={radarToUpdate?.purpose || ''}
-              onChange={(e) =>
-                setRadarToUpdate((prev) => ({ ...prev, purpose: e.target.value }))
-              }
-            ></textarea>
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="context">What is your context? Could you describe what activities you cover?</label>
-            <br />
-            <textarea
-              id="context"
-              name="context"
-              required
-              rows="5"
-              className={styles.purposeTextarea}
-              value={radarToUpdate?.context || ''}
-              onChange={(e) =>
-                setRadarToUpdate((prev) => ({ ...prev, context: e.target.value }))
-              }
-            ></textarea>
-          </div>
-          <div className={styles.buttonGroup}>
-            <button type="submit" className={styles.button}>
-              {formMode === 'create' ? 'Save' : 'Update'}
-            </button>
-            <button
-              type="button"
-              className={styles.button}
-              onClick={() => {
-                setIsFormVisible(false);
-                setRadarToUpdate(null); // Clear the form state when canceled
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
+      {isCreateFormVisible && (
+        console.log('Rendering Create Form'), // Debugging log
+        <div id="create-form" className={styles.createFormContainer} >
+          <h2>Create Radar</h2>
+          <form onSubmit={handleCreate}>
+            <div className={styles.formGroup}>
+              <label htmlFor="name">Name</label>
+              <br />
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                defaultValue={''} // Use defaultValue instead of value
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="level">Level</label>
+              <br />
+              <input
+                type="number"
+                id="level"
+                name="level"
+                min="1"
+                required
+                style={{ width: '50px' }}
+                defaultValue={''} // Use defaultValue instead of value
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
+              <br />
+              <textarea
+                id="purpose"
+                name="purpose"
+                required
+                rows="5"
+                className={styles.purposeTextarea}
+                defaultValue={''} // Use defaultValue instead of value
+              ></textarea>
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="context">What is your context? Could you describe what activities you cover?</label>
+              <br />
+              <textarea
+                id="context"
+                name="context"
+                required
+                rows="5"
+                className={styles.purposeTextarea}
+                defaultValue={''} // Use defaultValue instead of value
+              ></textarea>
+            </div>
+            <div className={styles.buttonGroup}>
+              <button type="submit" className={styles.button}>
+                Save
+              </button>
+              <button
+                type="button"
+                className={styles.button}
+                onClick={() => setIsCreateFormVisible(false)} // Close the form
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
       <div className={styles.radarListContainer}>
         {Object.values(
           radars
@@ -334,27 +345,25 @@ function HomePage() {
           <div key={levelGroup.level}>
             <h2 className={styles.levelHeader}>Level {levelGroup.level}</h2>
             {levelGroup.radars.map((radar) => {
-              // Initialize refs for evaluations and suggestions textareas
               evaluationsTextareaRefs.current[radar.id] = evaluationsTextareaRefs.current[radar.id] || React.createRef();
               suggestionsTextareaRefs.current[radar.id] = suggestionsTextareaRefs.current[radar.id] || React.createRef();
-
+  
               return (
                 <div key={radar.id} className={styles.radarItem}>
                   <div className={styles.radarHeader}>
                     <h3 onClick={() => toggleRadar(radar.id)}>
                       {radar.name}
-                      {/* Add the NPS circle here */}
                       <span
                         style={{
                           display: 'inline-block',
                           width: '12px',
                           height: '12px',
                           borderRadius: '50%',
-                          backgroundColor: radar.potentialNPS === null ? 'grey' : getNPSColor(radar.potentialNPS || 0), // Grey if NPS is null
+                          backgroundColor: radar.potentialNPS === null ? 'grey' : getNPSColor(radar.potentialNPS || 0),
                           marginLeft: '8px',
                           verticalAlign: 'middle',
                         }}
-                        title={`NPS: ${radar.potentialNPS || 0}`} // Tooltip to show the NPS value
+                        title={`NPS: ${radar.potentialNPS || 0}`}
                       ></span>
                       <br />
                       <span className={styles.radarPurpose}>{radar.purpose}</span>
@@ -369,7 +378,7 @@ function HomePage() {
                     <button
                       className={styles.buttonAICoach}
                       onClick={() => toggleAICoach(radar.id)}
-                      disabled={loading} // Disable the button while loading
+                      disabled={loading}
                     >
                       AI Coach
                     </button>
@@ -456,28 +465,28 @@ function HomePage() {
                             }}
                           />
                         </div>
-                      <div className={styles.aiCoachContainer}>
-  <button
-    className={styles.buttonCallAICoach}
-    onClick={() => handleCallAICoach(radar.id, radar.purpose, radar.context)}
-    disabled={loading} // Disable the button while loading
-  >
-    Call AI Coach
-  </button>
-  <button
-  className={styles.buttonSaveAICoach}
-  onClick={() => {
-    const potentialNPS = aiCoachData[radar.id]?.potentialNPS;
-    const evaluations = aiCoachData[radar.id]?.evaluations;
-    const suggestions = aiCoachData[radar.id]?.suggestions;
-    handleSaveAICoachResponse(radar.id, potentialNPS, evaluations, suggestions);
-  }}
-  disabled={loading} // Disable the button while loading
->
-  Save
-</button>
-  {loading && <ClipLoader color="#09f" loading={loading} size={20} />} {/* Show spinner */}
-                      </div>
+                        <div className={styles.aiCoachContainer}>
+                          <button
+                            className={styles.buttonCallAICoach}
+                            onClick={() => handleCallAICoach(radar.id, radar.purpose, radar.context)}
+                            disabled={loading}
+                          >
+                            Call AI Coach
+                          </button>
+                          <button
+                            className={styles.buttonSaveAICoach}
+                            onClick={() => {
+                              const potentialNPS = aiCoachData[radar.id]?.potentialNPS;
+                              const evaluations = aiCoachData[radar.id]?.evaluations;
+                              const suggestions = aiCoachData[radar.id]?.suggestions;
+                              handleSaveAICoachResponse(radar.id, potentialNPS, evaluations, suggestions);
+                            }}
+                            disabled={loading}
+                          >
+                            Save
+                          </button>
+                          {loading && <ClipLoader color="#09f" loading={loading} size={20} />}
+                        </div>
                       </div>
                     )}
                     <button
@@ -488,12 +497,9 @@ function HomePage() {
                     </button>
                     <button
                       className={styles.buttonUpdate}
-                      onClick={() => {
-                        toggleForm('update', radar);
-                        setRadarToUpdate(radar); // Set the radar to be updated
-                      }}
+                      onClick={() => toggleForm('update', radar)}
                     >
-                      Update
+                      Edit
                     </button>
                     <button
                       className={styles.buttonDelete}
@@ -507,101 +513,99 @@ function HomePage() {
                     >
                       View Strategies
                     </button>
-
-                    {/* Render the Update Form for the Selected Radar */}
-                    {formMode === 'update' && radarToUpdate?.id === radar.id && (
-                      <div className={styles.updateFormContainer}>
-                        <h2>Update Radar</h2>
-                        <form onSubmit={handleUpdate}>
-                          <div className={styles.formGroup}>
-                            <label htmlFor="name">Name</label>
-                            <br />
-                            <input
-                              type="text"
-                              id="name"
-                              name="name"
-                              required
-                              value={radarToUpdate.name || ''}
-                              onChange={(e) =>
-                                setRadarToUpdate((prev) => ({
-                                  ...prev,
-                                  name: e.target.value,
-                                }))
-                              }
-                            />
-                          </div>
-                          <div className={styles.formGroup}>
-                            <label htmlFor="level">Level</label>
-                            <br />
-                            <input
-                              type="number"
-                              id="level"
-                              name="level"
-                              min="1"
-                              required
-                              style={{ width: '50px' }}
-                              value={radarToUpdate.level || ''}
-                              onChange={(e) =>
-                                setRadarToUpdate((prev) => ({
-                                  ...prev,
-                                  level: e.target.value,
-                                }))
-                              }
-                            />
-                          </div>
-                          <div className={styles.formGroup}>
-                            <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
-                            <br />
-                            <textarea
-                              id="purpose"
-                              name="purpose"
-                              required
-                              rows="5"
-                              className={styles.purposeTextarea}
-                              value={radarToUpdate.purpose || ''}
-                              onChange={(e) =>
-                                setRadarToUpdate((prev) => ({
-                                  ...prev,
-                                  purpose: e.target.value,
-                                }))
-                              }
-                            ></textarea>
-                          </div>
-                          <div className={styles.formGroup}>
-                            <label htmlFor="context">What is your context? What are the key activities?</label>
-                            <br />
-                            <textarea
-                              id="context"
-                              name="context"
-                              required
-                              rows="5"
-                              className={styles.purposeTextarea}
-                              value={radarToUpdate.context || ''}
-                              onChange={(e) =>
-                                setRadarToUpdate((prev) => ({
-                                  ...prev,
-                                  context: e.target.value,
-                                }))
-                              }
-                            ></textarea>
-                          </div>
-                          <div className={styles.buttonGroup}>
-                            <button type="submit" className={styles.button}>
-                              Update
-                            </button>
-                            <button
-                              type="button"
-                              className={styles.button}
-                              onClick={() => {
-                                setIsFormVisible(false);
-                                setRadarToUpdate(null); // Reset the form
-                              }}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </form>
-                      </div>
+                    {isUpdateFormVisible && radarToUpdate?.id === radar.id && (
+                    <div className={styles.updateFormContainer}>
+                      <h2>Update Radar</h2>
+                      <form onSubmit={handleUpdate}>
+                        <div className={styles.formGroup}>
+                          <label htmlFor="name">Name</label>
+                          <br />
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            required
+                            value={radarToUpdate.name || ''}
+                            onChange={(e) =>
+                              setRadarToUpdate((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label htmlFor="level">Level</label>
+                          <br />
+                          <input
+                            type="number"
+                            id="level"
+                            name="level"
+                            min="1"
+                            required
+                            style={{ width: '50px' }}
+                            value={radarToUpdate.level || ''}
+                            onChange={(e) =>
+                              setRadarToUpdate((prev) => ({
+                                ...prev,
+                                level: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label htmlFor="purpose">What is your purpose? Why do you get up in the morning?</label>
+                          <br />
+                          <textarea
+                            id="purpose"
+                            name="purpose"
+                            required
+                            rows="5"
+                            className={styles.purposeTextarea}
+                            value={radarToUpdate.purpose || ''}
+                            onChange={(e) =>
+                              setRadarToUpdate((prev) => ({
+                                ...prev,
+                                purpose: e.target.value,
+                              }))
+                            }
+                          ></textarea>
+                        </div>
+                        <div className={styles.formGroup}>
+                          <label htmlFor="context">What is your context? What are the key activities?</label>
+                          <br />
+                          <textarea
+                            id="context"
+                            name="context"
+                            required
+                            rows="5"
+                            className={styles.purposeTextarea}
+                            value={radarToUpdate.context || ''}
+                            onChange={(e) =>
+                              setRadarToUpdate((prev) => ({
+                                ...prev,
+                                context: e.target.value,
+                              }))
+                            }
+                          ></textarea>
+                        </div>
+                        <div className={styles.buttonGroup}>
+                          <button type="submit" className={styles.button}>
+                            Save
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.button}
+                            onClick={() => {
+                              setIsUpdateFormVisible(false);
+                              setRadarToUpdate(null); // Reset the form
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                     )}
                   </div>
                 </div>

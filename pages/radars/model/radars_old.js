@@ -4,26 +4,6 @@ export async function handleRadarCreation(command) {
   // console.log("Handling radar creation for:", command); // Log the received command
   const { name, purpose, level } = command.payload;
   
-  // Fetch existing events to check for duplicates
-  //const existingRadars = await getEvents();
-  //console.log("MODEL Existing events:", existingRadars); // Log all existing events
-
-  // Check for duplicates
-  //console.log("MODEL Check for duplicate");
-  //const isDuplicate = existingRadars.some((event) => {
-    //console.log("MODEL Duplicate? from event", event.payload.name); // Log the name from each event
-    //console.log("MODEL Duplicate? from input", name);
-  //  return event.payload.name === name;
-  //});
-
-  //if (isDuplicate) {
-    // console.log("MODEL Duplicate radar name detected:", name); // Log the duplicate detection
-    //return { success: false, message: "Radar name must be unique" }; // Return an error response
-  //}
-
-  //console.log("MODEL123 New radar to create now");
-  // Create the radar object (without UUID, which will be added in eventStore.js)
-
   if (!name || !purpose || !level) {
     return { success: false, message: "Mandatory fields are missing" };
   }

@@ -14,11 +14,12 @@ export default async function updateRadar(radarId, name, purpose, context, level
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
-      const result = await response.json(); 
-      return result; 
+      console.log("Raw Response from API updating radar", response);
+      const data = await response.json(); 
+      console.log("Response from API updating radar:", data.result);
+      return data.result.radar; 
     } catch (error) {
-      console.error("Error updating radar:", error.message);
+      console.error("updateRadar - Error updating radar:", error.message);
       throw error; 
     }
   }

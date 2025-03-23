@@ -5,10 +5,10 @@ import { supabase } from "../../../utils/supabaseClient"; // Import the Supabase
  * @param {string} streamId - The stream_id to filter strategic elements.
  * @returns {Promise<Object[]>} List of strategic elements with the specified stream_id.
  */
-export async function getStrategicElementsByStreamId(streamId) {
+export async function getByStreamId(streamId) {
   try {
     const { data, error } = await supabase
-      .from("strategic_elements")
+      .from("strategic_initiatives")
       .select("id, name, description, type, state, updated_at")
       .eq("stream_id", streamId);
 
@@ -29,10 +29,10 @@ export async function getStrategicElementsByStreamId(streamId) {
  * @param {string} strategyId - The strategy_id to filter strategic elements.
  * @returns {Promise<Object[]>} List of strategic elements with the specified strategy_id.
  */
-export async function getStrategicElementsByStrategyId(strategyId) {
+export async function getByStrategyId(strategyId) {
   try {
     const { data, error } = await supabase
-      .from("strategic_elements")
+      .from("strategic_initiatives")
       .select("id, name, description, type, state, updated_at")
       .eq("strategy_id", strategyId);
 
@@ -53,10 +53,10 @@ export async function getStrategicElementsByStrategyId(strategyId) {
  * @param {string} id - The unique id of the strategic element.
  * @returns {Promise<Object>} The strategic element matching the specified id.
  */
-export async function getStrategicElementById(id) {
+export async function getById(id) {
   try {
     const { data, error } = await supabase
-      .from("strategic_elements")
+      .from("strategic_initiatives")
       .select("*")
       .eq("id", id)
       .single(); // Single ensures we get exactly one row or null
@@ -76,7 +76,7 @@ export async function getStrategicElementById(id) {
 export async function getStreamDataFromStreamId(id) {
   try {
     const { data, error } = await supabase
-      .from("strategic_streams")
+      .from("projection_strategic_streams")
       .select("*")
       .eq("id", id)
       .single(); // Single ensures we get exactly one row or null
@@ -97,7 +97,7 @@ export async function getStreamByRadarId(id) {
   console.log("getStreamByRadarId : getting stream for radarId = ", id);
   try {
     const { data, error } = await supabase
-      .from("strategic_streams")
+      .from("projection_strategic_streams")
       .select("*")
       .eq("radarId", id)
       .single(); // Single ensures we get exactly one row or null
@@ -137,7 +137,7 @@ export async function getAllStreamData(stream_id) {
       strategies.map(async (strategy) => {
         // Fetch elements for the current strategy
         const { data: elements, error: elementsError } = await supabase
-          .from("strategic_elements")
+          .from("strategic_initiatives")
           .select("*")
           .eq("strategy_id", strategy.id);
 
@@ -190,7 +190,7 @@ export async function getAllStreamData1(stream_id) {
 
       // Fetch elements for the current strategy
       const { data: elements, error: elementsError } = await supabase
-        .from("strategic_elements")
+        .from("strategic_initiatives")
         .select("*")
         .eq("strategy_id", strategy.id);
 

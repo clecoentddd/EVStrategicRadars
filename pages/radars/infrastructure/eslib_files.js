@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
-const eventsDirectory = path.join(process.cwd(), process.env.EVENTS_DIRECTORY || 'pages/strategies/events');
+const eventsDirectory = path.join(process.cwd(), process.env.EVENTS_DIRECTORY || 'pages/radars/_events');
 
-console.log("Path I am using to store streams:", eventsDirectory);
+console.log("Path I am using to store radar events:", eventsDirectory);
 
 // Create the events directory if it doesn't exist
 if (!fs.existsSync(eventsDirectory)) {
@@ -11,9 +12,9 @@ if (!fs.existsSync(eventsDirectory)) {
 }
 
 // Helper function to read events from a file
-export function readEventsFromFile(streamId) {
+export function readEventsFromFile(radarId) {
   console.log ("readEventsFromFile entering", eventsDirectory );
-  const filePath = path.join(eventsDirectory, `${streamId}.json`);
+  const filePath = path.join(eventsDirectory, `${radarId}.json`);
   console.log("readEventsFromFile: Path", filePath);
 
   try {
@@ -27,25 +28,29 @@ export function readEventsFromFile(streamId) {
 }
 
 // Helper function to write events to a file
-export function writeEventsToFile(streamId, events) {
-  const filePath = path.join(eventsDirectory, `${streamId}.json`);
+export function writeEventsToFile(radarId, events) {
+  const filePath = path.join(eventsDirectory, `${radarId}.json`);
 
   try {
     fs.writeFileSync(filePath, JSON.stringify(events, null, 2));
-    console.log("Events written successfully to:", filePath);
+    console.log("Radars events written successfully to:", filePath);
   } catch (error) {
-    console.error(`Error writing events to file ${filePath}:`, error);
+    console.error(`Error writing radar events to file ${filePath}:`, error);
   }
 }
 
 // Get events for a specific stream
-export function getEventsForStream(streamId) {
-  return readEventsFromFile(streamId);
+export function getEventsForRadar(radarId) {
+  return readEventsFromFile(radarId);
 }
 
 // Add an event to the file associated with a stream
-export function appendEventToFile(streamId, event) {
-  const filePath = path.join(eventsDirectory, `${streamId}.json`);
+export function appendEventToEventSourceDB(radarId, event) {
+  const filePath = path.join(eventsDirectory, `${radarId}.json`);
+
+  // Adding an id to the event
+  const eventId = uuidv4(); 
+  event.eventStoreId = eventId; // Add eventId to the event object
 
   // Check if the file exists
   if (!fs.existsSync(filePath)) {
@@ -53,10 +58,28 @@ export function appendEventToFile(streamId, event) {
     fs.writeFileSync(filePath, JSON.stringify([])); // Create the file with an empty array
   }
 
-  const currentEvents = readEventsFromFile(streamId);
+  const currentEvents = readEventsFromFile(radarId);
   currentEvents.push(event);
-  writeEventsToFile(streamId, currentEvents);
+  writeEventsToFile(radarId, currentEvents);
+
+  // Check and return the event
+  const newEventStored = readEventByEventStoreId(radarId, eventId);
+  console.log("Read event back from eventStore",newEventStored );
+  return newEventStored
 }
+
+export function readEventByEventStoreId(radarId, eventStoreId) {
+  const filePath = path.join(eventsDirectory, `${radarId}.json`);
+  try {
+    const events = readEventsFromFile(radarId);
+    console.log("Reading all events from file", events);
+    return events.find(event => event.eventStoreId === eventStoreId); 
+  } catch (error) {
+    console.error(`Error reading event by ID: ${error}`);
+    return null; 
+  }
+}
+
 
 // Clear all events in the event store
 export function clearEventStore() {

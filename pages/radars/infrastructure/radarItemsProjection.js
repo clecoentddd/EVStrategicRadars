@@ -1,7 +1,7 @@
 import { supabase } from "../../../utils/supabaseClient"; // Supabase client library
 
 /**
- * Project a radar item creation event into the Supabase "radar_items" table.
+ * Project a radar item creation event into the Supabase "projection_radar_items_list" table.
  * @param {Object} radarItem - The radar item object containing radarId, name, detect, assess, respond, type, category, impact, tolerance, zoom_in, etc.
  * @returns {Promise<Object>} The result of the Supabase insert operation.
  */
@@ -16,9 +16,9 @@ export async function projectRadarItemToSupabase(radarItem) {
 
     // Check if the radar item already exists based on id
     const { data: existingItem, error: fetchError } = await supabase
-      .from("radar_items")
+      .from("projection_radar_items_list")
       .select("*")
-      .eq("id", radarItem.id)
+      .eq("id", radarItem.aggregateId)
       .single(); // Use single to fetch one row (if exists)
 
     console.log ("Projection -> exist or not", existingItem);
@@ -30,22 +30,23 @@ export async function projectRadarItemToSupabase(radarItem) {
     if (existingItem) {
       // If item exists, update it
       const { data, error } = await supabase
-        .from("radar_items")
-        .update({
-          radarId: radarItem.radarId,
-          name: radarItem.name,
-          detect: radarItem.detect,
-          assess: radarItem.assess,
-          respond: radarItem.respond,
-          type: radarItem.type,
-          category: radarItem.category,
-          distance: radarItem.distance,
-          impact: radarItem.impact,
-          tolerance: radarItem.tolerance,
-          zoom_in: radarItem.zoom_in || null, // Optional field
-          updated_at: new Date().toISOString(), // Update time
-        })
-        .eq("id", radarItem.id); // Match by id
+      .from("projection_radar_items_list")
+      .update({
+        radarId: radarItem.payload.radarId,
+        name: radarItem.payload.name,
+        detect: radarItem.payload.detect,
+        assess: radarItem.payload.assess,
+        respond: radarItem.payload.respond,
+        type: radarItem.payload.type,
+        category: radarItem.payload.category,
+        distance: radarItem.payload.distance,
+        impact: radarItem.payload.impact,
+        tolerance: radarItem.payload.tolerance,
+        zoom_in: radarItem.payload.zoom_in || null, // Optional field
+        updated_at: new Date().toISOString(), // Update time
+      })
+      .eq("id", radarItem.aggregateId) // Match by id
+      .select('*'); // Return the updated row(s)
 
       if (error) {
         console.log("Error updating radar item in Supabase:", error.message);
@@ -57,21 +58,21 @@ export async function projectRadarItemToSupabase(radarItem) {
     } else {
       // If item doesn't exist, insert a new one
       const { data, error } = await supabase
-        .from("radar_items")
+        .from("projection_radar_items_list")
         .insert([
           {
-            id: radarItem.id,
-            radarId: radarItem.radarId,
-            name: radarItem.name,
-            detect: radarItem.detect,
-            assess: radarItem.assess,
-            respond: radarItem.respond,
-            type: radarItem.type,
-            category: radarItem.category,
-            distance: radarItem.distance,
-            impact: radarItem.impact,
-            tolerance: radarItem.tolerance,
-            zoom_in: radarItem.zoom_in || null, // Optional field
+            id: radarItem.aggregateId,
+            radarId: radarItem.payload.radarId,
+            name: radarItem.payload.name,
+            detect: radarItem.payload.detect,
+            assess: radarItem.payload.assess,
+            respond: radarItem.payload.respond,
+            type: radarItem.payload.type,
+            category: radarItem.payload.category,
+            distance: radarItem.payload.distance,
+            impact: radarItem.payload.impact,
+            tolerance: radarItem.payload.tolerance,
+            zoom_in: radarItem.payload.zoom_in || null, // Optional field
             created_at: new Date().toISOString(), // Set creation time
           },
         ]);
@@ -92,14 +93,14 @@ export async function projectRadarItemToSupabase(radarItem) {
 
 
 /**
- * Test Supabase connection by querying the "radar_items" table.
+ * Test Supabase connection by querying the "projection_radar_items_list" table.
  */
 export async function testRadarItemConnection() {
   try {
     console.log('ES3 radarItemProjections URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
     console.log('ES3 radarItemProjections Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
-    const { data, error } = await supabase.from("radar_items").select("*");
+    const { data, error } = await supabase.from("projection_radar_items_list").select("*");
 
     if (error) {
       console.log('ES3 radarItemProjections URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);

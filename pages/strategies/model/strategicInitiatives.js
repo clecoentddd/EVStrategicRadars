@@ -1,5 +1,5 @@
 // model/StratregicElements.js
-import {sendItemCreated, sendItemUpdated, sendItemDeleted} from '../service/eventStoreElements';
+import {sendInitativeCreated, sendInitativeUpdated, sendInitativeDeleted} from '../infrastructure/eventStoreInitiatives';
 
 const validateStratregicElementCreation = (command) => {
     if (!command.strategy_id) throw new Error('Strategy version ID is required.');
@@ -8,9 +8,9 @@ const validateStratregicElementCreation = (command) => {
 
   };
 
-  const validateStratregicElementUpdate = (command) => {
-    console.log("validateStratregicElementUpdate - id is : ", command);
-    if (!command.id) throw new Error('Strategy aggregate item ID is required.');
+  const validateStratregicInitiativeUpdate = (command) => {
+    console.log("validateStratregicInitiativeUpdate - id is : ", command.initiativeId);
+    if (!command.initiativeId) throw new Error('Strategy aggregate item ID is required.');
     // if (!command.name) throw new Error('Name is required.');
     // if (!command.description) throw new Error('Description is required.');
     if (!command.stream_id) throw new Error ('Stream id missing in strategy.');
@@ -18,13 +18,13 @@ const validateStratregicElementCreation = (command) => {
   };
   
   // Command to create a new Strategic Item
-  const createStratregicElement = async (command) => {
+  const createStratregicInitiative = async (command) => {
     console.log("validateStratregicElementCreation input: ", command);
     
     validateStratregicElementCreation(command);
 
     try {
-        const savedItem = await sendItemCreated(command);
+        const savedItem = await sendInitativeCreated(command);
         return savedItem;
     } catch (error) {
         console.error('Error creating strategic item:', error);
@@ -33,37 +33,37 @@ const validateStratregicElementCreation = (command) => {
 };
   
   // Command to update an existing Strategic Item
-  const updateStratregicElement = async (command) => {
-     console.log ("updateStratregicElement -> command", command);
+  const updateStratregicInitiative = async (command) => {
+     console.log ("updateStratregicInitiative -> command", command);
      // check basic logic
-     validateStratregicElementUpdate(command);
+     validateStratregicInitiativeUpdate(command);
       
     // Calls the event store to send the update eve diagnosisnt
     let updatedEvent;
 
-    updatedEvent = await sendItemUpdated(command);
+    updatedEvent = await sendInitativeUpdated(command);
 
-    console.log ("updateStratregicElement - Event after update", updatedEvent);
+    console.log ("updateStratregicInitiative - Event after update", updatedEvent);
 
     return updatedEvent
   };
   
   // Command to delete a Strategic Item
   
-  const deleteStratregicElement = async (command) => {
+  const deleteStratregicInitiative = async (command) => {
     if (!command.id || ! command.stream_id || !command.strategy_id) throw new Error('Aggregate ID is required.');
   
     // Calls the event store to send the delete event
     let deletedEvent;
 
-    deletedEvent = await sendItemDeleted({...command});
+    deletedEvent = await sendInitativeDeleted({...command});
 
     console.log("Tracking deleted event back to front", deletedEvent);
 
     return deletedEvent;
   };
 
-  const returningStratregicElement = async (command) => {
+  const returningStratregicInitiative = async (command) => {
     if (!command.id || ! command.stream_id || !command.strategy_id) throw new Error('Aggregate ID is required.');
   
     // Calls the event store to send the delete event
@@ -77,5 +77,5 @@ const validateStratregicElementCreation = (command) => {
   };
   
   
-  export { createStratregicElement, updateStratregicElement, deleteStratregicElement, returningStratregicElement, };
+  export { createStratregicInitiative, updateStratregicInitiative, deleteStratregicInitiative, returningStratregicInitiative, };
   

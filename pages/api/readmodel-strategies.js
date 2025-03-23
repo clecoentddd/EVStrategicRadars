@@ -1,11 +1,11 @@
 import {
-    getStrategicElementsByStreamId,
-    getStrategicElementsByStrategyId,
-    getStrategicElementById,
+    getByStreamId,
+    getByStrategyId,
+    getById,
     getStreamByRadarId,
     getAllStreamData,
     getStreamDataFromStreamId,
-  } from "../strategies/service/readModelStrategicElements";
+  } from "../strategies/infrastructure/readModelStreams";
   
   export default async function handler(req, res) {
     const { method, query } = req;
@@ -24,10 +24,10 @@ import {
             const streamAggregate = await getStreamDataFromStreamId(query.stream_aggregate);
             res.status(200).json(streamAggregate);
           }  else if (query.strategy_id) {
-            const strategyElements = await getStrategicElementsByStrategyId(query.strategy_id);
+            const strategyElements = await getByStrategyId(query.strategy_id);
             res.status(200).json(strategyElements);
           } else if (query.id) {
-            const element = await getStrategicElementById(query.id);
+            const element = await getById(query.id);
             res.status(200).json(element);
           } else if (query.radarId) {
             console.log ("Before calling getStreamByRadarId : ", query.radarId);

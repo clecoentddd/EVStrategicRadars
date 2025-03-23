@@ -17,10 +17,10 @@ export default async function deleteRadarHandler(req, res) {
 
       console.log ("To implement handleRadarDelete: ", command.payload);
       const result = await handleRadarDelete(command);
-
+      console.log ("To implement - result is in handleRadarDelete: ", result);
       if (result.success) {
         // console.log("api/radars.js: result :", result);
-        return res.status(200).json({ message: 'Success', uuid: result.radar.id, radar: result.radar });
+        return res.status(200).json({ message: 'Success - Radar deleted', radar: result.radar });
       } else {
         return res.status(409).json({ message: result.message }); // Conflict for duplicate names
       }

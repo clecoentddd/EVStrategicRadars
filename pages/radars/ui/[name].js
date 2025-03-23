@@ -82,7 +82,7 @@ useEffect(() => {
       setError(null);
       logMessage("Fetching radar data...");
 
-      const response = await fetch(`/api/radars?id=${radarId}`);
+      const response = await fetch(`/api/radars-fetch?id=${radarId}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -124,7 +124,7 @@ useEffect(() => {
 
     const fetchZoomInOptions = async () => {
       try {
-        const response = await fetch(`/api/radars`);
+        const response = await fetch(`/api/radars-fetch`);
         const radars = await response.json();
 
         if (response.ok) {
@@ -241,7 +241,7 @@ useEffect(() => {
       // Check if the response indicates success
       if (radarItem.success === false) {
         setError(radarItem.message); // Show the message from the response
-        console.log("Error: ", radarItem.message);
+        console.log("name.sj -> Error: ", radarItem.message);
         return;
       }
   
@@ -281,79 +281,82 @@ useEffect(() => {
     router.push('/'); // Navigate to the home page
 };
 
-  const handleSave = async () => {
-    try {
-      console.log("handleSave: Entering handleSave...");
-      const method = editMode ? 'PUT' : 'POST';
-      const url = editMode ? `/api/radar-items?id=${currentEditingId}` : `/api/radar-items`;
-  
-      // Wrap the data inside command.payload
-      const command = {
-          radarId, // Include radarId in the payload
-          ...formData,
-      };
-      
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(command), // Send the command structure
-      });
-      console.log("handleSave: HTML Payload being sent: ", JSON.stringify(command));
+const handleSaveItem = async () => {
+  try {
+    console.log("handleSaveItem: Entering handleSaveItem...");
+    const method = editMode ? 'PUT' : 'POST';
+    const url = editMode ? `/api/radar-items?id=${currentEditingId}` : `/api/radar-items`;
 
-      console.log("handleSave: Error saving radar item 0:",response.status);
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log("handleSave: Error saving radar item 1: ",errorText);
-        return;
+    // Wrap the data inside command.payload
+    const command = {
+      radarId, // Include radarId in the payload
+      ...formData,
+    };
+
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(command), // Send the command structure
+    });
+    console.log("handleSaveItem: HTML Payload being sent: ", JSON.stringify(command));
+
+    console.log("handleSaveItem: Error saving radar item 0:", response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log("handleSaveItem: Error saving radar item 1: ", errorText);
+      return;
+    }
+
+    // Get the raw response text
+    const rawResponseText = await response.text(); // Read response as raw text
+    console.log("handleSaveItem: Raw Response Text: ", rawResponseText);
+
+    // Parse the raw response text as JSON
+    const responseData = JSON.parse(rawResponseText); // Safely parse JSON from text
+
+    // Extract the `data` object from the response
+    const radarItem = responseData.data;
+
+    console.log("handleSaveItem: Parsed Radar Item: ", JSON.stringify(radarItem));
+    console.log("handleSaveItem: radar item is : ", radarItem.name);
+
+    // Update the radarItems state in both edit and save (create) modes
+    setRadarItems(prevRadarItems => {
+      if (editMode) {
+        // Replace the updated item in the list
+        return prevRadarItems.map(item =>
+          item.id === currentEditingId ? radarItem : item
+        );
+      } else {
+        // Add the new item to the list
+        return [radarItem, ...prevRadarItems];
       }
-  
-      // Get the raw response text
-      const rawResponseText = await response.text(); // Read response as raw text
-      console.log("handleSave: Raw Response Text: ", rawResponseText);
-  
-      // Parse the raw response text as JSON
-      const radarItem = JSON.parse(rawResponseText); // Safely parse JSON from text
-  
-      console.log("handleSave: Parsed Radar Item: ", JSON.stringify(radarItem));
-      console.log ("handleSave: radar item is : ", radarItem.name);
-  
- // Update the radarItems state in both edit and save (create) modes
- setRadarItems(prevRadarItems => {
-  if (editMode) {
-    // Replace the updated item in the list
-    return prevRadarItems.map(item =>
-      item.id === currentEditingId ? radarItem : item
-    );
-  } else {
-    // Add the new item to the list
-    return [radarItem, ...prevRadarItems];
+    });
+
+    // Close the form and reset all states
+    setShowForm(false);
+    setEditMode(false);
+    setCurrentEditingId(null);
+    setFormData({
+      name: '',
+      detect: '',
+      assess: '',
+      respond: '',
+      category: '',
+      type: '',
+      distance: '',
+      impact: '',
+      tolerance: '',
+      zoom_in: '',
+    });
+
+    console.log("Radar item saved successfully");
+  } catch (err) {
+    console.log("Error saving radar item", err);
   }
-});
-
-// Close the form and reset all states
-setShowForm(false);
-setEditMode(false);
-setCurrentEditingId(null);
-setFormData({
-  name: '',
-  detect: '',
-  assess: '',
-  respond: '',
-  category: '',
-  type: '',
-  distance: '',
-  impact: '',
-  tolerance: '',
-  zoom_in: '',
-});
-
-console.log("Radar item saved successfully");
-} catch (err) {
-console.log("Error saving radar item");
-}
 };
 
 
@@ -411,7 +414,7 @@ console.log("Error saving radar item");
       {showForm && (
       <div className={styles.showForm}> 
         <h3>{editMode ? "Edit Radar Item" : "Create Radar Item"}</h3>
-        <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+        <form onSubmit={(e) => { e.preventDefault(); handleSaveItem(); }}>
           <div className={styles.formRow}> 
             <div className={styles.column} style={{ flex: 2 }}> 
               <label htmlFor="name" className={styles.label}>

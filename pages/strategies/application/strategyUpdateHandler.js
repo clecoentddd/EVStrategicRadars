@@ -1,5 +1,5 @@
 import { updateStrategy } from '../model/updateStrategy';
-import { replayStream } from '../service/eventStoreStream';
+import { replayStream } from '../infrastructure/eventStoreStream';
 
 export async function updateStrategyHandler(strategyId, streamId, body) {
     // Implement your strategy creation logic here

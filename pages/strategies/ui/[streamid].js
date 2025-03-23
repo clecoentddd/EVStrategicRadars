@@ -82,13 +82,13 @@ const handleSaveStrategyClick = async (e, strategy) => {
   }
 };
 
-  const handleEditClick = async (strategy,element) => {
-    setEditableElementId(element.id);
+  const handleEditClick = async (strategy,initiative) => {
+    setEditableElementId(initiative.id);
 
     // Save the original data of the row being edited
     console.log ("handleEditClick ", strategy);
-    console.log ("handleEditClick ", element.id);
-    const currentRow = element
+    console.log ("handleEditClick ", initiative.id);
+    const currentRow = initiative
     console.log ("handleEditClick currentRow", currentRow);
     setTempData({ ...currentRow });
 
@@ -156,7 +156,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
 
   const [expandedElementId, setExpandedElementId] = useState(null);
 
-  const [showCreateElementForm, setShowCreateElementForm] = useState(false);
+  const [showCreateInitiativeForm, setShowCreateInitiativeForm] = useState(false);
 
   const [newElement, setNewElement] = useState({
     name: '',
@@ -169,6 +169,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
       setLoading(true);
 
       // Fetch aggregate data and stream data in one go if needed
+      console.log('fetchStreamData - what stream',streamid);
       const aggregateResponse = await fetch(`/api/readmodel-strategies?stream_aggregate=${streamid}`);
       if (!aggregateResponse.ok) {
         throw new Error(`fetchStreamData: Failed to fetch aggregate data: ${aggregateResponse.statusText}`);
@@ -223,7 +224,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
         console.error("organizeData: streamData item:", item);
         if (item.type === "STRATEGY") {
           strategies[item.id] = { ...item, elements: [] };
-        } else if (item.type === "STRATEGIC_ELEMENT") {
+        } else if (item.type === "INITIATIVE") {
           if (strategies[item.strategy_id]?.elements) {
             strategies[item.strategy_id].elements.push(item);
           }
@@ -251,9 +252,9 @@ const handleSaveStrategyClick = async (e, strategy) => {
     return `/radars/ui/${encodeURIComponent(name)}?radarId=${encodeURIComponent(radarId)}`;
   };
 
-  const handleElementExpand = (elementId) => {
+  const handleElementExpand = (InitiativeId) => {
     console.log("handleElementExpand - 1");
-    setExpandedElementId(expandedElementId === elementId ? null : elementId);
+    setExpandedElementId(expandedElementId === InitiativeId ? null : InitiativeId);
   };
 
   const toggleStrategyCollapse = (strategyId) => {
@@ -263,52 +264,15 @@ const handleSaveStrategyClick = async (e, strategy) => {
     }));
   };
 
-  const handleEditToggle = async (elementId) => {
-    if (editableElementId === elementId) {
-      // Save the changes
-      const element = streamData.find((item) => item.id === elementId); // Find the edited element
-      if (element) {
-        try {
-          const response = await fetch(`/api/strategy-items?elementid=${elementId}`, {
-            method: 'PUT', // Or POST depending on your backend
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              stream_id: element.stream_id,
-              strategy_id: element.strategy_id,
-              diagnosis: element.diagnosis,
-              overall_approach: element.overall_approach,
-              set_of_coherent_actions: element.set_of_coherent_actions,
-              proximate_objectives: element.proximate_objectives,
-              name: element.name,
-              description: element.description,
-              tags: element.tags,
-            }),
-          });
-  
-          if (!response.ok) {
-            throw new Error('Failed to save changes');
-          }
-  
-          alert('Changes saved successfully!');
-        } catch (err) {
-          alert(`Error: ${err.message}`);
-        }
-      }
-      setEditableElementId(null); // Exit edit mode
-    } else {
-      setEditableElementId(elementId); // Enter edit mode
-    }
-  };  
-
-  const handleSaveClick = async (strategy, element) => {
+  const handleSaveClick = async (strategy, initiative) => {
     if (!editableElementId || !tempData) {
-      alert("No changes to save or invalid element.");
+      alert("No changes to save or invalid initiative.");
       return;
     }
   
     try {
       // Step 1: Make the API call to update the backend
-      const response = await fetch(`/api/strategy-items?elementid=${editableElementId}`, {
+      const response = await fetch(`/api/strategy-initiatives?initiativeId=${editableElementId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -336,7 +300,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
             return {
               ...strat,
               elements: strat.elements.map((el) =>
-                el.id === element.id ? { ...tempData } : el
+                el.id === initiative.id ? { ...tempData } : el
               ),
             };
           }
@@ -362,16 +326,16 @@ const handleSaveStrategyClick = async (e, strategy) => {
     }));
   };
 
-  const handleCreateElementSubmit = async (e) => {
+  const handleCreateInitiative = async (e) => {
     e.preventDefault();
 
     if (!targetStrategy) {
-      console.error("No target strategy selected for creating an element.");
+      console.error("No target strategy selected for creating an initiative.");
       return;
     }
    
     try {
-      const response = await fetch(`/api/strategy-items`, {
+      const response = await fetch(`/api/strategy-initiatives`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -383,14 +347,14 @@ const handleSaveStrategyClick = async (e, strategy) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create strategy element');
+        throw new Error('Failed to create a strategic initative');
       }
 
       const data = await response.json();
-      alert('Strategy element created successfully!');
+      alert('Strategy initiative created successfully!');
       console.log("Optimistic UI with data", data);
       console.log("Optimistic UI with prev.data", streamData);
-      setShowCreateElementForm(false);
+      setShowCreateInitiativeForm(false);
       setNewElement({ name: '', description: '' });
 
        // Step 2: Update `streamData` only if the API call succeeds
@@ -454,15 +418,16 @@ const handleSaveStrategyClick = async (e, strategy) => {
       /* format data for updating data on the screen */
       const newStrategyData = {
         created_at: eventData.result.timestamp,
-        name: eventData.result.name,
-        description: eventData.result.description,
-        state: eventData.result.state,
-        stream_id: eventData.result.stream_id,
-        id: eventData.result.id,
-        whatwewillnotdo: eventData.result.whatwewillnotdo,
+        name: eventData.result.payload.name,
+        description: eventData.result.payload.description,
+        state: eventData.result.payload.state,
+        stream_id: eventData.result.payload.stream_id,
+        id: eventData.result.payload.id,
+        whatwewillnotdo: eventData.result.payload.whatwewillnotdo,
         elements: [], 
       };
       setShowCreateStrategyForm(false);
+      console.log('Strategy adding with newStrategyData', newStrategyData);
       setNewStrategy({ name: '', description: '', whatwewillnotdo: '' });
 
       // reorder based on created_at
@@ -481,7 +446,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
       description: '',
     }); 
     // Optionally, close the form (if it's in a modal or overlay)
-    setShowCreateElementForm(false); 
+    setShowCreateInitiativeForm(false); 
   };
 
     const handleCancelCreateStrategy = () => {
@@ -539,7 +504,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
               elementsDiv.style.display = elementsDiv.style.display === "none" ? "block" : "none";
             }}
           >
-            <span style={strategyTitleStyle}>{`${strategy.name} (${strategy.state})`}</span>
+            <span className = {styles.strategyTitleStyle}>{`${strategy.name} (${strategy.state})`}</span>
           </div>
           
            {/* Add Initiative buton */}
@@ -557,7 +522,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
               onClick={() => {
                 setTargetStrategy(strategy); // Track the strategy ID
                 console.log("setTargetStrategy(strategy)", strategy);
-                setShowCreateElementForm(true);  // Show the form
+                setShowCreateInitiativeForm(true);  // Show the form
               }}
             >
               Add Initiative
@@ -637,72 +602,65 @@ const handleSaveStrategyClick = async (e, strategy) => {
                 <p>{strategy.whatwewillnotdo}</p>
               </div>
 
-              {/* Elements Section */}
-              <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
-                {strategy.elements.map((element) => (
-                  <div key={element.id} className={styles.element} style={elementStyle}>
-                    <span>{element.name}</span>
-                  </div>
-                ))}
-              </div>
+
             </>
           )}
 
-              <div id={`elements-${strategy.id}`} className="elements" style={elementsStyle}>
-                {strategy.elements.map((element) => (
-                  <div key={element.id} className="element" style={elementStyle}>
+          <div id={`elements-${strategy.id}`} className="initiatives">
+                {strategy.elements.map((initiative) => (
+                  <div key={initiative.id} className={styles.initiative}>
                     <div
-                      className="elementHeader"
-                      style={{
-                        ...elementHeaderStyle,
-                        backgroundColor: strategy.state !== "Closed" ? "Plum" : "Gainsboro",
-                      }}
-                      onClick={() => handleElementExpand(element.id)}
+                      className={`${styles.initiativeHeader} ${
+                        strategy.state !== "Closed" ? styles.openState : styles.closedState
+                      }`}
+                      onClick={() => handleElementExpand(initiative.id)}
                     >
-                      <span style={elementTitleStyle}>{`${element.name} (${element.state})`}</span>
+                      <span className = {styles.initiativeTitleStyle}>{`${initiative.name} (${initiative.state})`}</span>
                     </div>
     
-                    {expandedElementId === element.id && (
-                      <div className="element-details" style={elementDetailsStyle}>
+                    {expandedElementId === initiative.id && (
+                      <div className={styles.initiativeDetails}>
                         {/* Name and Description Fields */}
                         <div className={styles.horizontalAlignmentWrapper}>
-                          <label className={styles.labelElementStyle}>
-                            Name of the initiative
-                            <textarea
-                              value={tempData?.name || element.name || ""}
-                              onChange={(e) => handleFieldChange("name", e.target.value)}
-                              disabled={editableElementId !== element.id}
-                              className={
-                                editableElementId === element.id
-                                  ? `${styles.textAreaName} ${styles.textAreaNameEditable}`
-                                  : styles.textAreaName
-                              }
-                            />
-                          </label>
+                        {/* Name of the initiative */}
+                        <label className={styles.labelInitiativeStyle}>
+                          <span className={styles.fieldLabel}>Name of the initiative</span>
+                          <textarea
+                            value={tempData?.name || initiative.name || ""}
+                            onChange={(e) => handleFieldChange("name", e.target.value)}
+                            disabled={editableElementId !== initiative.id}
+                            className={
+                              editableElementId === initiative.id
+                                ? `${styles.textAreaInitiativeName} ${styles.textAreaInitiativeNameEditable}`
+                                : styles.textAreaInitiativeName
+                            }
+                          />
+                        </label>
 
-                          <label className={styles.labelElementStyle}>
-                            Description
-                            <textarea
-                              value={tempData?.description || element.description || ""}
-                              onChange={(e) => handleFieldChange("description", e.target.value)}
-                              disabled={editableElementId !== element.id}
-                              className={
-                                editableElementId === element.id
-                                  ? `${styles.textAreaDescription} ${styles.textAreaDescriptionEditable}`
-                                  : styles.textAreaDescription
-                              }
-                            />
-                          </label>
-                        </div>
+                        {/* Description */}
+                        <label className={styles.labelInitiativeStyle}>
+                          <span className={styles.fieldLabel}>Description</span>
+                          <textarea
+                            value={tempData?.description || initiative.description || ""}
+                            onChange={(e) => handleFieldChange("description", e.target.value)}
+                            disabled={editableElementId !== initiative.id}
+                            className={
+                              editableElementId === initiative.id
+                                ? `${styles.textAreaInitiativeDescription} ${styles.textAreaInitiativeDescriptionEditable}`
+                                : styles.textAreaInitiativeDescription
+                            }
+                          />
+                        </label>
+                      </div>
 
                         {/* Table Fields */}
                         <table className={styles.tableStyle}>
                           <thead>
                             <tr>
-                              <th id="diagnosis" className={styles.headerCells}>Diagnosis</th>
-                              <th id="overallApproach" className={styles.headerCells}>Overall Approach</th>
-                              <th id="coherentActions" className={styles.headerCells}>Set of Coherent Actions</th>
-                              <th id="proximateObjectives" className={styles.headerCells}>Proximate Objectives</th>
+                              <th id="diagnosis" className={styles.headerInitiativeTable}>Diagnosis</th>
+                              <th id="overallApproach" className={styles.headerInitiativeTable}>Overall Approach</th>
+                              <th id="coherentActions" className={styles.headerInitiativeTable}>Set of Coherent Actions</th>
+                              <th id="proximateObjectives" className={styles.headerInitiativeTable}>Proximate Objectives</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -711,12 +669,12 @@ const handleSaveStrategyClick = async (e, strategy) => {
                                 <td
                                   key={field}
                                   className={
-                                    editableElementId === element.id
+                                    editableElementId === initiative.id
                                       ? `${styles.tableCell} ${styles.tableCellEditable}`
                                       : styles.tableCell
                                   }
                                 >
-                                  {editableElementId === element.id ? (
+                                  {editableElementId === initiative.id ? (
                                     <textarea
                                       value={tempData[field] || ""}
                                       onChange={(e) => handleFieldChange(field, e.target.value)}
@@ -724,7 +682,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
                                       autoFocus
                                     />
                                   ) : (
-                                    element[field] || "N/A"
+                                    initiative[field] || "N/A"
                                   )}
                                 </td>
                               ))}
@@ -782,7 +740,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
                         <div className={styles.tagsContainer}>
                           <strong>Tags</strong>
                           <div>
-                            {editableElementId === element.id ? (
+                            {editableElementId === initiative.id ? (
                               <div>
                                 {/* Dropdown for Adding Tags */}
                                 <select
@@ -851,14 +809,14 @@ const handleSaveStrategyClick = async (e, strategy) => {
                               </div>
                             ) : (
                               <div>
-                                {element.tags ? (
-                                  Array.isArray(element.tags)
-                                    ? element.tags.map((tag, index) => (
+                                {initiative.tags ? (
+                                  Array.isArray(initiative.tags)
+                                    ? initiative.tags.map((tag, index) => (
                                         <span key={index} className={styles.tagReadonly}>
                                           {tag.name}
                                         </span>
                                       ))
-                                    : JSON.parse(element.tags).map((tag, index) => (
+                                    : JSON.parse(initiative.tags).map((tag, index) => (
                                         <span key={index} className={styles.tagReadonly}>
                                           {tag.name}
                                         </span>
@@ -873,11 +831,11 @@ const handleSaveStrategyClick = async (e, strategy) => {
 
                         {/* Save and Cancel Buttons */}
                         <div className={styles.rowButtonsEditCancelSave}>
-                          {editableElementId === element.id ? (
+                          {editableElementId === initiative.id ? (
                             <>
                               <button
                                 className={styles.saveElementButton}
-                                onClick={() => handleSaveClick(strategy, element)}
+                                onClick={() => handleSaveClick(strategy, initiative)}
                               >
                                 Save
                               </button>
@@ -888,7 +846,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
                           ) : (
                             <button
                               className={styles.editElementButton}
-                              onClick={() => handleEditClick(strategy, element)}
+                              onClick={() => handleEditClick(strategy, initiative)}
                             >
                               Edit
                             </button>
@@ -931,7 +889,7 @@ return (
       </button>
 
       {showCreateStrategyForm && (
-        <form style={formStyle} onSubmit={handleCreateStrategySubmit}>
+        <form className={styles.formStyle} onSubmit={handleCreateStrategySubmit}>
           <h3>Create Strategy</h3>
           <input
             type="text"
@@ -967,8 +925,8 @@ return (
         </form>
       )}
 
-      {showCreateElementForm && targetStrategy && (
-        <form style={formStyle} onSubmit={(e) => handleCreateElementSubmit(e)}>
+      {showCreateInitiativeForm && targetStrategy && (
+        <form className={styles.formStyle} onSubmit={(e) => handleCreateInitiative(e)}>
           {/* Display the strategy name dynamically */}
           <h3>For {targetStrategy.name} : Add a new Initiative that is value creation driven:</h3>
 
@@ -1023,77 +981,3 @@ return (
   </>
 );
 }
-
-
-
-// Add your styles here
-
-  const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    padding: '0px',
-    backgroundColor: '#f9f9f9',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    width: '400px',
-    margin: '20px auto',
-  };
-  
- 
-  const elementsStyle = {
-    display: 'none',
-    marginLeft: '10px',
-    marginTop: '10px',
-  };
-
-  const strategyTitleStyle = {
-    color: '#ffffff', // Dark blue for "STRATEGY"
-  };
-
-  const elementStyle = {
-    padding: '8px',
-    backgroundColor: '#fafafa',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    marginBottom: '5px',
-  };
-
-  const elementHeaderStyle = {
-    fontSize: '16px',
-    fontWeight: 'normal',
-    backgroundColor: "Lavender",
-    padding: '8px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    color: 'black',
-  };
-
-  const elementTitleStyle = {
-    color: '#ffffff', // Blue for "STRATEGIC ELEMENT"
-  };
-
-  const elementDetailsStyle = {
-    marginTop: '10px',
-    marginLeft: '0px',
-    padding: '10px',
-    backgroundColor: '#f9f9f9',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-  };
-
-
-  const editButtonStyle = {
-    marginLeft: '200px',
-    padding: '5px 10px',
-    fontSize: '14px',
-    backgroundColor: 'Purple',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-  };

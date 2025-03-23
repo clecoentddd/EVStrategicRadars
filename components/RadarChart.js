@@ -70,9 +70,9 @@ import styles from './RadarChart.module.css'; // Import the CSS Module (or use a
 
         // Position items in each category quadrant based on distance
     const ValueCategory = {
-          CATEGORY1: "Business",
+          CATEGORY1: "People and Knowledge",
           CATEGORY2: "Operating Model",
-          CATEGORY3: "People and Knowledge",
+          CATEGORY3: "Business",
           CATEGORY4: "Capabilities"
         };
 
@@ -91,6 +91,14 @@ const categoryLabels = Object.values(ValueCategory).map((category, index) => {
     ...positions[index], // Spread the respective position from positions array
   };
 });
+
+// Adjust the "People and Knowledge" label specifically
+const peopleAndKnowledgeLabel = categoryLabels.find(label => label.text === "People and Knowledge");
+if (peopleAndKnowledgeLabel) {
+  peopleAndKnowledgeLabel.x = radius - 120; // Move further left to ensure full text visibility
+  peopleAndKnowledgeLabel.anchor = "start"; // Ensure text aligns to the left
+}
+
     
     categoryLabels.forEach(label => {
       svg.append("text")
@@ -273,7 +281,7 @@ const categoryLabels = Object.values(ValueCategory).map((category, index) => {
     console.log(`Fetching radar name for zoom_in: ${zoom_in}`);
     try {
       const { data, error } = await supabase
-        .from('radars')
+        .from('projection_radars_list')
         .select('name')
         .eq('id', zoom_in)
         .single();

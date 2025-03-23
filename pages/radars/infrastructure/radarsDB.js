@@ -8,7 +8,7 @@ import { supabase } from '../../../utils/supabaseClient';
 export async function fetchAllRadars() {
   try {
     console.log('Attempting to fetch radars from Supabase...');
-    const { data, error } = await supabase.from("radars").select("*");
+    const { data, error } = await supabase.from("projection_radars_list").select("*");
 
     if (error) {
       console.error("Error fetching radars from Supabase:", error.message);

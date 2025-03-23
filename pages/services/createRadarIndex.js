@@ -2,7 +2,7 @@
 
 async function createRadar(name, purpose, context, level) {
   try {
-    const response = await fetch("/api/radars", {
+    const response = await fetch("/api/radars-create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

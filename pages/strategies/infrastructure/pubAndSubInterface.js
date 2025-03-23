@@ -3,11 +3,11 @@ import {updateStreamHandler} from '../application/streamupdateHandler';
 
 export async function interfaceCreateStream(command) {
 
-    console.log("PushAndSub createStream with command :", command.payload);
+    console.log("PushAndSub createStream with command :", command);
 
     if (command.eventType === "RADAR_CREATED" ) {
         try {
-            const stream = await createStreamHandler(command.payload);
+            const stream = await createStreamHandler(command);
         
             // ... use the created stream
             console.log ("interfaceCreateStream stream is: ", stream);
@@ -23,7 +23,7 @@ export async function interfaceUpdateStream(command) {
 
     if (command.eventType === "RADAR_UPDATED" ) {
         try {
-            const stream = await updateStreamHandler(command.payload);
+            const stream = await updateStreamHandler(command);
         
             // ... use the created stream
             console.log ("interfaceUpdateStream stream is: ", stream);

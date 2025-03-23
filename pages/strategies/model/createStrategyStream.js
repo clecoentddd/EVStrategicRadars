@@ -1,13 +1,13 @@
-import { sendStreamCreated } from '../service/eventStoreStream.js';
+import { sendStreamCreated } from '../infrastructure/eventStoreStream.js';
 
 export async function createStream(command) {
     // Implement your strategy creation logic here
     console.log('Strategy stream creating with radar data:', command);
        
     const streamToCreate = {
-      radarId: command.id,
-      name: command.name,
-      level: command.level,
+      radarId: command.aggregateId,
+      name: command.payload.name,
+      level: command.payload.level,
       active_strategy_id: null,
     }
 

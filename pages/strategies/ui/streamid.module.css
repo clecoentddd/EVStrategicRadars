@@ -23,25 +23,72 @@
 }
 
 
-.labelElementStyle {
-  cursor: default;
-  font-weight: bold; /* Ensure bold styling */
-  margin-right: 10px; /* Add space to the right of the label */
-  text-align: center; /* Center the text */
-  display: inline-block; /* Ensure it aligns horizontally */
-}
-
+/* Name of the initiative and description */
+/* Container for the fields */
 .horizontalAlignmentWrapper {
-  display: grid; /* Use Grid for layout */
-  grid-template-columns: 30% 60%; /* Label and textarea pairs in equal columns */
-  column-gap: 10px; /* Space between columns */
-  row-gap: 10px; /* Space between rows (if multiple rows exist) */
-  align-items: center; /* Center labels vertically with textareas */
-  justify-content: center; /* Center content horizontally within the container */
-  padding: 0 10px; /* Add left and right padding for page space */
-  width: 100%; /* Take full container width */
+  display: flex;
+  gap: 20px; /* Space between the fields */
+  margin-bottom: 20px;
 }
 
+/* Label styling */
+.labelInitiativeStyle {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Ensure both fields take equal space */
+}
+
+/* Field label */
+.fieldLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Textarea styling */
+.textAreaInitiativeName
+.textAreaInitiativeDescription {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  resize: vertical; /* Allow vertical resizing */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Editable textarea styling */
+.textAreaNameEditable,
+.textAreaDescriptionEditable {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+  background-color: #fff;
+}
+
+/* Disabled textarea styling */
+.textAreaName:disabled,
+.textAreaDescription:disabled {
+  background-color: #f0f0f0;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Hover effect for editable textareas */
+.textAreaNameEditable:hover,
+.textAreaDescriptionEditable:hover {
+  border-color: #0056b3;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Focus effect for editable textareas */
+.textAreaNameEditable:focus,
+.textAreaDescriptionEditable:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
 
 .textAreaName {
   padding: 8px; /* Padding inside the textarea */
@@ -68,12 +115,12 @@
 }
 
 
-.headerCells {
-    background-color: Thistle;
-    color: black;
+.headerInitiativeTable {
+    background-color: grey;
+    color: white;
     padding: 8px;
     text-align: center;
-    border: 1px Thistle;
+    border: 1px black;
   };
 
 
@@ -81,7 +128,7 @@
 
   .nameCellEditable {
     background-color: #f1eff0; /* Example background for editable cells */
-    border: 2px solid plum; /* Highlight border for editable cells */
+    border: 2px solid black; /* Highlight border for editable cells */
     width: 100%;
     text-align: top;
     padding: 40px;
@@ -90,7 +137,7 @@
 
   .nameCell {
     padding: 10px;
-    border: 1px solid plum;
+    border: 1px solid grey;
     text-align: top;
     width: 200px;
     height: 120px;
@@ -99,7 +146,7 @@
   
   .descriptionCellEditable {
     background-color: #f1eff0; /* Example background for editable cells */
-    border: 2px solid plum; /* Highlight border for editable cells */
+    border: 2px solid grey; /* Highlight border for editable cells */
     width: 80%;
     padding: 10px;
     height: 120px;
@@ -338,15 +385,8 @@
     color: #000; /* Make the strong text stand out */
   }
   
-
-  .elementsStyle {
-    display: none;
-    margin-left: 10px;
-    margin-top: 10px;
-  };
-
-  /* form to create new element */
-  .createElementFormStyle {
+  /* form to create new initative */
+  .createInitiativeFormStyle {
     margin-top: 20px;
     padding: 15px;
     border: 1px solid #ddd;
@@ -357,14 +397,14 @@
     gap: 15px;
   }
   
-  .createElementFormStyle h3 {
+  .createInitiativeFormStyle h3 {
     font-size: 18px;
     color: #333;
     margin-bottom: 10px;
   }
   
-  .createElementFormStyle input,
-  .createElementFormStyle textarea {
+  .createInitiativeFormStyle input,
+  .createInitiativeFormStyle textarea {
     padding: 10px;
     font-size: 14px;
     border: 1px solid #ccc;
@@ -372,10 +412,23 @@
     width: 100%;
   }
   
-  .createElementFormStyle textarea {
+  .createInitiativeFormStyle textarea {
     resize: none;
   }
+
+  .initiative {
+    padding-left: 20px; /* Add padding inside the div on the left */
+  }
   
+  .initiative-details {
+    padding: 10px; /* Add padding inside the div */
+    border: 1px solid #ccc; /* Add a border */
+    margin-top: 10px; /* Add margin at the top */
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  }
+
   .buttonContainerStyle {
     display: flex;
     justify-content: flex-end;
@@ -588,4 +641,114 @@
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+/* Form Style */
+.formCreateStrategy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 400px;
+  margin: 20px auto;
+}
+
+/* Elements Style */
+.elementsStyle {
+  display: none;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+/* Strategy Title Style */
+.strategyTitleStyle {
+  color: #ffffff; /* Dark blue for "STRATEGY" */
+}
+
+/* Element Style */
+.elementStyle {
+  padding: 8px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+/* Element Header Style */
+.initiativeHeaderStyle {
+  font-size: 16px;
+  font-weight: normal;
+  background-color: lavender;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+}
+
+/* Element Title Style */
+.initiativeTitleStyle {
+  color: #ffffff; /* Blue for "STRATEGIC ELEMENT" */
+}
+
+/* Element Details Style */
+.elementDetailsStyle {
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Edit Button Style */
+.editButtonStyle {
+  margin-left: 200px;
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.editButtonStyle:hover {
+  background-color: #6a1b9a; /* Darker purple on hover */
+}
+
+.initiativeHeader {
+  /* Add common styles here */
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #0056b3;
+}
+
+.openState {
+  background-color: #9370DB ;
+}
+
+.closedState {
+  background-color: rgb(194, 28, 28);
+}
+
+.initiativeTitleStyle {
+  background-color: none;
+  padding: 10px;
+}
+
+.initiatives {
+  background-color: lightblue;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
 }

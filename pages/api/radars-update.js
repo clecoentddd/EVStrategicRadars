@@ -19,8 +19,8 @@ export default async function updateRadarHandler(req, res) {
       const result = await handleRadarUpdate(command);
 
       if (result.success) {
-        // console.log("api/radars.js: result :", result);
-        return res.status(201).json({ uuid: result.radar.id, radar: result.radar });
+        console.log("api/radars-update.js: result :", result);
+        return res.status(201).json({ message: "Successful", result });
       } else {
         return res.status(409).json({ message: result.message }); // Conflict for duplicate names
       }

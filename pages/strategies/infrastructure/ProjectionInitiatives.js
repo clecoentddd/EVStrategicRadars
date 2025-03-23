@@ -1,17 +1,17 @@
 import { supabase } from "../../../utils/supabaseClient"; // Supabase client library
 
 /**
- * Project a strategic element creation event into the Supabase "strategic_elements" table.
- * @param {Object} strategicElement
+ * Project a strategic element creation event into the Supabase "INITIATIVEs" table.
+ * @param {Object} 
  * @returns {Promise<Object>} The result of the Supabase operation.
  */
-export async function projectElementToSupabase(strategicElement) {
+export async function projectElementToSupabase(event) {
   try {
     // Check if the strategic element already exists
     const { data: existingItems, error: fetchError } = await supabase
-      .from("strategic_elements")
+      .from("strategic_initiatives")
       .select("*")
-      .eq("id", strategicElement.id);
+      .eq("id", event.aggregateId);
 
     const existingItem = existingItems?.[0]; // Extract the first matching record
 
@@ -21,16 +21,16 @@ export async function projectElementToSupabase(strategicElement) {
     }
 
     if (existingItem) {
-      if (strategicElement.event === "STRATEGIC_ELEMENT_DELETED") {
+      if (event.eventType === "INITIATIVE_DELETED") {
         // Handle deletion
         const { data, error } = await supabase
-          .from("strategic_elements")
+          .from("strategic_initiatives")
           .update({
-            event: strategicElement.event,
-            state: strategicElement.state,
+            eventType: event.eventType,
+            state: event.payload.state,
             updated_at: new Date().toISOString(),
           })
-          .eq("id", strategicElement.id)
+          .eq("id", event.aggregateId)
           .select("*"); // Return the updated row(s)
 
         if (error) {
@@ -39,26 +39,26 @@ export async function projectElementToSupabase(strategicElement) {
         }
 
         return data;
-      } else if (strategicElement.event === "STRATEGIC_ELEMENT_UPDATED") {
+      } else if (event.eventType === "INITIATIVE_UPDATED") {
         // Handle update
         const { data, error } = await supabase
-          .from("strategic_elements")
+          .from("strategic_initiatives")
           .update({
-            name: strategicElement.name,
-            description: strategicElement.description,
-            type: strategicElement.type,
-            event: strategicElement.event,
-            stream_id: strategicElement.stream_id,
-            strategy_id: strategicElement.strategy_id,
-            state: strategicElement.state,
+            name: event.payload.name,
+            description: event.payload.description,
+            type: event.aggregateType,
+            event: event.eventType,
+            stream_id: event.payload.stream_id,
+            strategy_id: event.payload.strategy_id,
+            state: event.payload.state,
             updated_at: new Date().toISOString(),
-            diagnosis: strategicElement.diagnosis,
-            overall_approach: strategicElement.overall_approach,
-            set_of_coherent_actions: strategicElement.set_of_coherent_actions,
-            proximate_objectives: strategicElement.proximate_objectives,
-            tags: strategicElement.tags,
+            diagnosis: event.payload.diagnosis,
+            overall_approach: event.payload.overall_approach,
+            set_of_coherent_actions: event.payload.set_of_coherent_actions,
+            proximate_objectives: event.payload.proximate_objectives,
+            tags: event.payload.tags,
           })
-          .eq("id", strategicElement.id)
+          .eq("id", event.aggregateId)
           .select("*"); // Return the updated row(s)
 
         if (error) {
@@ -71,22 +71,22 @@ export async function projectElementToSupabase(strategicElement) {
     } else {
       // Handle insert using upsert to avoid race conditions
       const { data, error } = await supabase
-        .from("strategic_elements")
+        .from("strategic_initiatives")
         .upsert({
-          id: strategicElement.id,
-          name: strategicElement.name,
-          description: strategicElement.description,
-          type: strategicElement.type,
-          event: strategicElement.event,
-          stream_id: strategicElement.stream_id,
-          strategy_id: strategicElement.strategy_id,
-          state: strategicElement.state,
+          id: event.aggregateId,
+          name: event.payload.name,
+          description: event.payload.description,
+          type: event.aggregateType,
+          event: event.eventType,
+          stream_id: event.payload.stream_id,
+          strategy_id: event.payload.strategy_id,
+          state: event.payload.state,
           updated_at: new Date().toISOString(),
-          diagnosis: strategicElement.diagnosis,
-          overall_approach: strategicElement.overall_approach,
-          set_of_coherent_actions: strategicElement.set_of_coherent_actions,
-          proximate_objectives: strategicElement.proximate_objectives,
-          tags: strategicElement.tags,
+          diagnosis: event.payload.diagnosis,
+          overall_approach: event.payload.overall_approach,
+          set_of_coherent_actions: event.payload.set_of_coherent_actions,
+          proximate_objectives: event.payload.proximate_objectives,
+          tags: event.payload.tags,
         })
         .select("*"); // Return the inserted/updated row(s)
 
