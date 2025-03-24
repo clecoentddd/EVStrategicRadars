@@ -38,7 +38,7 @@ export async function updateStrategy(command) {
   export async function GetStrategyById(stream_id, strategy_id) {
     // return aggregate based on id
 
-    const strategyAggregate = await replayStrategy(stream_id, strategy_id);
+    const strategyAggregate = await replayStrategy(strategy_id);
     console.log (" the aggregate is", strategyAggregate);
     return strategyAggregate;
   }

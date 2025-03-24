@@ -115,10 +115,11 @@ export async function getStreamByRadarId(id) {
 }
 
 export async function getAllStreamData(stream_id) {
+  console.log ("getAllStreamData for stream id = ",stream_id);
   try {
     // Step 1: Fetch all strategies where stream_id matches
     const { data: strategies, error: strategiesError } = await supabase
-      .from("strategic_strategies")
+      .from("projection_strategies")
       .select("*")
       .eq("stream_id", stream_id);
 

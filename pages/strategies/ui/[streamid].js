@@ -507,24 +507,25 @@ const handleSaveStrategyClick = async (e, strategy) => {
             <span className = {styles.strategyTitleStyle}>{`${strategy.name} (${strategy.state})`}</span>
           </div>
           
-           {/* Add Initiative buton */}
+         {/* Add Initiative buton */}
         {collapsedStrategies[strategy.id] && (
-          <div className={styles.addElementContainer}>
+          <div className={styles.addInitiativeContainer}>
             <button
               className={styles.editStrategyButton}
               onClick={() => handleEditStrategyClick(strategy)}
             >
+              {/* Optional: Add icon here */}
               Edit
             </button>
             <button
               className={styles.createInitiativeButtonStyle}
-              
               onClick={() => {
-                setTargetStrategy(strategy); // Track the strategy ID
+                setTargetStrategy(strategy);
                 console.log("setTargetStrategy(strategy)", strategy);
-                setShowCreateInitiativeForm(true);  // Show the form
+                setShowCreateInitiativeForm(true);
               }}
             >
+              {/* Optional: Add icon here */}
               Add Initiative
             </button>
           </div>
@@ -608,6 +609,7 @@ const handleSaveStrategyClick = async (e, strategy) => {
 
           <div id={`elements-${strategy.id}`} className="initiatives">
                 {strategy.elements.map((initiative) => (
+
                   <div key={initiative.id} className={styles.initiative}>
                     <div
                       className={`${styles.initiativeHeader} ${
@@ -889,44 +891,50 @@ return (
       </button>
 
       {showCreateStrategyForm && (
-        <form className={styles.formStyle} onSubmit={handleCreateStrategySubmit}>
-          <h3>Create Strategy</h3>
-          <input
-            type="text"
-            name="name"
-            value={newStrategy.name}
-            onChange={handleCreateStrategyChange}
-            placeholder="Name"
-            required
-          />
-          <textarea
-            name="description"
-            value={newStrategy.description}
-            onChange={handleCreateStrategyChange}
-            placeholder="Description"
-            rows="3"
-            required
-          ></textarea>
-          <textarea
-            name="whatwewillnotdo"
-            value={newStrategy.whatwewillnotdo}
-            onChange={handleCreateStrategyChange}
-            placeholder="What we will not do"
-            rows="3"
-          ></textarea>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}> 
-            <button type="submit" className = {styles.editButtonStyle}>
-              Create
-            </button>
-            <button type="button" onClick={handleCancelCreateStrategy} className = {styles.editButtonStyle}>
-              Cancel
-            </button>
-          </div> 
-        </form>
-      )}
+          <div className={styles.strategyFormContainer}>
+            <form onSubmit={handleCreateStrategySubmit}>
+              <h3>Create Strategy</h3>
+              <input
+                type="text"
+                name="name"
+                value={newStrategy.name}
+                onChange={handleCreateStrategyChange}
+                placeholder="Name"
+                required
+              />
+              <textarea
+                name="description"
+                value={newStrategy.description}
+                onChange={handleCreateStrategyChange}
+                placeholder="Description"
+                rows="3"
+                required
+              ></textarea>
+              <textarea
+                name="whatwewillnotdo"
+                value={newStrategy.whatwewillnotdo}
+                onChange={handleCreateStrategyChange}
+                placeholder="What we will not do"
+                rows="3"
+              ></textarea>
+              <div className={styles.buttonGroup}>
+                <button type="submit" className={styles.submitButton}>
+                  Create
+                </button>
+                <button 
+                  type="button" 
+                  onClick={handleCancelCreateStrategy} 
+                  className={styles.cancelButton}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
 
       {showCreateInitiativeForm && targetStrategy && (
-        <form className={styles.formStyle} onSubmit={(e) => handleCreateInitiative(e)}>
+        <form className={styles.createInitiativeFormStyle} onSubmit={(e) => handleCreateInitiative(e)}>
           {/* Display the strategy name dynamically */}
           <h3>For {targetStrategy.name} : Add a new Initiative that is value creation driven:</h3>
 

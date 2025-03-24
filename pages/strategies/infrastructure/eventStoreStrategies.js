@@ -1,7 +1,8 @@
-import { projectStrategyToSupabase, projectStreamToSupabase } from "./ProjectionStrategies.js";
+import { projectStrategyToSupabase } from "./ProjectionStrategies.js";
+import { projectStreamToSupabase } from "./ProjectionStreams.js";
 import { replayStream } from './eventStoreStream.js';
 import { v4 as uuidv4 } from 'uuid';
-import { appendEventToEventSourceDB, getEventsForStream } from './eslib.js';
+import { appendEventToEventSourceDB, readEventsFromEventSourceDB } from './eslib.js';
 
 /**
  * Send a STRATEGY_CREATED event.
@@ -16,7 +17,7 @@ export const sendStrategyCreated = async (event) => {
     let previous_strategy_id = null;
 
     if (currentStream.active_strategy_id) {
-      const currentStrategy = await replayStrategy(currentStream.id, currentStream.active_strategy_id);
+      const currentStrategy = await replayStrategy( currentStream.active_strategy_id);
       console.log("ES - sendStrategyCreated entering...Current strategy is: ", currentStrategy);
       new_version = currentStrategy.version + 1;
       previous_strategy_id = currentStrategy.id;
@@ -74,8 +75,9 @@ export const sendStrategyCreated = async (event) => {
 
     // Append events to the event store
     console.log("appendEventToEventSourceDB: newStrategyEvent: ", newStrategyEvent);
-    console.log("appendEventToEventSourceDB: updatedStreamEvent: ", updatedStreamEvent);
     await appendEventToEventSourceDB(newStrategyEvent);
+
+    console.log("appendEventToEventSourceDB: updatedStreamEvent: ", updatedStreamEvent);
     await appendEventToEventSourceDB(updatedStreamEvent);
 
     // Handle projections (wrap each in a try-catch block)
@@ -141,9 +143,9 @@ export const sendStrategyUpdated = async (event) => {
 /**
  * Replay events to rebuild the state of a strategy.
  */
-export const replayStrategy = async (streamId, strategyId) => {
-  console.log('replayStrategy: Replaying events for streamId:', streamId, 'and strategyId:', strategyId);
-  const allEvents = await getEventsForStream(streamId);
+export const replayStrategy = async (strategyId) => {
+  console.log('replayStrategy: Replaying events for strategyId:', strategyId);
+  const allEvents = await readEventsFromEventSourceDB(strategyId);
 
   // Filter events for the specific strategy
   const filteredEvents = allEvents.filter(

@@ -1,14 +1,14 @@
 import { supabase } from "../../../utils/supabaseClient";
 
 // Helper function to read events from Supabase
-export async function readEventsFromEventSourceDB(streamId) {
-  console.log('readEventsFromEventSourceDB entering', streamId);
+export async function readEventsFromEventSourceDB(aggregateId) {
+  console.log('readEventsFromEventSourceDB entering', aggregateId);
 
   try {
     const { data, error } = await supabase
       .from('strategy_events') // Use the new table name
       .select('*')
-      .eq('aggregateId', streamId);
+      .eq('aggregateId', aggregateId);
 
     if (error) {
       console.error('Error reading events from Supabase:', error);

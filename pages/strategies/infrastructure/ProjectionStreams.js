@@ -49,7 +49,7 @@ export async function projectStreamToSupabase(event) {
         const { data: existingItems, error: fetchError } = await supabase
           .from("projection_strategic_streams")
           .select("*")
-          .eq("id", event.payload.id);
+          .eq("id", event.aggregateId);
 
         if (fetchError) {
           console.error("projectStreamToSupabase: Error fetching strategic stream:", fetchError.message);
@@ -74,7 +74,7 @@ export async function projectStreamToSupabase(event) {
             ...updatePayload,
             updated_at: new Date().toISOString(),
           })
-          .eq("id", event.payload.id)
+          .eq("id", event.aggregateId)
           .select("*"); // Request updated data to be returned
 
         if (updateError) {
