@@ -394,22 +394,30 @@ const handleSaveItem = async () => {
       </div>
 
       <h2 className={styles.radarItemsTitle}>Radar Items</h2>
-        {!showForm && (
-          <button
-            onClick={() => setShowForm(true)}
-            style={{
-              padding: "10px",
-              backgroundColor: "plum",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              marginBottom: "20px",
-            }}
-          >
-            Create Radar Item
-          </button>
-        )}
+      {!showForm && (
+        <button
+          onClick={() => {
+            setShowForm(true);
+            setEditMode(false); // Explicitly set to create mode
+            setCurrentEditingId(null); // Clear any editing ID
+            setFormData({ // Reset form to empty values
+              name: '',
+              detect: '',
+              assess: '',
+              respond: '',
+              category: '',
+              type: '',
+              distance: '',
+              impact: '',
+              tolerance: '',
+              zoom_in: '',
+            });
+          }}
+          className={styles.createButton}
+        >
+          Create Radar Item
+        </button>
+      )}
 
       {showForm && (
       <div className={styles.showForm}> 

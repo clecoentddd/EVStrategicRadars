@@ -500,112 +500,132 @@ const handleSaveStrategyClick = async (e, strategy) => {
             }
             onClick={() => {
               toggleStrategyCollapse(strategy.id);
-              const elementsDiv = document.getElementById(`elements-${strategy.id}`);
-              elementsDiv.style.display = elementsDiv.style.display === "none" ? "block" : "none";
             }}
           >
             <span className = {styles.strategyTitleStyle}>{`${strategy.name} (${strategy.state})`}</span>
           </div>
           
-         {/* Add Initiative buton */}
+        {/* Strategy Details Container */}
         {collapsedStrategies[strategy.id] && (
-          <div className={styles.addInitiativeContainer}>
-            <button
-              className={styles.editStrategyButton}
-              onClick={() => handleEditStrategyClick(strategy)}
-            >
-              {/* Optional: Add icon here */}
-              Edit
-            </button>
-            <button
-              className={styles.createInitiativeButtonStyle}
-              onClick={() => {
-                setTargetStrategy(strategy);
-                console.log("setTargetStrategy(strategy)", strategy);
-                setShowCreateInitiativeForm(true);
-              }}
-            >
-              {/* Optional: Add icon here */}
-              Add Initiative
-            </button>
+          <div className={styles.strategyDetailsContainer}>
+            {/* View Mode (when not editing) */}
+            {editableStrategyId !== strategy.id && (
+              <>
+                <div className={styles.strategyContent}>
+                  <div className={styles.strategySection}>
+                    <h4>Description</h4>
+                    <p>{strategy.description}</p>
+                  </div>
+                  <div className={styles.strategySection}>
+                    <h4>What We Will Not Do</h4>
+                    <p>{strategy.whatwewillnotdo}</p>
+                  </div>
+                  <div className={styles.strategySection}>
+                    <h4>Status</h4>
+                    <p>{strategy.state}</p>
+                  </div>
+                </div>
+                
+                <div className={styles.buttonGroupContainer}>
+                  <button
+                    className={styles.editStrategyButton}
+                    onClick={() => {
+                      setEditableStrategyId(strategy.id);
+                      setTempStrategyData({
+                        name: strategy.name,
+                        description: strategy.description,
+                        whatwewillnotdo: strategy.whatwewillnotdo,
+                        state: strategy.state,
+                      });
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={styles.createInitiativeButtonStyle}
+                    onClick={() => {
+                      setTargetStrategy(strategy);
+                      setShowCreateInitiativeForm(true);
+                    }}
+                  >
+                    Add Initiative
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Edit Mode (when editing) */}
+            {editableStrategyId === strategy.id && (
+              <form 
+                className={styles.inlineEditForm}
+                onSubmit={(e) => handleSaveStrategyClick(e, strategy)}
+              >
+                <div className={styles.strategyContent}>
+                  <div className={styles.strategySection}>
+                    <h4>Description</h4>
+                    <textarea
+                      name="description"
+                      value={tempStrategyData?.description || ''}
+                      onChange={(e) => setTempStrategyData({ 
+                        ...tempStrategyData, 
+                        description: e.target.value 
+                      })}
+                      className={styles.editableTextarea}
+                      rows="4"
+                    />
+                  </div>
+                  
+                  <div className={styles.strategySection}>
+                    <h4>What We Will Not Do</h4>
+                    <textarea
+                      name="whatwewillnotdo"
+                      value={tempStrategyData?.whatwewillnotdo || ''}
+                      onChange={(e) => setTempStrategyData({ 
+                        ...tempStrategyData, 
+                        whatwewillnotdo: e.target.value 
+                      })}
+                      className={styles.editableTextarea}
+                      rows="4"
+                    />
+                  </div>
+                  
+                  <div className={styles.strategySection}>
+                    <h4>Status</h4>
+                    <select
+                      value={tempStrategyData?.state || 'Draft'}
+                      onChange={(e) => setTempStrategyData({ 
+                        ...tempStrategyData, 
+                        state: e.target.value 
+                      })}
+                      className={styles.editableSelect}
+                    >
+                      <option value="Draft">Draft</option>
+                      <option value="Published">Published</option>
+                      <option value="Closed">Closed</option>
+                      <option value="Deleted">Deleted</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className={styles.buttonGroupContainer}>
+                  <button 
+                    type="submit" 
+                    className={styles.saveButton}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={() => setEditableStrategyId(null)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
-
-        {/* Edit Strategy Form */}
-        {editableStrategyId === strategy.id && (
-          <form className={styles.editStrategyForm} onSubmit={(e) => handleSaveStrategyClick(e, strategy)}>
-            <h3>Edit Strategy</h3>
-            <label>
-              Name
-              <input
-                type="text"
-                name="name"
-                value={tempStrategyData?.name || strategy.name}
-                onChange={(e) => setTempStrategyData({ ...tempStrategyData, name: e.target.value })}
-                required
-              />
-            </label>
-            <label>
-              Description
-              <textarea
-                name="description"
-                value={tempStrategyData?.description || strategy.description}
-                onChange={(e) => setTempStrategyData({ ...tempStrategyData, description: e.target.value })}
-                rows="3"
-                required
-              />
-            </label>
-            <label>
-              What We Will Not Do
-              <textarea
-                name="whatwewillnotdo"
-                value={tempStrategyData?.whatwewillnotdo || strategy.whatwewillnotdo}
-                onChange={(e) => setTempStrategyData({ ...tempStrategyData, whatwewillnotdo: e.target.value })}
-                rows="3"
-              />
-            </label>
-            <label>
-              Status
-              <select
-                name="state"
-                value={tempStrategyData?.state || strategy.state}
-                onChange={(e) => setTempStrategyData({ ...tempStrategyData, state: e.target.value })}
-              >
-                <option value="Draft">Draft</option>
-                <option value="Published">Published</option>
-                <option value="Closed">Closed</option>
-                <option value="Deleted">Deleted</option>
-              </select>
-            </label>
-            <div className={styles.formButtons}>
-              <button type="submit" className={styles.saveButton}>
-                Save
-              </button>
-              <button
-                type="button"
-                className={styles.cancelButton}
-                onClick={() => setEditableStrategyId(null)}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
-
-        {/* Show elements only if the strategy is collapsed */}
-          {collapsedStrategies[strategy.id] && (
-            <>
-              {/* What We Will Not Do Section */}
-              <div className={styles.boldTitle}>
-              <strong>Description</strong>
-              <p>{strategy.description}</p>
-                <strong>What We Will Not Do</strong>
-                <p>{strategy.whatwewillnotdo}</p>
-              </div>
-
-
-            </>
-          )}
 
           <div id={`elements-${strategy.id}`} className="initiatives">
                 {strategy.elements.map((initiative) => (

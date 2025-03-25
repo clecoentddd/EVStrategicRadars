@@ -914,3 +914,45 @@
   font-weight: 500;
   color: #333;
 }
+
+/* strategy css */
+/* Inline Edit Form Styles */
+.inlineEditForm {
+  width: 100%;
+}
+
+.editableTextarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.editableSelect {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+/* Enhanced strategy sections for edit mode */
+.strategySection {
+  margin-bottom: 1rem;
+}
+
+.strategySection h4 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* Button container for edit mode */
+.buttonGroupContainer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: flex-start;
+}

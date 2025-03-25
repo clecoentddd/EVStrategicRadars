@@ -31,7 +31,7 @@ export async function getEventsForRadarItem(radarItemId) {
   console.log ("getEventsForRadarItem", radarItemId);
   const { data, error } = await supabase
     .from('radar_events')
-    .select('payload, eventType')
+    .select('payload, eventType, created_at')
     .eq('aggregateId', radarItemId)
     .eq('aggregateType', 'RADAR_ITEM'); // Add filter for aggregateType
 
@@ -45,6 +45,7 @@ export async function getEventsForRadarItem(radarItemId) {
   return data.map((row) => ({
     payload: row.payload,
     eventType: row.eventType, // Include eventType in the return object
+    created_at: row.created_at // Include the created_at value
   }));
 }
 // Add an event to the database

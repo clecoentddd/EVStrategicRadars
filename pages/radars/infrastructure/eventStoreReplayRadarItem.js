@@ -17,17 +17,17 @@ export const replayRadarItemState = async (radarItemId) => {
     const events = await getEventsForRadarItem(radarItemId);
 
     if (!events || events.length === 0) {
-      return { success: false, message: `No events found for id: ${radarItemId}` };
+      return { success: false, message: `getEventsForRadarItem: No events found for id: ${radarItemId}` };
     }
 
-    console.log("ES: Events to replay", events);
+    console.log("getEventsForRadarItem: Events to replay", events);
 
     const latestEvent = events.reduce((latest, current) => {
-      console.log('Current event:', current);
-      console.log('Latest event so far:', latest);
-      console.log('Comparing timestamps:', current.payload.timestamp, '>', latest.payload.timestamp);
+      console.log('getEventsForRadarItem: Current event:', current);
+      console.log('getEventsForRadarItem: Latest event so far:', latest);
+      console.log('Comparing created_at:', current.created_at, '>', latest.created_at);
     
-      return current.payload.timestamp > latest.payload.timestamp ? current : latest;
+      return current.created_at > latest.created_at ? current : latest;
     }, events[0]);
     
     console.log('Final latest event:', latestEvent);
