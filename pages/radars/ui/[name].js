@@ -175,6 +175,7 @@ useEffect(() => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log('handleInputChange -> name:', name, 'value:', value);
     setFormData({
       ...formData,
       [name]: value,
@@ -465,124 +466,185 @@ const handleSaveItem = async () => {
               />
             </div>
             <div className={styles.column} style={{ flex: 1 }}> 
-              <label htmlFor="category" className={styles.label}>
-                Category
-              </label>
-              <select 
-                name="category" 
-                value={formData.category} 
-                onChange={handleInputChange}
-                required 
-                className={styles.inputField} 
-              > 
-                <option value="">Select Category</option>
-                {categoryOptions.length > 0 ? (
-                  categoryOptions.map((option) => (
-                    <option key={option._id} value={option.name}>
+
+
+              {/* Type Radio Buttons */}
+              <div className={`${styles.optionGroup} ${styles.typeGroup}`}>
+                <label className={styles.optionLabel}>
+                  <strong>Type</strong>
+                </label>
+                <div className={styles.radioGroup}>
+                  {typeOptions.map((option) => (
+                    <label key={option.value} className={styles.radioLabel}>
+                      <input
+                        type="radio"
+                        name="type"
+                        value={option.label}
+                        checked={formData.type === option.label}
+                        onChange={handleInputChange}
+                        className={styles.radioInput}
+                      />
+                      <span className={styles.radioCustom}></span>
                       {option.label}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading options...</option>
-                )}
-              </select>
-              <label htmlFor="type" className={styles.label}>
-                Type
-              </label>
-              <select 
-                name="type" 
-                value={formData.type} 
-                onChange={handleInputChange}
-                required 
-                className={styles.inputField} 
-              > 
-                <option value="">Select type</option>
-                {typeOptions.length > 0 ? (
-                  typeOptions.map((option) => (
-                    <option key={option._id} value={option.name}>
-                      {option.label}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading options...</option>
-                )}
-              </select>
-              <label htmlFor="zoom_in" className={styles.label}>
-                Zoom In
-              </label>
-              <select
-                name="zoom_in"
-                value={formData.zoom_in}
-                onChange={handleInputChange}
-                className={styles.inputField}
-              >
-                <option value="">Select a "zoom-in" radar</option>
-                {zoomInOptions.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-              <label htmlFor="distance" className={styles.label}>
-                Distance
-              </label>
-              <select
-                name="distance"
-                value={formData.distance}
-                onChange={handleInputChange}
-                className={styles.inputField}
-              >
-                <option value="">Select Distance</option>
-                {distanceOptions.length > 0 ? (
-                  distanceOptions.map((option) => (
-                    <option key={option._id} value={option.name}>
-                      {option.label}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading options...</option>
-                )}
-              </select>
-              <label htmlFor="impact" className={styles.label}>
-                Impact
-              </label>
-              <select
-                name="impact"
-                value={formData.impact}
-                onChange={handleInputChange}
-                className={styles.inputField}
-              >
-                <option value="">Select Impact</option>
-                {impactOptions.length > 0 ? (
-                  impactOptions.map((option) => (
-                    <option key={option._id} value={option.name}>
-                      {option.label}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading options...</option>
-                )}
-              </select>
-              <label htmlFor="tolerance" className={styles.label}>
-                Tolerance
-              </label>
-              <select
-                name="tolerance"
-                value={formData.tolerance}
-                onChange={handleInputChange}
-                className={styles.inputField}
-              >
-                <option value="">Select Tolerance</option>
-                {toleranceOptions.length > 0 ? (
-                  toleranceOptions.map((option) => (
-                    <option key={option._id} value={option.name}>
-                      {option.label}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading options...</option>
-                )}
-              </select>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Category Toggle Switches */}
+              <div className={`${styles.optionGroup} ${styles.categoryGroup}`}>
+                <label className={styles.optionLabel}>
+                  <strong>Category</strong>
+                </label>
+                <div className={styles.toggleGroup}>
+                  {categoryOptions.map((option) => (
+                    <label key={option._id} className={styles.toggleLabel}>
+                      <input
+                        type="radio"
+                        name="category"
+                        value={option.label}
+                        checked={formData.category === option.label}
+                        onChange={handleInputChange}
+                        className={styles.toggleInput}
+                      />
+                      <span className={styles.toggleSwitch}>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+             {/* Distance Slider */}
+              <div className={styles.sliderContainer} style={{ marginBottom: '24px' }}>
+                <label htmlFor="distance" className={styles.sliderLabel}>
+                  <strong>Distance</strong>
+                </label>
+                <div className={styles.sliderWrapper}>
+                  {/* Top Labels */}
+                  <div className={styles.sliderTopLabels}>
+                    <span>Detected</span>
+                    <span>Assessed</span>
+                    <span>Responded</span>
+                  </div>
+                  
+                  {/* Slider */}
+                  <input
+                    type="range"
+                    name="distance"
+                    min="0"
+                    max="4"
+                    step="1"
+                    value={
+                      formData.distance 
+                        ? ['Detected', 'Assessing', 'Assessed', 'Responding', 'Responded'].indexOf(formData.distance)
+                        : 2 // Default to 'Assessed'
+                    }
+                    onChange={(e) => {
+                      const distanceValues = ['Detected', 'Assessing', 'Assessed', 'Responding', 'Responded'];
+                      setFormData({
+                        ...formData,
+                        distance: distanceValues[parseInt(e.target.value)]
+                      });
+                    }}
+                    className={`${styles.sliderInput} ${styles.distanceSlider}`}
+                  />
+                  
+                  {/* Bottom Labels */}
+                  <div className={styles.sliderBottomLabels}>
+                    <span>Assessing</span>
+                    <span>Responding</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                {/* Impact Slider (Low to High) - On its own line */}
+                <div className={styles.sliderContainer}>
+                  <label htmlFor="impact" className={styles.sliderLabel}>
+                    <strong>Impact</strong>
+                  </label>
+                  <div className={styles.sliderWrapper}>
+                    <input
+                      type="range"
+                      name="impact"
+                      min="0"
+                      max="2"
+                      step="1"
+                      value={formData.impact ? ['Low', 'Medium', 'High'].indexOf(formData.impact) : 1}
+                      onChange={(e) => {
+                        const impactLabels = ['Low', 'Medium', 'High']; // Store labels
+                        setFormData({
+                          ...formData,
+                          impact: impactLabels[parseInt(e.target.value)] // Pass "Low"/"Medium"/"High"
+                        });
+                      }}
+                      className={`${styles.sliderInput} ${
+                        formData.impact === 'High' ? styles.highImpact :
+                        formData.impact === 'Medium' ? styles.mediumImpact : 
+                        styles.lowImpact
+                      }`}
+                    />
+                    <div className={styles.sliderLabels}>
+                      <span className={formData.impact === 'Low' ? styles.lowLabel : ''}>Low</span>
+                      <span className={formData.impact === 'Medium' ? styles.mediumLabel : ''}>Medium</span>
+                      <span className={formData.impact === 'High' ? styles.highLabel : ''}>High</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tolerance Slider (High to Low) - On its own line below */}
+                <div className={styles.sliderContainer}>
+                  <label htmlFor="tolerance" className={styles.sliderLabel}>
+                    <strong>Tolerance</strong>
+                  </label>
+                  <div className={styles.sliderWrapper}>
+                    <input
+                      type="range"
+                      name="tolerance"
+                      min="0"
+                      max="2"
+                      step="1"
+                      value={formData.tolerance ? ['High', 'Medium', 'Low'].indexOf(formData.tolerance) : 1}
+                      onChange={(e) => {
+                        const toleranceLabels = ['High', 'Medium', 'Low']; // Store labels instead of values
+                        setFormData({
+                          ...formData,
+                          tolerance: toleranceLabels[parseInt(e.target.value)] // Now passing "High"/"Medium"/"Low"
+                        });
+                      }}
+                      className={`${styles.sliderInput} ${
+                        formData.tolerance === 'Low' ? styles.lowTolerance :
+                        formData.tolerance === 'Medium' ? styles.mediumTolerance : 
+                        styles.highTolerance
+                      }`}
+                    />
+                    <div className={styles.sliderLabels}>
+                      <span className={formData.tolerance === 'High' ? styles.highLabel : ''}>High</span>
+                      <span className={formData.tolerance === 'Medium' ? styles.mediumLabel : ''}>Medium</span>
+                      <span className={formData.tolerance === 'Low' ? styles.lowLabel : ''}>Low</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.formRow}>
+                  <label htmlFor="zoom_in" className={styles.label}>
+                    <strong>Zoom In</strong>
+                  </label>
+                  <div className={styles.inputWrapper}>  {/* New wrapper div */}
+                    <select
+                      name="zoom_in"
+                      value={formData.zoom_in}
+                      onChange={handleInputChange}
+                      className={styles.inputZoomInField}
+                    >
+                      <option value="">Select a "zoom-in" radar</option>
+                      {zoomInOptions.map((option) => (
+                        <option key={option.id} value={option.id}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className={styles.buttonGroup}>

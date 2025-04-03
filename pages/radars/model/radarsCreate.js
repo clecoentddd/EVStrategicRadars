@@ -1,12 +1,19 @@
 import { sendRadarCreated, getEvents } from '../infrastructure/eventStoreCreateRadar'; // Ensure you have access to getEvents
 
 export async function handleRadarCreation(command) {
-  // console.log("Handling radar creation for:", command); // Log the received command
-  const { name, purpose, level } = command.payload;
+  console.log("Handling radar creation for:", command); // Log the received command
   
-    if (!name || !purpose || !level) {
+  const { name, purpose, level } = command.payload;
+
+  console.log("Handling radar creation for name is:", level); // Log the received command
+  
+  if (!name || !purpose || !(typeof level === 'number' && level >= 0)) {
+    console.log("handleRadarCreation: Mandatory fields are missing");
     return { success: false, message: "Mandatory fields are missing" };
   }
+
+  console.log("Handling radar creation for name is:", name); // Log the received command
+  
 
    // Save the radar creation event
   let savedEvent;

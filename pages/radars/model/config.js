@@ -35,7 +35,7 @@ export function getValueDistanceOptions() {
   };
 
   const ValueType = {
-    PROBLEM: "Risk",
+    PROBLEM: "Threat",
     OPPORTUNITY: "Opportunity",
   };
 

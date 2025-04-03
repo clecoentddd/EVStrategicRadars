@@ -81,21 +81,25 @@
 }
 
 .formRow {
-  display: flex; /* Add this line */
-  align-items: center; 
-  margin-bottom: 10px; 
-  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  align-items: center; /* Vertical alignment */
+  gap: 15px; /* Space between label and select */
+}
+
+.inputWrapper {
+  flex: 1;
+  display: flex;
 }
 
 .label {
   display: inline-block; 
-  width: 300px; 
   margin-right: 10px; 
   text-align: left; 
   font-size: 14px;
   padding: 3px;
   padding-top: 5px;
   font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
 }
 
 .column {
@@ -115,18 +119,50 @@
 }
 
 .inputField {
-  padding: 2px;
+  padding: 6px;
+  border-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 70%; 
   font-family: 'Orbitron', sans-serif;
+  margin-bottom: 20px;
+}
+
+/* Select element styling */
+select.inputField {
+  padding: 8px 8px;
+  flex-grow: 1; /* Takes remaining space */
+  max-width: 400px; /* Prevent from growing too wide */
+}
+
+.inputZoomInField {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: auto;
+  font-family: 'Orbitron', sans-serif;
+  margin-left: 0;
+  margin-right: auto;
+  display: block; /* Ensure it takes its own line */
+}
+
+/* If you need it to appear inline with other elements */
+.inputZoomInField.inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* If you're using it in a flex container */
+.flex-container .inputZoomInField {
+  flex: 0 0 auto;
+  align-self: flex-start;
 }
 
 .textArea {
   padding: 2px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 90%; 
+  width: 80%; 
   resize: vertical; 
   font-family: 'Orbitron', sans-serif;
 }
@@ -299,4 +335,299 @@
 
 .createButton:hover {
   background-color: #45a049;
+}
+
+/* ============== */
+/* CORE STRUCTURE */
+/* ============== */
+.sliderRow {
+  display: flex;
+  gap: 30px;
+  margin: 20px 0;
+}
+
+.sliderContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  margin-top: 12px;
+}
+
+.sliderLabel {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #333;
+  white-space: nowrap;
+  min-width: 85px;
+}
+
+.sliderWrapper {
+  flex-grow: 1;
+  min-width: 180px;
+  max-width: 220px;
+}
+
+/* ============= */
+/* SLIDER TRACK */
+/* ============= */
+.sliderInput {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e5e7eb;
+  outline: none;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+/* ============= */
+/* SLIDER THUMB */
+/* ============= */
+.sliderInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  cursor: grab;
+  margin-top: -5px;
+  transition: all 0.2s ease;
+}
+
+.sliderInput::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  cursor: grab;
+}
+
+/* ========== */
+/* LABELS */
+/* ========== */
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 2px;
+  font-size: 0.7rem;
+  margin-top: -3px;
+}
+
+/* ============== */
+/* IMPACT COLORS */
+/* ============== */
+.lowImpact::-webkit-slider-thumb { background: #10b981; }
+.mediumImpact::-webkit-slider-thumb { background: #f59e0b; }
+.highImpact::-webkit-slider-thumb { background: #ef4444; }
+
+.lowImpact::-moz-range-thumb { background: #10b981; }
+.mediumImpact::-moz-range-thumb { background: #f59e0b; }
+.highImpact::-moz-range-thumb { background: #ef4444; }
+
+.lowImpact { background: #d1fae5; }
+.mediumImpact { background: #fef3c7; }
+.highImpact { background: #fee2e2; }
+
+/* ================ */
+/* TOLERANCE COLORS */
+/* ================ */
+.highTolerance::-webkit-slider-thumb { background: #10b981; }
+.mediumTolerance::-webkit-slider-thumb { background: #f59e0b; }
+.lowTolerance::-webkit-slider-thumb { background: #ef4444; }
+
+.highTolerance::-moz-range-thumb { background: #10b981; }
+.mediumTolerance::-moz-range-thumb { background: #f59e0b; }
+.lowTolerance::-moz-range-thumb { background: #ef4444; }
+
+.highTolerance { background: #d1fae5; }
+.mediumTolerance { background: #fef3c7; }
+.lowTolerance { background: #fee2e2; }
+
+/* ============= */
+/* LABEL COLORS */
+/* ============= */
+.lowLabel { color: black; font-weight: bold; }
+.mediumLabel { color: black; font-weight: bold; }
+.highLabel { color: black; font-weight: bold; }
+
+/* ============== */
+/* RESPONSIVE */
+/* ============== */
+@media (max-width: 768px) {
+  .sliderRow {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .sliderContainer {
+    width: 100%;
+  }
+  
+  .sliderWrapper {
+    max-width: 100%;
+  }
+}
+
+/* Distance slider */
+
+/* Distance Slider Specific Styles */
+.distanceSlider {
+  --track-color: lavender; /* Darker track */
+  --thumb-color: violet; /* Darker thumb */
+}
+
+.distanceSlider::-webkit-slider-runnable-track {
+  background: var(--track-color);
+}
+
+.distanceSlider::-webkit-slider-thumb {
+  background: var(--thumb-color);
+  border: 2px solid #fff;
+}
+
+.distanceSlider::-moz-range-track {
+  background: var(--track-color);
+}
+
+.distanceSlider::-moz-range-thumb {
+  background: var(--thumb-color);
+  border: 2px solid #fff;
+}
+
+/* Label Positioning */
+.sliderTopLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 3px;
+  font-size: 0.7rem;
+}
+
+.sliderBottomLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 66%;
+  margin: 3px auto 0;
+  font-size: 0.7rem;
+}
+
+.sliderTopLabels span:nth-child(1) { text-align: left; width: 20%; }
+.sliderTopLabels span:nth-child(2) { text-align: center; width: 20%; }
+.sliderTopLabels span:nth-child(3) { text-align: right; width: 20%; }
+
+.sliderBottomLabels span:nth-child(1) { text-align: left; width: 50%; }
+.sliderBottomLabels span:nth-child(2) { text-align: right; width: 50%; }
+
+.sliderTopLabels, .sliderBottomLabels {
+  font-size: 0.55rem; /* Reduced from 0.7rem */
+}
+
+/* Option Group Container */
+.optionGroup {
+  margin: 15px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.optionLabel {
+  font-weight: bold;
+  min-width: 85px;
+  padding-top: 5px;
+  font-size: 0.8rem;
+}
+
+/* Radio Button Style */
+.radioGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+}
+
+.radioCustom {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  position: relative;
+}
+
+.radioInput:checked + .radioCustom {
+  border-color: violet;
+  background: violet;
+}
+
+.radioInput:checked + .radioCustom::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+}
+
+/* Toggle Switch Style */
+.toggleGroup {
+  display: flex;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.toggleLabel {
+  flex: 1;
+  text-align: center;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+}
+
+.toggleSwitch {
+  display: block;
+  font-size: 0.8rem; /* Match your design system */
+  padding: 6px 10px; /* Adjust padding with font size */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.toggleInput:checked + .toggleSwitch {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-weight: bold;
+  color: violet;
+}
+
+/* For TYPE (Radio Buttons) */
+.typeGroup .radioLabel {
+  font-size: 0.55rem; /* Custom size for Type */
+}
+
+/* For CATEGORY (Toggle Switches) */
+.categoryGroup .toggleSwitch {
+  font-size: 0.55rem; /* Match Type or set differently */
 }
