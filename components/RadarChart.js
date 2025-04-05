@@ -176,7 +176,7 @@ if (peopleAndKnowledgeLabel) {
 
          // Determine circle style based on item.type
          let circleStyle = {};
-         if (item.type === 'Risk') {
+         if (item.type === 'Risk'  || item.type === 'Threat') {
            circleStyle = {
              fill: color,
              stroke: 'none',
@@ -237,7 +237,7 @@ if (peopleAndKnowledgeLabel) {
           .attr('stroke', circleStyle.stroke) // Use the determined stroke color
           .attr('stroke-width', circleStyle.strokeWidth); 
 
-          if (item.type === 'Risk') {
+          if (item.type === 'Risk'  || item.type === 'Threat') {
             const triangleSize = size * 0.6; // Size of the triangle relative to the circle
             const trianglePoints = [
               [x, y - triangleSize], // Top point
