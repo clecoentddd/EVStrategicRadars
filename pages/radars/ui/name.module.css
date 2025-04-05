@@ -82,9 +82,11 @@
 
 .formRow {
   display: flex;
-  align-items: center; /* Vertical alignment */
-  gap: 15px; /* Space between label and select */
+  align-items: flex-start; /* Align tops of all elements */
+  margin-bottom: 15px;
+  width: 100%;
 }
+
 
 .inputWrapper {
   flex: 1;
@@ -103,19 +105,33 @@
 }
 
 .column {
-  flex: 1; /* Make columns occupy equal space */
-  flex: 2;
+  flex: 1; /* Default flex growth */
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
 }
 
+/* First column (left) */
 .column:first-child { 
-  width: 60%; /* Adjust width as needed */
-  padding-left: 0px;
+  width: 50%; /* Fixed width */
+  padding-left: 0;
+  flex: none; /* Disable flex growth */
 }
 
+/* Middle column (centered towards right) */
+.column:nth-child(2) {
+  flex: 2; /* Takes more space than others */
+  margin-left: auto; /* Pushes column to the right */
+  justify-content: center; /* Centers content vertically */
+  align-items: center; /* Centers content horizontally */
+}
+
+/* Last column (far right) */
 .column:last-child {
-  width: 10%; /* Adjust width as needed */
-  border-left: 1px solid #ccc; /* Add border for clear separation */
-  padding-left: 0px; 
+  width: 10%; /* Fixed width */
+  border-left: 5px solid #ccc;
+  padding-left: 20px;
+  flex: none; /* Disable flex growth */
 }
 
 .inputField {
@@ -162,7 +178,7 @@ select.inputField {
   padding: 2px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 80%; 
+  width: 90%; 
   resize: vertical; 
   font-family: 'Orbitron', sans-serif;
 }
@@ -350,8 +366,7 @@ select.inputField {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
-  margin-top: 12px;
+  margin: 12px 0;
 }
 
 .sliderLabel {
@@ -369,7 +384,7 @@ select.inputField {
 }
 
 /* ============= */
-/* SLIDER TRACK */
+/* SLIDER BASE STYLES */
 /* ============= */
 .sliderInput {
   width: 100%;
@@ -383,9 +398,6 @@ select.inputField {
   cursor: pointer;
 }
 
-/* ============= */
-/* SLIDER THUMB */
-/* ============= */
 .sliderInput::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -397,6 +409,7 @@ select.inputField {
   cursor: grab;
   margin-top: -5px;
   transition: all 0.2s ease;
+  background: #9ca3af; /* Default grey */
 }
 
 .sliderInput::-moz-range-thumb {
@@ -406,7 +419,37 @@ select.inputField {
   border: 2px solid white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   cursor: grab;
+  background: #9ca3af; /* Default grey */
 }
+
+/* ============= */
+/* IMPACT/TOLERANCE COLORS */
+/* ============= */
+/* Impact */
+.lowImpact::-webkit-slider-thumb { background: #10b981; }
+.mediumImpact::-webkit-slider-thumb { background: #f59e0b; }
+.highImpact::-webkit-slider-thumb { background: #ef4444; }
+
+.lowImpact::-moz-range-thumb { background: #10b981; }
+.mediumImpact::-moz-range-thumb { background: #f59e0b; }
+.highImpact::-moz-range-thumb { background: #ef4444; }
+
+.lowImpact { accent-color: #10b981; background: #d1fae5; }
+.mediumImpact { accent-color: #f59e0b; background: #fef3c7; }
+.highImpact { accent-color: #ef4444; background: #fee2e2; }
+
+/* Tolerance */
+.highTolerance::-webkit-slider-thumb { background: #10b981; }
+.mediumTolerance::-webkit-slider-thumb { background: #f59e0b; }
+.lowTolerance::-webkit-slider-thumb { background: #ef4444; }
+
+.highTolerance::-moz-range-thumb { background: #10b981; }
+.mediumTolerance::-moz-range-thumb { background: #f59e0b; }
+.lowTolerance::-moz-range-thumb { background: #ef4444; }
+
+.highTolerance { accent-color: #10b981; background: #d1fae5; }
+.mediumTolerance { accent-color: #f59e0b; background: #fef3c7; }
+.lowTolerance { accent-color: #ef4444; background: #fee2e2; }
 
 /* ========== */
 /* LABELS */
@@ -420,67 +463,16 @@ select.inputField {
   margin-top: -3px;
 }
 
-/* ============== */
-/* IMPACT COLORS */
-/* ============== */
-.lowImpact::-webkit-slider-thumb { background: #10b981; }
-.mediumImpact::-webkit-slider-thumb { background: #f59e0b; }
-.highImpact::-webkit-slider-thumb { background: #ef4444; }
-
-.lowImpact::-moz-range-thumb { background: #10b981; }
-.mediumImpact::-moz-range-thumb { background: #f59e0b; }
-.highImpact::-moz-range-thumb { background: #ef4444; }
-
-.lowImpact { background: #d1fae5; }
-.mediumImpact { background: #fef3c7; }
-.highImpact { background: #fee2e2; }
-
-/* ================ */
-/* TOLERANCE COLORS */
-/* ================ */
-.highTolerance::-webkit-slider-thumb { background: #10b981; }
-.mediumTolerance::-webkit-slider-thumb { background: #f59e0b; }
-.lowTolerance::-webkit-slider-thumb { background: #ef4444; }
-
-.highTolerance::-moz-range-thumb { background: #10b981; }
-.mediumTolerance::-moz-range-thumb { background: #f59e0b; }
-.lowTolerance::-moz-range-thumb { background: #ef4444; }
-
-.highTolerance { background: #d1fae5; }
-.mediumTolerance { background: #fef3c7; }
-.lowTolerance { background: #fee2e2; }
-
-/* ============= */
-/* LABEL COLORS */
-/* ============= */
-.lowLabel { color: black; font-weight: bold; }
-.mediumLabel { color: black; font-weight: bold; }
-.highLabel { color: black; font-weight: bold; }
+.highLabel { color: #000000; font-weight: bold; }
+.mediumLabel { color: #000000; font-weight: bold; }
+.lowLabel { color: #000; font-weight: bold; }
 
 /* ============== */
-/* RESPONSIVE */
+/* DISTANCE SLIDER */
 /* ============== */
-@media (max-width: 768px) {
-  .sliderRow {
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .sliderContainer {
-    width: 100%;
-  }
-  
-  .sliderWrapper {
-    max-width: 100%;
-  }
-}
-
-/* Distance slider */
-
-/* Distance Slider Specific Styles */
 .distanceSlider {
-  --track-color: lavender; /* Darker track */
-  --thumb-color: violet; /* Darker thumb */
+  --track-color: lavender;
+  --thumb-color: violet;
 }
 
 .distanceSlider::-webkit-slider-runnable-track {
@@ -489,7 +481,6 @@ select.inputField {
 
 .distanceSlider::-webkit-slider-thumb {
   background: var(--thumb-color);
-  border: 2px solid #fff;
 }
 
 .distanceSlider::-moz-range-track {
@@ -498,24 +489,24 @@ select.inputField {
 
 .distanceSlider::-moz-range-thumb {
   background: var(--thumb-color);
-  border: 2px solid #fff;
 }
 
 /* Label Positioning */
-.sliderTopLabels {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 3px;
-  font-size: 0.7rem;
-}
-
+.sliderTopLabels,
 .sliderBottomLabels {
   display: flex;
   justify-content: space-between;
+  width: 100%;
+  font-size: 0.55rem;
+}
+
+.sliderTopLabels {
+  margin-bottom: 3px;
+}
+
+.sliderBottomLabels {
   width: 66%;
   margin: 3px auto 0;
-  font-size: 0.7rem;
 }
 
 .sliderTopLabels span:nth-child(1) { text-align: left; width: 20%; }
@@ -525,26 +516,44 @@ select.inputField {
 .sliderBottomLabels span:nth-child(1) { text-align: left; width: 50%; }
 .sliderBottomLabels span:nth-child(2) { text-align: right; width: 50%; }
 
-.sliderTopLabels, .sliderBottomLabels {
-  font-size: 0.55rem; /* Reduced from 0.7rem */
-}
+/* ============== */
+/* FORM CONTROLS */
+/* ============== */
 
-/* Option Group Container */
 .optionGroup {
   margin: 15px 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;  /* Changed from flex-start to center */
   gap: 15px;
+  width: 100%;  /* Added */
 }
 
-.optionLabel {
+.optionLabel, 
+.typeLabel,
+.categoryLabel {
+  width: 100px; /* Fixed width for all labels */
+  text-align: right;
+  padding-right: 15px;
   font-weight: bold;
-  min-width: 85px;
-  padding-top: 5px;
   font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
-/* Radio Button Style */
+/* Container for form controls */
+.controlContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Consistent spacing between controls */
+}
+
+/* Special case for radio/toggle groups */
+.typeGroup, .categoryGroup {
+  padding-top: 3px; /* Visual alignment adjustment */
+}
+
+
+
 .radioGroup {
   display: flex;
   flex-wrap: wrap;
@@ -588,7 +597,6 @@ select.inputField {
   left: 3px;
 }
 
-/* Toggle Switch Style */
 .toggleGroup {
   display: flex;
   background: #f5f5f5;
@@ -608,8 +616,8 @@ select.inputField {
 
 .toggleSwitch {
   display: block;
-  font-size: 0.8rem; /* Match your design system */
-  padding: 6px 10px; /* Adjust padding with font size */
+  font-size: 0.8rem;
+  padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
@@ -622,12 +630,33 @@ select.inputField {
   color: violet;
 }
 
-/* For TYPE (Radio Buttons) */
+/* Type-specific adjustments */
 .typeGroup .radioLabel {
-  font-size: 0.55rem; /* Custom size for Type */
+  font-size: 0.55rem;
 }
 
-/* For CATEGORY (Toggle Switches) */
 .categoryGroup .toggleSwitch {
-  font-size: 0.55rem; /* Match Type or set differently */
+  font-size: 0.55rem;
+}
+
+/* ============== */
+/* RESPONSIVE */
+/* ============== */
+@media (max-width: 768px) {
+  .sliderRow {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .sliderContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;  /* Added */
+    min-width: 0;  /* Added */
+  }
+  
+  .sliderWrapper {
+    max-width: 100%;
+  }
 }

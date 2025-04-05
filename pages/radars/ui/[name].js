@@ -536,7 +536,7 @@ const handleSaveItem = async () => {
                     value={
                       formData.distance 
                         ? ['Detected', 'Assessing', 'Assessed', 'Responding', 'Responded'].indexOf(formData.distance)
-                        : 2 // Default to 'Assessed'
+                        : 0 // Default to 'Detected'
                     }
                     onChange={(e) => {
                       const distanceValues = ['Detected', 'Assessing', 'Assessed', 'Responding', 'Responded'];
@@ -568,7 +568,7 @@ const handleSaveItem = async () => {
                       min="0"
                       max="2"
                       step="1"
-                      value={formData.impact ? ['Low', 'Medium', 'High'].indexOf(formData.impact) : 1}
+                      value={formData.impact ? ['Low', 'Medium', 'High'].indexOf(formData.impact) : 0}
                       onChange={(e) => {
                         const impactLabels = ['Low', 'Medium', 'High']; // Store labels
                         setFormData({
@@ -579,7 +579,7 @@ const handleSaveItem = async () => {
                       className={`${styles.sliderInput} ${
                         formData.impact === 'High' ? styles.highImpact :
                         formData.impact === 'Medium' ? styles.mediumImpact : 
-                        styles.lowImpact
+                        formData.impact === 'Low' ? styles.lowImpact : ''
                       }`}
                     />
                     <div className={styles.sliderLabels}>
@@ -602,7 +602,7 @@ const handleSaveItem = async () => {
                       min="0"
                       max="2"
                       step="1"
-                      value={formData.tolerance ? ['High', 'Medium', 'Low'].indexOf(formData.tolerance) : 1}
+                      value={formData.tolerance ? ['High', 'Medium', 'Low'].indexOf(formData.tolerance) : 0}
                       onChange={(e) => {
                         const toleranceLabels = ['High', 'Medium', 'Low']; // Store labels instead of values
                         setFormData({
@@ -611,9 +611,9 @@ const handleSaveItem = async () => {
                         });
                       }}
                       className={`${styles.sliderInput} ${
-                        formData.tolerance === 'Low' ? styles.lowTolerance :
+                        formData.tolerance === 'High' ? styles.highTolerance :
                         formData.tolerance === 'Medium' ? styles.mediumTolerance : 
-                        styles.highTolerance
+                        formData.tolerance === 'Low' ? styles.lowTolerance : ''
                       }`}
                     />
                     <div className={styles.sliderLabels}>

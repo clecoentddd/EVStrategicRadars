@@ -284,7 +284,7 @@ function HomePage() {
                 type="number"
                 id="level"
                 name="level"
-                min="1"
+                min="0"
                 required
                 style={{ width: '50px' }}
                 defaultValue={''} // Use defaultValue instead of value
