@@ -15,7 +15,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   const [editableStrategyId, setEditableStrategyId] = useState(null);
   const [tempStrategyData, setTempStrategyData] = useState(null);
   const [expandedElementId, setExpandedElementId] = useState(null);
-  const [showCreateElementForm, setShowCreateElementForm] = useState(false);
+  const [showCreateElementForm, setShowCreateInitiativeForm] = useState(false);
   const [newElement, setNewElement] = useState({
     name: '',
     description: '',
@@ -63,16 +63,16 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
     }
   };
 
-  const handleEditClick = async (strategy, initiative) => {
+  const handleEditInitiative = async (stream, initiative) => {
     setEditableElementId(initiative.id);
-    console.log("handleEditClick ", strategy);
-    console.log("handleEditClick ", initiative.id);
+    console.log("handleEditInitiative for initiative", initiative);
+    console.log("handleEditInitiative for stream", stream);
     const currentRow = initiative;
-    console.log("handleEditClick currentRow", currentRow);
+    console.log("handleEditInitiative currentRow", currentRow);
     setTempData({ ...currentRow });
 
     try {
-      const response = await fetch(`/api/radar-items?radarId=${streamAggregate.radarId}`, {
+      const response = await fetch(`/api/radar-items?radarId=${stream.radarId}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -83,7 +83,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
         throw new Error(`Failed to fetch radar items: ${response.statusText}`);
       }
 
-      console.log("handleEditClick get radar items", response.text);
+      console.log("handleEditInitiative get radar items", response.text);
       const data = await response.json();
 
       if (
@@ -122,9 +122,9 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
     }));
   };
 
-  const handleElementExpand = (InitiativeId) => {
+  const handleElementExpand = (initiativeId) => {
     console.log("handleElementExpand - 1");
-    setExpandedElementId(expandedElementId === InitiativeId ? null : InitiativeId);
+    setExpandedElementId(expandedElementId === initiativeId ? null : initiativeId);
   };
 
   const toggleStrategyCollapse = (strategyId) => {
@@ -134,12 +134,12 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
     }));
   };
 
-  const handleEditToggle = async (InitiativeId) => {
-    if (editableElementId === InitiativeId) {
-      const initiative = streamData.find((item) => item.id === InitiativeId);
+  const handleEditToggle = async (initiativeId) => {
+    if (editableElementId === initiativeId) {
+      const initiative = streamData.find((item) => item.id === initiativeId);
       if (initiative) {
         try {
-          const response = await fetch(`/api/?InitiativeId=${InitiativeId}`, {
+          const response = await fetch(`/api/strategy-initiatives?initiativeId=${initiativeId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -166,18 +166,18 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
       }
       setEditableElementId(null);
     } else {
-      setEditableElementId(InitiativeId);
+      setEditableElementId(initiativeId);
     }
   };
 
-  const handleSaveClick = async (strategy, initiative) => {
+  const handleSaveInitiative = async (strategy, initiative) => {
     if (!editableElementId || !tempData) {
       alert("No changes to save or invalid initiative.");
       return;
     }
 
     try {
-      const response = await fetch(`/api/?InitiativeId=${editableElementId}`, {
+      const response = await fetch(`/api/strategy-initiatives?initiativeId=${editableElementId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -234,7 +234,8 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
       console.error("No target strategy selected for creating an initiative.");
       return;
     }
-
+    console.log('Creating initiative for strategy:', targetStrategy);
+    console.log("Creating initiative with newElement", newElement);
     try {
       const response = await fetch(`/api/strategy-initiatives`, {
         method: 'POST',
@@ -255,7 +256,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
       alert('Strategy initiative created successfully!');
       console.log("Optimistic UI with data", data);
       console.log("Optimistic UI with prev.data", streamData);
-      setShowCreateElementForm(false);
+      setShowCreateInitiativeForm(false);
       setNewElement({ name: '', description: '' });
 
       setStreamData((prevData) => {
@@ -284,7 +285,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
     }
   };
 
-  const handleCreateElementChange = (e) => {
+  const handleCreateInitiativeChange = (e) => {
     const { name, value } = e.target;
     setNewElement((prev) => ({
       ...prev,
@@ -295,53 +296,74 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   const handleCreateStrategy = async (e) => {
     e.preventDefault();
     try {
-      console.log("Calling POST API for", newStrategy);
-      const response = await fetch(`/api/strategy-strategies`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          stream_id: streamid,
-          name: newStrategy.name,
-          description: newStrategy.description,
-          whatwewillnotdo: newStrategy.whatwewillnotdo,
-        }),
-      });
+        console.log("Calling POST API for", newStrategy);
+        
+        // 1. Create and add optimistic data FIRST
+        const tempId = `temp-${Date.now()}`;
+        const optimisticData = {
+            id: tempId,
+            created_at: new Date().toISOString(),
+            name: newStrategy.name,
+            description: newStrategy.description,
+            whatwewillnotdo: newStrategy.whatwewillnotdo,
+            stream_id: streamid,
+            elements: [],
+            state: "pending"
+        };
+        setStreamData(prev => [optimisticData, ...prev]);
+        
+        // 2. Make the API call
+        const response = await fetch(`/api/strategy-strategies`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                stream_id: streamid,
+                name: newStrategy.name,
+                description: newStrategy.description,
+                whatwewillnotdo: newStrategy.whatwewillnotdo,
+            }),
+        });
 
-      if (!response.ok) {
-        throw new Error('Failed to create strategy', response.statutsText);
-      }
+        if (!response.ok) {
+            throw new Error('Failed to create strategy', response.statusText);
+        }
 
-      const eventData = await response.json();
-      console.log('Strategy result :', eventData);
+        const eventData = await response.json();
+        console.log('Strategy result:', eventData);
+        
+        // 3. Replace optimistic data with real response
+        const newStrategyData = {
+            created_at: eventData.result.timestamp,
+            name: eventData.result.payload.name,
+            description: eventData.result.payload.description,
+            state: eventData.result.payload.state,
+            stream_id: eventData.result.payload.stream_id,
+            id: eventData.result.payload.id,
+            whatwewillnotdo: eventData.result.payload.whatwewillnotdo,
+            elements: [], 
+        };
 
-      const newStrategyData = {
-        created_at: eventData.result.timestamp,
-        name: eventData.result.payload.name,
-        description: eventData.result.payload.description,
-        state: eventData.result.payload.state,
-        stream_id: eventData.result.payload.stream_id,
-        id: eventData.result.payload.id,
-        whatwewillnotdo: eventData.result.payload.whatwewillnotdo,
-        elements: [],
-      };
-      setShowCreateStrategyForm(false);
-      console.log('Strategy adding with newStrategyData', newStrategyData);
-      setNewStrategy({ name: '', description: '', whatwewillnotdo: '' });
+        setStreamData(prev => [
+            newStrategyData, 
+            ...prev.filter(item => item.id !== tempId)
+        ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
 
-      setStreamData([newStrategyData, ...streamData].sort((a, b) => {
-        return new Date(b.created_at) - new Date(a.created_at);
-      }));
+        setShowCreateStrategyForm(false);
+        setNewStrategy({ name: '', description: '', whatwewillnotdo: '' });
+
     } catch (err) {
-      alert(`Error: ${err.message}`);
+        // 4. Remove optimistic data on error
+        setStreamData(prev => prev.filter(item => item.id !== tempId));
+        alert(`Error in handleCreateStrategySubmit: ${err.message}`);
     }
-  };
+};
 
-  const handleCancelCreateElement = () => {
+  const handleCancelCreateInitiative = () => {
     setNewElement({
       name: '',
       description: '',
     });
-    setShowCreateElementForm(false);
+    setShowCreateInitiativeForm(false);
   };
 
   const handleCancelCreateStrategy = () => {
@@ -356,6 +378,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   return {
     editableElementId,
     tempData,
+    setTempData,
     showCreateStrategyForm,
     newStrategy,
     availableTags,
@@ -368,25 +391,25 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
     newElement,
     handleEditStrategyClick,
     handleSaveStrategyClick,
-    handleEditClick,
+    handleEditInitiative,
     handleCancelClick,
     handleFieldChange,
     handleElementExpand,
-    toggleStrategyCollapse,
     handleEditToggle,
-    handleSaveClick,
+    handleSaveInitiative,
     handleCreateStrategyChange,
     handleCreateInitiative,
-    handleCreateElementChange,
+    handleCreateInitiativeChange,
     handleCreateStrategy,
-    handleCancelCreateElement,
+    handleCancelCreateInitiative,
     handleCancelCreateStrategy,
     setShowCreateStrategyForm,
-    setShowCreateElementForm,
+    setShowCreateInitiativeForm,
     setTargetStrategy,
     setEditableStrategyId,
     setTempStrategyData,
     setNewStrategy,
     setNewElement,
+    toggleStrategyCollapse
   };
 };

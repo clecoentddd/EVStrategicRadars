@@ -2,7 +2,7 @@
 import { fetchAllRadarItemsByRadarId } from "../radars/infrastructure/radarItemsDB"; // Adjust the path if necessary
 
 // WRITE of CQRS
-import {handleRadarItemCreate, handleRadarItemUpdate, getRadarItem} from "../radars/model/radarItems"
+import {handleRadarItemCreate, handleRadarItemUpdate, getRadarItem} from "../radars/model/radaritems"; // Adjust the path if necessary
 
 export default async function handler(req, res) {
   // console.log("Body received:", req.body);
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
         return res.status(201).json(transformedResponse);
 
         } else {
-          return res.status(400).json({ message: result.message });
+          return res.status(400).json({ message: radarItem.message });
         }
       } catch (error) {
         console.error("Error creating radar item:", error);

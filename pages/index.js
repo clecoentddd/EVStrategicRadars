@@ -206,7 +206,7 @@ function HomePage() {
       const streamID = stream.id;
       if (streamID) {
         // Navigate to the strategy page
-        window.location.href = `/strategies/ui/streamid?${encodeURIComponent(streamID)}`;
+        window.location.href = `/strategies/ui/${encodeURIComponent(streamID)}`;
       } else {
         alert('No active stream found for this radar.');
       }
@@ -496,6 +496,12 @@ function HomePage() {
                       View Radar
                     </button>
                     <button
+                      className={styles.buttonViewStrategy}
+                      onClick={() => viewStream(radar.id)}
+                    >
+                      View Strategy
+                    </button>
+                    <button
                       className={styles.buttonUpdate}
                       onClick={() => toggleForm('update', radar)}
                     >
@@ -507,12 +513,7 @@ function HomePage() {
                     >
                       Delete
                     </button>
-                    <button
-                      className={styles.buttonViewStrategy}
-                      onClick={() => viewStream(radar.id)}
-                    >
-                      View Strategies
-                    </button>
+
                     {isUpdateFormVisible && radarToUpdate?.id === radar.id && (
                     <div className={styles.updateFormContainer}>
                       <h2>Update Radar</h2>
@@ -541,7 +542,7 @@ function HomePage() {
                             type="number"
                             id="level"
                             name="level"
-                            min="1"
+                            min="0"
                             required
                             style={{ width: '50px' }}
                             value={radarToUpdate.level || ''}
@@ -572,7 +573,7 @@ function HomePage() {
                           ></textarea>
                         </div>
                         <div className={styles.formGroup}>
-                          <label htmlFor="context">What is your context? What are the key activities?</label>
+                          <label htmlFor="context">What is business are you in? What are the key activities?</label>
                           <br />
                           <textarea
                             id="context"
