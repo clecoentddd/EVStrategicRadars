@@ -14,7 +14,10 @@ const RadarItemEditOrCreateForm = ({
 }) => {
   return (
     <div className={styles.showForm}> 
-      <h3>{editMode ? "Edit Radar Item" : "Create Radar Item"}</h3>
+      <h3>
+  {editMode ? 'Edit Radar Item' : 'Create Radar Item'}
+  {editMode && formData.name && `: ${formData.name}`}
+</h3>
       <form onSubmit={(e) => { e.preventDefault(); handleSaveItem(); }}>
         <div className={styles.formRow}> 
           <div className={styles.column} style={{ flex: 2 }}> 
