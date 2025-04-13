@@ -12,50 +12,7 @@
     cursor: pointer;
   }
 
-  
-  .tooltip {
-    position: absolute;
-    background-color: lavender; /* Light blue background */
-    border: 1px solid plum; /* Plum border */
-    color: black; /* Dark text */
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 5px 5px 15px rgba(128, 0, 128, 0.5); /* Plum glow effect */
-    font-size: 14px;
-    pointer-events: auto; /* Allow interaction */
-    z-index: 10; /* Ensure tooltip is above other elements */
-    opacity: 1; /* Ensure visibility */
-    font-family: 'Orbitron', sans-serif;
-    line-height: 1.6; /* Add spacing between lines */
-    width: 300px; /* Fixed width for consistency */
-    max-width: 300px; /* Limit tooltip width */
-  }
-  
-  .tooltip-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 10px; /* Space below the title */
-    display: block; /* Ensure it takes up full width */
-  }
-  
-  .tooltip-pair {
-    margin-bottom: 8px; /* Add spacing between pairs */
-  }
-  
-  .tooltip-key {
-    font-weight: bold;
-  }
-  
-  .tooltip-value {
-    font-weight: normal;
-  }
-  
-  .tooltip strong {
-    font-weight: bold;
-  }
-  
-  
-  
+    
   .chartText { 
     font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
     font-size: 12px; fill: #eeeaea; /* Default text color */ 
@@ -66,4 +23,5 @@
     font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
     font-size: 9px; fill: white; /* Default text color */ 
   }
+  
   

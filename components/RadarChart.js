@@ -4,11 +4,14 @@ import { useRouter } from 'next/router'; // For navigation
 import { supabase } from '../utils/supabaseClient';
 import styles from './RadarChart.module.css'; // Import the CSS Module (or use a global CSS file)
 
+// Import the new component
+import RadarTooltip from './RadarToolTip';
+
 // Initialize Supabase client
 //const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
  
-  const RadarChart = ({ items, radius}) => {
+  const RadarChart = ({ items, radius, onEditClick }) => {
     const svgRef = useRef();
     const [tooltipData, setTooltipData] = useState({
       text: "Zoom over to see details for each risk", // Default tooltip text
@@ -190,33 +193,35 @@ if (peopleAndKnowledgeLabel) {
          }
         // Append group for each item
         const itemGroup = svg.append('g')
-          .on('mouseover', async function () {
-            console.log(`Mouse over: ${item.name}, zoom_in id: ${item.zoom_in}`);
-
-          
-            d3.select(this).select('circle') .attr('r', size * 2) // Optional: Add a black stroke to highlight 
-            
-            d3.select(this).select('text')
-              .attr('font-size', '20px') // Adjust this value as needed
-              .attr('font-weight', 'bold'); // Optional: Make the text bold
-
-            // Fetch the radar name based on zoom_in
-            let tooltipText = `Title: ${item.name}<br/>Category: ${item.category}<br/>Type: ${item.type}<br/>Description: ${item.detect}<br/>Impact: ${item.impact}<br/>Tolerance: ${item.tolerance}<br/>Distance: ${item.distance}<br/>`;
-
-            if (item.zoom_in) {
-              const radar = await fetchRadarName(item.zoom_in);
-              tooltipText += `<br/>Zoom in into radar: <a href='/radars/ui/${radar}?radarId=${item.zoom_in}' target='_blank' style='color: blue;'>${radar}</a>`;
-            } else {
-              tooltipText += `<br/>Zoom In Not Selected`;
+        .on('mouseover', async function () {
+          console.log(`Mouse over: ${item.name}, zoom_in id: ${item.zoom_in}`);
+        
+          // Visual highlight
+          d3.select(this).select('circle').attr('r', size * 2);
+          d3.select(this).select('text')
+            .attr('font-size', '20px')
+            .attr('font-weight', 'bold');
+        
+          // Fetch radar name if needed
+          let zoomData = null;
+          if (item.zoom_in) {
+            const radarName = await fetchRadarName(item.zoom_in);
+            zoomData = {
+              id: item.zoom_in,
+              name: radarName
+            };
+          }
+        
+          // Pass all data to tooltip
+          setTooltipData({
+            xPos: 700,  // Fixed position as in your original
+            yPos: radius + 0,
+            itemData: {
+              ...item,       // All original item properties
+              zoom_in: zoomData  // Structured zoom data
             }
-
-            // Update the tooltip data (fixed position for the tooltip)
-            setTooltipData({
-              xPos: 700,  // Fixed to the right of the circle
-              yPos: radius + 0,       // Adjust the position relative to the circle
-              text: tooltipText
-            });
-          })
+          });
+        })
           .on('mouseout', function () {
             console.log(`Mouse out: ${item.name}`);
             // Revert to original color on mouseout 
@@ -237,7 +242,7 @@ if (peopleAndKnowledgeLabel) {
           .attr('stroke', circleStyle.stroke) // Use the determined stroke color
           .attr('stroke-width', circleStyle.strokeWidth); 
 
-          if (item.type === 'Risk'  || item.type === 'Threat') {
+          if (item.type === 'Risk' ) {
             const triangleSize = size * 0.6; // Size of the triangle relative to the circle
             const trianglePoints = [
               [x, y - triangleSize], // Top point
@@ -300,67 +305,10 @@ if (peopleAndKnowledgeLabel) {
   };
 
  // Function to display tooltip
- const renderTooltip = () => {
-  if (!tooltipData) return null;
+ const renderTooltip = () => (
+  <RadarTooltip tooltipData={tooltipData} onEditClick={onEditClick} />
 
-  const { text, xPos, yPos } = tooltipData;
-
-  // Split text into lines
-  const tooltipLines = text.split('<br/>').map((line, index) => {
-    // Check if the line contains a link
-    if (line.includes('<a href=')) {
-      const linkMatch = line.match(/<a href='(.*?)'.*?>(.*?)<\/a>/);
-      if (linkMatch) {
-        const [, href, anchorText] = linkMatch;
-        return (
-          <div key={index} className={styles['tooltip-pair']}>
-            <span className={styles['tooltip-key']}>Zoom in into radar:</span>{' '}
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: 'blue', textDecoration: 'underline' }}
-            >
-              {anchorText}
-            </a>
-          </div>
-        );
-      }
-    }
-
-    // For key-value pairs
-    if (line.includes(':')) {
-      const [key, value] = line.split(':', 2);
-      return (
-        <div key={index} className={styles['tooltip-pair']}>
-          <span className={styles['tooltip-key']}>{key.trim()}:</span>{' '}
-          <span className={styles['tooltip-value']}>{value.trim()}</span>
-        </div>
-      );
-    }
-
-    // Fallback for plain text lines
-    return (
-      <div key={index} className={styles['tooltip-pair']}>
-        {line}
-      </div>
-    );
-  });
-
-  return (
-    <div
-      className={styles.tooltip}
-      style={{
-        position: 'absolute',
-        top: `${yPos - 140}px`,
-        left: `${xPos + 15}px`,
-        visibility: tooltipData ? 'visible' : 'hidden',
-      }}
-    >
-      {tooltipLines}
-    </div>
-  );
-};
+);
 
 
 

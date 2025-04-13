@@ -1,0 +1,60 @@
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
+    max-width: 300px; /* wider area */
+    width: fit-content;
+    z-index: 100;
+    pointer-events: auto;
+    font-family: 'Orbitron', sans-serif; /* Orbitron font */
+  }
+  
+  .row {
+    margin-bottom: 6px;
+    line-height: 1.4;
+    width: 300px;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #b3e5fc;
+    margin-right: 6px;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .value {
+    color: white;
+  }
+  
+  .link {
+    color: #4fc3f7;
+    text-decoration: underline;
+  }
+  
+  .link:hover {
+    color: #82b1ff;
+  }
+  
+  .edit-button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 8px;
+    font-size: 13px;
+    font-family: 'Orbitron', sans-serif; /* match font */
+  }
+  
+  .edit-button:hover {
+    background: #45a049;
+  }
+
+  .mutedText {
+    color: #aaa;
+    font-style: italic;
+  }
+  

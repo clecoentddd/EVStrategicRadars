@@ -241,7 +241,7 @@ function HomePage() {
           <h1 className={styles.headerTitle}>SPARK - Strategies that are executable</h1>
           <h2 className={styles.headerSubtitle}>
             Agility: “the organizational capacity to detect, assess and respond to environmental changes in ways that are purposeful, decisive and grounded in a will to win.” 
-            Leo Tilmn / General Charles Jacoby
+            Leo Tilman / General Charles Jacoby
           </h2>
           <button
             id="sync-status"
