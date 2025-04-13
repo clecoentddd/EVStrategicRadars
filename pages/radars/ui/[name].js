@@ -74,35 +74,37 @@ export default function RadarPage() {
    // Keep your dependency array intact if you have specific dependencies
 }, []);
 
+const fetchRadar = async () => {
+  try {
+    setLoadingRadar(true);
+    setError(null);
+    logMessage("Fetching radar data...");
+
+    const response = await fetch(`/api/radars-fetch?id=${radarId}`);
+    const data = await response.json();
+
+    if (response.ok) {
+      setRadar(data);
+      setCollapsedItems(new Array(data.length).fill(true));
+      logMessage("Radar data fetched successfully");
+    } else {
+      setError(data.message);
+      logMessage(`Error fetching radar data: ${data.message}`);
+    }
+  } catch (err) {
+    setError('Error fetching radar');
+    logMessage("Error fetching radar data");
+  } finally {
+    setLoadingRadar(false); // Set loading to false after fetching radar
+  }
+};
 
 useEffect(() => {
 
   if (!radarId) return;
 
-  const fetchRadar = async () => {
-    try {
-      setLoadingRadar(true);
-      setError(null);
-      logMessage("Fetching radar data...");
+  fetchRadar();
 
-      const response = await fetch(`/api/radars-fetch?id=${radarId}`);
-      const data = await response.json();
-
-      if (response.ok) {
-        setRadar(data);
-        setCollapsedItems(new Array(data.length).fill(true));
-        logMessage("Radar data fetched successfully");
-      } else {
-        setError(data.message);
-        logMessage(`Error fetching radar data: ${data.message}`);
-      }
-    } catch (err) {
-      setError('Error fetching radar');
-      logMessage("Error fetching radar data");
-    } finally {
-      setLoadingRadar(false); // Set loading to false after fetching radar
-    }
-  };
 
     const fetchRadarItems = async () => {
       try {
@@ -268,7 +270,7 @@ useEffect(() => {
       });
 
       formRef.current?.scrollIntoView({ behavior: 'smooth' });
-      
+
     } catch (error) {
       setError('Error fetching radar item for edit');
       console.log("Error during radar item fetch: ", error.message);
@@ -358,6 +360,8 @@ const handleSaveItem = async () => {
       tolerance: '',
       zoom_in: '',
     });
+
+    await fetchRadar(); 
 
     console.log("Radar item saved successfully");
   } catch (err) {
