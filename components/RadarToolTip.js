@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './RadarToolTip.module.css'; // Adjust the path as necessary
+import { Pencil } from 'lucide-react';
 
 const RadarTooltip = ({ tooltipData, onEditClick }) => {
   if (!tooltipData?.itemData) return null;
@@ -39,12 +40,13 @@ const RadarTooltip = ({ tooltipData, onEditClick }) => {
         <div className={`${styles.row} ${styles.mutedText}`}>Zoom In Not Selected</div>
       )}
 
-      <button 
-        className={styles.editButton} 
-        onClick={() => onEditClick(itemData)}
-      >
-        Edit
-      </button>
+    <button 
+    className={styles.editButton} 
+    onClick={() => onEditClick(itemData)}
+    title="Edit"
+    >
+    <Pencil size={16} />
+    </button>
     </div>
   );
 };

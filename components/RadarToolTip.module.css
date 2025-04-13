@@ -37,21 +37,25 @@
     color: #82b1ff;
   }
   
-  .edit-button {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
+  .editButton {
+    background-color: black;
+    border: 1px solid #a855f7; /* Tailwind's purple-500 */
+    color: #a855f7; /* Purple pencil */
+    padding: 6px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-top: 8px;
-    font-size: 13px;
-    font-family: 'Orbitron', sans-serif; /* match font */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
   }
   
-  .edit-button:hover {
-    background: #45a049;
+  .editButton:hover {
+    background-color: #1f1f1f;
+    border-color: #9333ea; /* Purple-600 on hover */
+    color: #9333ea;
   }
+  
 
   .mutedText {
     color: #aaa;

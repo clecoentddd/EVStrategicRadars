@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import RadarChart from '../../../components/RadarChart';
 import styles from './name.module.css'; // Import CSS Modules
 import RadarItemEditOrCreateForm from './RadarItemEditOrCreateForm'; // Import the form component
@@ -37,6 +37,8 @@ export default function RadarPage() {
   const router = useRouter();
   const { name, radarId } = router.query;
   const [collapsedItems, setCollapsedItems] = useState([]);
+
+  const formRef = useRef(null);
   
   useEffect(() => {
     // Initialize all items as collapsed when radarItems changes
@@ -264,6 +266,9 @@ useEffect(() => {
         tolerance: fetchedItem.tolerance || '',
         zoom_in: fetchedItem.zoom_in || '',
       });
+
+      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+      
     } catch (error) {
       setError('Error fetching radar item for edit');
       console.log("Error during radar item fetch: ", error.message);
@@ -391,7 +396,7 @@ const handleSaveItem = async () => {
       </div>
 
       <div className={styles.radarChart}>
-        <RadarChart items={radarItems} radius={280} />
+        <RadarChart items={radarItems} radius={280} onEditClick={handleEdit}/>
       </div>
 
       <h2 className={styles.radarItemsTitle}>Radar Items</h2>
@@ -421,6 +426,7 @@ const handleSaveItem = async () => {
       )}
 
       {showForm && (
+        <div ref={formRef}>
         <RadarItemEditOrCreateForm
           showForm={showForm}
           editMode={editMode}
@@ -432,6 +438,7 @@ const handleSaveItem = async () => {
           handleSaveItem={handleSaveItem}
           setShowForm={setShowForm}
         />
+        </div>
       )}
 
     <ul className={styles.radarItemList}>
