@@ -1,8 +1,8 @@
 import { supabase } from "../../../utils/supabaseClient";
 
-export async function projectRadarToSupabase(radar) {
+export async function projectOrganisationToSupabase(radar) {
   try {
-    console.log("projectRadarToSupabase - data to insert:", radar);
+    console.log("projectOrganisationToSupabase - data to insert:", radar);
    
     // Validate radar object
     if (!radar.aggregateId) {
@@ -12,7 +12,7 @@ export async function projectRadarToSupabase(radar) {
     // Handle RADAR_CREATED event
     if (radar.eventType === "RADAR_CREATED") {
       const { data, error } = await supabase
-        .from('projection_radars_list')
+        .from('projection_organisation_list')
         .insert([
           {
             id: radar.aggregateId,
@@ -37,7 +37,7 @@ export async function projectRadarToSupabase(radar) {
     // Handle RADAR_UPDATED event (or default behavior)
     if (radar.eventType === "RADAR_UPDATED") {
     const { data, error } = await supabase
-      .from('projection_radars_list')
+      .from('projection_organisation_list')
       .update({
         name: radar.payload.name,
         purpose: radar.payload.purpose,
@@ -48,7 +48,7 @@ export async function projectRadarToSupabase(radar) {
       .match({ id: radar.aggregateId })
       .select('*');
       
-      console.log("projectRadarToSupabase - data returned from supabase:", data);
+      console.log("projectOrganisationToSupabase - data returned from supabase:", data);
 
     if (error) {
       console.log("Error updating radar in Supabase:", error.message);
@@ -59,20 +59,20 @@ export async function projectRadarToSupabase(radar) {
       // Handle RADAR_UPDATED event (or default behavior)
       if (radar.eventType === "RADAR_DELETED") {
         const { data, error } = await supabase
-          .from('projection_radars_list')
+          .from('projection_organisation_list')
           .delete()
           .match({ id: radar.aggregateId })
           .select('*'); // Returns the deleted row
     
         if (error) {
-          console.log("Error updating radar in Supabase:", error.message);
-          throw new Error(`Error updating radar in Supabase: ${error.message}`);
+          console.log("Error updating organisation in Supabase:", error.message);
+          throw new Error(`Error updating organisation in Supabase: ${error.message}`);
         }
       }
 
-    // return data; // Return updated radar data (or undefined if not found)
+    // return data;
   } catch (error) {
-    console.error("Error upserting radar:", error.message);
+    console.error("Error upserting organisation:", error.message);
     throw error;
   }
 }

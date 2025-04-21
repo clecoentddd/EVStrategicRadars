@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './styles/index.module.css';
 import useAICoach from './indexAICoach';
-import createRadar from './services/createRadarIndex';
-import updateRadar from './services/updateRadarIndex';
-import deleteRadar from './services/deleteRadarIndex';
+import createOrganisation from './services/createOrganisation';
+import updateOrganisation from './services/updateOrganisation';
+import deleteOrganisation from './services/deleteOrganisation';
 
 // Spinner from react
 import { ClipLoader } from 'react-spinners';
@@ -59,7 +59,7 @@ function HomePage() {
   useEffect(() => {
     const fetchRadars = async () => {
       try {
-        const response = await fetch('/api/radars-fetch');
+        const response = await fetch('/api/organisations-fetch');
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -101,7 +101,7 @@ function HomePage() {
     const level = parseInt(event.target.level.value, 10);
   
     try {
-      const newRadar = await createRadar(name, purpose, context, level);
+      const newRadar = await createOrganisation(name, purpose, context, level);
       console.log('final preparing reading result for setRadars', newRadar);
   
       // Correctly add the new radar to the array
@@ -131,7 +131,7 @@ function HomePage() {
 
     try {
       if (radarToUpdate) {
-        const result = await updateRadar(radarToUpdate.id, name, purpose, context, level);
+        const result = await updateOrganisation(radarToUpdate.id, name, purpose, context, level);
         console.log('index.js - radarToUpdate result from update is', result.name);
         
         // Log the new values from the result object
@@ -219,7 +219,7 @@ function HomePage() {
   
   const handleDelete = async (radarId) => {
     console.log('handleDelete', radarId);
-    const response = await deleteRadar(radarId);
+    const response = await deleteOrganisation(radarId);
 
     if (response) {
       if (response) {
@@ -259,12 +259,12 @@ function HomePage() {
           toggleForm('create');
         }}
       >
-        Create a new organisation
+        Create an organisation
       </button>
       {isCreateFormVisible && (
         console.log('Rendering Create Form'), // Debugging log
         <div id="create-form" className={styles.createFormContainer} >
-          <h2>Create Radar</h2>
+          <h2>Create an organisation (departements, groups, functions, etc.)</h2>
           <form onSubmit={handleCreate}>
             <div className={styles.formGroup}>
               <label htmlFor="name">Name</label>

@@ -80,7 +80,7 @@ const fetchRadar = async () => {
     setError(null);
     logMessage("Fetching radar data...");
 
-    const response = await fetch(`/api/radars-fetch?id=${radarId}`);
+    const response = await fetch(`/api/organisations-fetch?id=${radarId}`);
     const data = await response.json();
 
     if (response.ok) {
@@ -129,7 +129,7 @@ useEffect(() => {
 
     const fetchZoomInOptions = async () => {
       try {
-        const response = await fetch(`/api/radars-fetch`);
+        const response = await fetch(`/api/organisations-fetch`);
         const radars = await response.json();
 
         if (response.ok) {

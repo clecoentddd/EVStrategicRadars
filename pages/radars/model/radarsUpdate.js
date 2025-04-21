@@ -1,4 +1,4 @@
-import {sendRadarUpdated} from '../infrastructure/eventSourceUpdateRadars';
+import {sendOrganisationUpdated} from '../infrastructure/eventSourceUpdateOrganisation';
 
 export async function handleRadarUpdate(command) {
   // console.log("Handling radar creation for:", command); // Log the received command
@@ -14,8 +14,8 @@ export async function handleRadarUpdate(command) {
   // Save the radar creation event
   let savedEvent;
   try {
-    console.log("MODEL Updating Radar: calling sendRadarCreated:",command);
-    savedEvent = await sendRadarUpdated({ ...command.payload });
+    console.log("MODEL Updating Radar: calling sendOrganisationCreated:",command);
+    savedEvent = await sendOrganisationUpdated({ ...command.payload });
     console.log("MODEL123 SaveEvent saved:",savedEvent);
 } catch (error) {
     console.error("Error in saveEvent:", error.message);

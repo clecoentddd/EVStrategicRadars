@@ -1,16 +1,16 @@
 import { v4 as uuidv4 } from 'uuid'; // Import the UUID generator
-import { projectRadarToSupabase } from './radarProjection.js';
-import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js'
-import { appendEventToEventSourceDB } from './eslib.js';
+import { projectOrganisationToSupabase } from './organisationsProjection.js';
+import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js';
+import { appendEventToOrganisationsEventSourceDB } from './eslib.js';
 
 const eventStore = []; // In-memory event storage
 
-export const sendRadarCreated = async (event) => {
+export const sendOrganisationCreated = async (event) => {
 
 
   // Add id (UUID) to the event payload
 
-   console.log("EVENTSTORE event is ", event);
+  console.log("EVENTSTORE event is ", event);
   
   const radarToCreate = {
     eventType: "RADAR_CREATED", // Static value for eventType
@@ -26,10 +26,10 @@ export const sendRadarCreated = async (event) => {
   };
 
 
-  console.log ("eventstoreRadars.js publishing events", radarToCreate);
+  console.log ("sendOrganisationCreated.js publishing events", radarToCreate);
 
   //eventStore.push(eventWithId); // Push the new event with the ID into the event store
-  const radarCreated = await appendEventToEventSourceDB(radarToCreate);
+  const radarCreated = await appendEventToOrganisationsEventSourceDB(radarToCreate);
 
   // Publish integration event
   if (radarCreated) {
@@ -40,7 +40,7 @@ export const sendRadarCreated = async (event) => {
       console.error('Error publishing event:', error);
     }
   } else {
-    console.warn('radarCreated is undefined or null. Skipping event publishing.');
+    console.warn('sendOrganisationCreated: is undefined or null. Skipping event publishing.');
   }
 
   // If the event type is "RADAR_CREATED", project it to Supabase
@@ -48,14 +48,14 @@ export const sendRadarCreated = async (event) => {
     try {
       // Project the event to Supabase
       console.log("Projection radar to supase - Create", radarCreated.eventType);
-      await projectRadarToSupabase(radarCreated); // Pass the payload with id
+      await projectOrganisationToSupabase(radarCreated); // Pass the payload with id
     } catch (error) {
       console.log('saveEvent: Error projecting radar to Supabase:', error);
     }
   }
 
   // Explicitly return the saved event with the id
-  console.log("sendRadarCreated returning", radarCreated);
+  console.log("sendOrganisationCreated returning", radarCreated);
   return radarCreated;
 };
 

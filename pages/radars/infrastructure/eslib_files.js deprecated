@@ -40,7 +40,7 @@ export function writeEventsToFile(radarId, events) {
 }
 
 // Get events for a specific stream
-export function getEventsForRadar(radarId) {
+export function getEventsForAnOrganisation(radarId) {
   return readEventsFromFile(radarId);
 }
 

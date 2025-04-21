@@ -1,9 +1,9 @@
 // Service to create a radar entry into the organisation
 
 // services/updateRadarIndex.js
-export default async function deleteRadar(radarId) {
+export default async function deleteOrganisation(radarId) {
     try {
-      const response = await fetch(`/api/radars-delete?${radarId}`, { 
+      const response = await fetch(`/api/organisation-delete?${radarId}`, { 
         method: "PUT", 
         headers: {
           "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export default async function deleteRadar(radarId) {
       }
   
       const result = await response.json(); 
-      console.log("Services: deleteRadar response is", result);
+      console.log("Services: deleteOrganisation response is", result);
       return response; 
     } catch (error) {
       console.error("Error deleting radar:", error.message);

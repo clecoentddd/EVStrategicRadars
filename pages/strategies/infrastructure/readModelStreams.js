@@ -8,7 +8,7 @@ import { supabase } from "../../../utils/supabaseClient"; // Import the Supabase
 export async function getByStreamId(streamId) {
   try {
     const { data, error } = await supabase
-      .from("strategic_initiatives")
+      .from("projection_initiatives")
       .select("id, name, description, type, state, updated_at")
       .eq("stream_id", streamId);
 
@@ -32,7 +32,7 @@ export async function getByStreamId(streamId) {
 export async function getByStrategyId(strategyId) {
   try {
     const { data, error } = await supabase
-      .from("strategic_initiatives")
+      .from("projection_initiatives")
       .select("id, name, description, type, state, updated_at")
       .eq("strategy_id", strategyId);
 
@@ -56,7 +56,7 @@ export async function getByStrategyId(strategyId) {
 export async function getById(id) {
   try {
     const { data, error } = await supabase
-      .from("strategic_initiatives")
+      .from("projection_initiatives")
       .select("*")
       .eq("id", id)
       .single(); // Single ensures we get exactly one row or null
@@ -138,7 +138,7 @@ export async function getAllStreamData(stream_id) {
       strategies.map(async (strategy) => {
         // Fetch elements for the current strategy
         const { data: elements, error: elementsError } = await supabase
-          .from("strategic_initiatives")
+          .from("projection_initiatives")
           .select("*")
           .eq("strategy_id", strategy.id);
 
@@ -191,7 +191,7 @@ export async function getAllStreamData1(stream_id) {
 
       // Fetch elements for the current strategy
       const { data: elements, error: elementsError } = await supabase
-        .from("strategic_initiatives")
+        .from("projection_initiatives")
         .select("*")
         .eq("strategy_id", strategy.id);
 

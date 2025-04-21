@@ -1,8 +1,8 @@
 import { appendEventToEventSourceDB } from './eslib.js';
-import { projectRadarToSupabase } from './radarProjection.js'; // Import projection function
+import { projectOrganisationToSupabase } from './organisationsProjection.js'; // Import projection function
 import {replayRadarAggregate} from './eventReplayRadars.js';
 
-export const sendRadarDelete= async (event) => {
+export const sendOrganisationDeleted= async (event) => {
 
 
     // Add id (UUID) to the event payload
@@ -29,7 +29,7 @@ export const sendRadarDelete= async (event) => {
     console.log ("eventstoreRadars.js publishing events", radarToDelete);
   
     //eventStore.push(eventWithId); // Push the new event with the ID into the event store
-    const radarDeleted = await appendEventToEventSourceDB( radarToDelete);
+    const radarDeleted = await appendEventToOrganisationEventSourceDB( radarToDelete);
   
     // Publish integration event
     console.log ("eventstore.js publishing events 2", radarDeleted);
@@ -45,7 +45,7 @@ export const sendRadarDelete= async (event) => {
       try {
         // Project the event to Supabase
         console.log("Projection radar to supabase", radarDeleted.eventType);
-        await projectRadarToSupabase(radarDeleted); // Pass the payload with id
+        await projectOrganisationToSupabase(radarDeleted); // Pass the payload with id
       } catch (error) {
         console.log('saveEvent: Error projecting radar to Supabase:', error);
       }

@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
         // Update radars with NPS
         const { data: NPSdata, error: NPSerror } = await supabase
-        .from('projection_radars_list')
+        .from('projection_organisation_list')
         .update({
             potentialNPS: potentialNPS, // Update potentialNPS
             updated_at: new Date().toISOString(), // Update updated_at

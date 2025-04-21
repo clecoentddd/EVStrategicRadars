@@ -1,0 +1,267 @@
+/* InitiativeItem.module.css */
+
+.initiative {
+    margin-bottom: 20px;
+    border-radius: 12px; /* Rounded corners */
+    overflow: hidden; /* Ensures child elements respect the border radius */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* Optional subtle shadow */
+  }
+  
+  .initiativeHeader {
+    padding: 12px 16px;
+    background-color: #ddb1f5; /* Purple background */
+    color: white; /* White text for contrast */
+    border-radius: 12px 12px 0 0; /* Only round top corners */
+    transition: background-color 0.2s; /* Smooth color transition */
+  }
+  
+  /* State-based colors */
+  .initiativeHeader.openState {
+    background-color: b995cf; /* Purple when open */
+  }
+  
+  .initiativeHeader.closedState {
+    background-color: grey; /* Darker purple when closed */
+  }
+  
+  .initiativeTitleStyle {
+    font-weight: 600; /* Slightly bolder */
+    font-size: 1.1em;
+    letter-spacing: 0.3px;
+  }
+  
+  /* Details section */
+  .initiativeDetails {
+    padding: 16px;
+    background-color: white;
+    border-radius: 0 0 12px 12px; /* Only round bottom corners */
+    border: 1px solid #e1bee7; /* Light purple border */
+    border-top: none; /* Remove top border */
+  }
+  .horizontalAlignmentWrapper {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  
+  /* Form element styles */
+  .labelInitiativeStyle {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .fieldLabel {
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  
+  .textAreaInitiativeName {
+    width: 100%;
+    min-height: 60px;
+    padding: 8px;
+    border: 1px solid lavenderblush;
+    border-radius: 4px;
+    resize: vertical;
+    background-color: #f5f5f5
+  }
+  
+  .textAreaInitiativeNameEditable {
+    background-color: white;
+  }
+  
+  .statusDropdown {
+    padding: 8px;
+    border: 1px solid #f5f5f5;
+    border-radius: 4px;
+    width: 100%;
+    background-color: #f5f5f5;
+  }
+
+  .statusDropdown:not(:disabled) {
+    background-color: white; /* White when editable */
+  }
+  
+  .progressInput {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 80px;
+    background-color: #f5f5f5
+  }
+
+  .progressInput:not(:disabled) {
+    background-color: white; /* White when editable */
+  }
+  
+  /* Table styles */
+  .tableStyle {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    margin: 20px 0;
+    font-family: sans-serif;
+  }
+
+  /* Equal width for all columns */
+  .tableStyle thead th {
+    width: 25%;
+  }
+  
+.headerInitiativeTable, 
+.tableCell {
+  border: 1px solid grey;
+  padding: 10px;
+  text-align: left;
+  word-wrap: break-word;
+  vertical-align: top;
+  background-color: #f5f5f5;
+}
+
+.headerInitiativeTable {
+  background-color: lavender;
+  position: relative;
+}
+
+/* Read mode cell styles */
+.tableCell {
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 40px; /* Match edit mode minimum */
+  background-color: #f5f5f5;
+}
+  
+  /* Edit mode styles */
+  .tableCellEditable {
+    background-color: white;
+    padding: 0;
+    height: auto;
+  }
+
+.textArea {
+  width: 100%;
+  min-height: 40px; /* Minimum height */
+  height: auto; /* Auto-expand to content */
+  padding: 10px;
+  border: none;
+  resize: none; /* Disable manual resize */
+  box-sizing: border-box;
+  background-color: white;
+  font-family: inherit;
+  overflow-y: hidden; /* Remove scrollbar */
+  line-height: 1.5;
+  display: block;
+}
+
+/* Auto-expanding behavior */
+.textArea:focus {
+    min-height: 120px; /* Expanded height when focused */
+  }
+  
+  /* ===== PRESERVED TAG STYLES ===== */
+  .tagsContainer {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  .tagsTitle {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #6a1b9a;
+  }
+  
+  .tagDropdown {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .tagsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .tagItem {
+    background-color: #e1bee7;
+    color: #4a148c;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .removeTagButton {
+    background: none;
+    border: none;
+    color: #4a148c;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+  }
+  
+  .tagReadonly {
+    background-color: #f3e5f5;
+    color: #4a148c;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 14px;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  /* ===== END TAG STYLES ===== */
+  
+  /* Button styles */
+  .rowButtonsEditCancelSave {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .editElementButton,
+  .saveElementButton,
+  .cancelElementButton {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .editElementButton {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .saveElementButton {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .cancelElementButton {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  /* Tooltip styles */
+  .customTooltip {
+    max-width: 300px;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    z-index: 1000;
+  }

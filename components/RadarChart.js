@@ -283,24 +283,24 @@ if (peopleAndKnowledgeLabel) {
 
   // Function to fetch radar name by zoom_in
   const fetchRadarName = async (zoom_in) => {
-    console.log(`Fetching radar name for zoom_in: ${zoom_in}`);
+    console.log(`Fetching organisation for zoom_in: ${zoom_in}`);
     try {
       const { data, error } = await supabase
-        .from('projection_radars_list')
+        .from('projection_organisation_list')
         .select('name')
         .eq('id', zoom_in)
         .single();
 
       if (error) {
         console.error("Error fetching radar name:", error.message);
-        return 'Error fetching radar';
+        return 'Error fetching organisation';
       }
 
       console.log("Radar name found: ", data?.name);
       return data?.name || 'No name available';
     } catch (error) {
       console.error("Unexpected error:", error);
-      return 'Error fetching radar';
+      return 'Error fetching organisation';
     }
   };
 

@@ -9,7 +9,7 @@ export async function projectElementToSupabase(event) {
   try {
     // Check if the strategic element already exists
     const { data: existingItems, error: fetchError } = await supabase
-      .from("strategic_initiatives")
+      .from("projection_initiatives")
       .select("*")
       .eq("id", event.aggregateId);
 
@@ -24,7 +24,7 @@ export async function projectElementToSupabase(event) {
       if (event.eventType === "INITIATIVE_DELETED") {
         // Handle deletion
         const { data, error } = await supabase
-          .from("strategic_initiatives")
+          .from("projection_initiatives")
           .update({
             eventType: event.eventType,
             state: event.payload.state,
@@ -42,7 +42,7 @@ export async function projectElementToSupabase(event) {
       } else if (event.eventType === "INITIATIVE_UPDATED") {
         // Handle update
         const { data, error } = await supabase
-          .from("strategic_initiatives")
+          .from("projection_initiatives")
           .update({
             name: event.payload.name,
             description: event.payload.description,
@@ -57,6 +57,8 @@ export async function projectElementToSupabase(event) {
             set_of_coherent_actions: event.payload.set_of_coherent_actions,
             proximate_objectives: event.payload.proximate_objectives,
             tags: event.payload.tags,
+            status: event.payload.status,
+            progress: event.payload.progress,
           })
           .eq("id", event.aggregateId)
           .select("*"); // Return the updated row(s)
@@ -71,7 +73,7 @@ export async function projectElementToSupabase(event) {
     } else {
       // Handle insert using upsert to avoid race conditions
       const { data, error } = await supabase
-        .from("strategic_initiatives")
+        .from("projection_initiatives")
         .upsert({
           id: event.aggregateId,
           name: event.payload.name,
@@ -87,6 +89,8 @@ export async function projectElementToSupabase(event) {
           set_of_coherent_actions: event.payload.set_of_coherent_actions,
           proximate_objectives: event.payload.proximate_objectives,
           tags: event.payload.tags,
+          status: event.payload.status,
+          progress: event.payload.progress,
         })
         .select("*"); // Return the inserted/updated row(s)
 

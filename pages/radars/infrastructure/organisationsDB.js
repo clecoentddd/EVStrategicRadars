@@ -7,8 +7,8 @@ import { supabase } from '../../../utils/supabaseClient';
  */
 export async function fetchAllRadars() {
   try {
-    console.log('Attempting to fetch radars from Supabase...');
-    const { data, error } = await supabase.from("projection_radars_list").select("*");
+    console.log('Attempting to fetch organisations from Supabase...');
+    const { data, error } = await supabase.from("projection_organisation_list").select("*");
 
     if (error) {
       console.error("Error fetching radars from Supabase:", error.message);
@@ -23,7 +23,7 @@ export async function fetchAllRadars() {
   }
 }
 
-// radarsDB.js (or the appropriate file)
+// organisationsDB.js (or the appropriate file)
 export async function fetchRadarById(aggregateId) {
   // Fetch radar by its id from the database (or in-memory data structure)
   const radars = await fetchAllRadars(); // Assuming fetchAllRadars fetches all the radars

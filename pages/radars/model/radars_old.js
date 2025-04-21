@@ -1,4 +1,4 @@
-import { sendRadarCreated, getEvents } from '../infrastructure/eventStoreRadars.js.deprecated'; // Ensure you have access to getEvents
+import { sendOrganisationCreated, getEvents } from '../infrastructure/eventStoreRadars.js.deprecated'; // Ensure you have access to getEvents
 
 export async function handleRadarCreation(command) {
   // console.log("Handling radar creation for:", command); // Log the received command
@@ -13,8 +13,8 @@ export async function handleRadarCreation(command) {
   // Save the radar creation event
   let savedEvent;
   try {
-    console.log("MODEL Creating Radar: calling sendRadarCreated:",command);
-    savedEvent = await sendRadarCreated({ ...command.payload });
+    console.log("MODEL Creating Radar: calling sendOrganisationCreated:",command);
+    savedEvent = await sendOrganisationCreated({ ...command.payload });
     // console.log("MODEL123 SaveEvent created:",savedEvent);
 } catch (error) {
     console.error("Error in saveEvent:", error.message);

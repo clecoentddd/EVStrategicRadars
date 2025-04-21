@@ -1,0 +1,68 @@
+/* Basic Form Styles */
+.createInitiativeFormStyle {
+    padding: 20px;
+    border: 1px solid #e1bee7; /* Light purple border */
+    border-radius: 8px;
+    background: white;
+    margin: 20px 0;
+    background-color: lavenderblush;
+  }
+  
+  /* Input Fields */
+  .initiativeInput,
+  .initiativeTextarea {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+  }
+
+  .statusSelect {
+    width: 20%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+  }
+  
+  .initiativeTextarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  /* Buttons */
+  .buttonContainerStyle {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .saveButton {
+    background: #6a1b9a; /* Purple */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cancelButton {
+    background: white;
+    color: #6a1b9a;
+    padding: 10px 20px;
+    border: 1px solid #6a1b9a;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Error Message */
+  .error {
+    color: #d32f2f;
+    padding: 10px;
+    background: #ffebee;
+    border-radius: 4px;
+    margin: 10px 0;
+  }

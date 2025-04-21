@@ -1,9 +1,9 @@
 // Service to create a radar entry into the organisation
 
 // services/updateRadarIndex.js
-export default async function updateRadar(radarId, name, purpose, context, level) {
+export default async function updateOrganisation(radarId, name, purpose, context, level) {
     try {
-      const response = await fetch(`/api/radars-update?${radarId}`, { 
+      const response = await fetch(`/api/organisation-update?${radarId}`, { 
         method: "PUT", 
         headers: {
           "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export default async function updateRadar(radarId, name, purpose, context, level
       console.log("Response from API updating radar:", data.result);
       return data.result.radar; 
     } catch (error) {
-      console.error("updateRadar - Error updating radar:", error.message);
+      console.error("updateOrganisation - Error updating radar:", error.message);
       throw error; 
     }
   }

@@ -11,7 +11,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   });
   const [availableTags, setAvailableTags] = useState([]);
   const [collapsedStrategies, setCollapsedStrategies] = useState({});
-  const [targetStrategy, setTargetStrategy] = useState(null);
+  const [targetStrategy, setTargetStrategyState] = useState(null);
   const [editableStrategyId, setEditableStrategyId] = useState(null);
   const [tempStrategyData, setTempStrategyData] = useState(null);
   const [expandedElementId, setExpandedElementId] = useState(null);
@@ -21,6 +21,16 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
     description: '',
   });
 
+
+const setTargetStrategy = (strategy) => {
+  if (!strategy?.name) {
+    console.error('Attempted to set invalid target strategy:', strategy);
+    return;
+  }
+  console.log('Setting valid target strategy:', strategy.name);
+  setTargetStrategyState(strategy);
+};
+ 
   const handleEditStrategyClick = (strategy) => {
     setEditableStrategyId(strategy.id);
     setTempStrategyData({
@@ -190,6 +200,8 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
           name: tempData.name,
           description: tempData.description,
           tags: tempData.tags,
+          status: tempData.status,
+          progress: tempData.progress,
         }),
       });
 
@@ -220,6 +232,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   };
 
   const handleCreateStrategyChange = (e) => {
+    console.log('handleCreateStrategyChange - Change event:', e.target.name, e.target.value);
     const { name, value } = e.target;
     setNewStrategy((prev) => ({
       ...prev,
@@ -229,14 +242,39 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
 
   const handleCreateInitiative = async (e) => {
     e.preventDefault();
-
-    if (!targetStrategy) {
-      console.error("No target strategy selected for creating an initiative.");
+  
+    if (!targetStrategy?.id) {  // ✅ Check for valid targetStrategy with ID
+      console.error("Invalid target strategy");
       return;
     }
-    console.log('Creating initiative for strategy:', targetStrategy);
-    console.log("Creating initiative with newElement", newElement);
+  
     try {
+      // 1. Optimistic UI Update (with validation)
+      setStreamData(prevData => {
+        if (!prevData) return prevData;  // Guard clause
+        
+        return prevData.map(strat => {
+          if (strat.id === targetStrategy.id) {
+            const tempId = `temp-${Date.now()}`;
+            return {
+              ...strat,
+              elements: [
+                ...(strat.elements || []), 
+                {
+                  id: tempId,  // Must include ID
+                  name: newElement.name || "Untitled",  // Fallback
+                  description: newElement.description || "",
+                  status: newElement.status || "Created",
+                  isOptimistic: true  // Flag for later
+                }
+              ].filter(Boolean)  // Remove nulls
+            };
+          }
+          return strat;
+        });
+      });
+  
+      // 2. API Call
       const response = await fetch(`/api/strategy-initiatives`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -247,40 +285,71 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
           description: newElement.description,
         }),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to create a strategic initative');
-      }
-
+  
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  
+      // 3. Process Response (with validation)
       const data = await response.json();
-      alert('Strategy initiative created successfully!');
-      console.log("Optimistic UI with data", data);
-      console.log("Optimistic UI with prev.data", streamData);
-      setShowCreateInitiativeForm(false);
-      setNewElement({ name: '', description: '' });
+      console.log("handleCreateInitiative - RAW API RESPONSE:", data);
 
-      setStreamData((prevData) => {
-        console.log("New Data to Insert:", data);
-        console.log("Target Strategy ID:", targetStrategy.id);
+      const createdItem = {
+        id: data.data.aggregateId, // Use aggregateId as the ID
+        name: data.data.payload.name,
+        description: data.data.payload.description,
+        status: data.data.payload.state,
+        strategy_id: data.data.payload.strategy_id,
+        stream_id: data.data.payload.stream_id
+      };
+  
+      if (!createdItem.id) throw new Error("Initiative ID missing in response");
 
-        return prevData.map((strat) => {
-          console.log("Processing Strategy:", strat);
+      
+      if (!createdItem?.id) {  // Critical check
+        throw new Error("API response missing initiative ID");
+      }
+  
+      // 4. Update State with Real Data
+      setStreamData(prevData => {
+        if (!prevData) return prevData;
+        
+        return prevData.map(strat => {
           if (strat.id === targetStrategy.id) {
-            console.log("Match Found! Updating Strategy:", strat.id);
-            const updatedStrat = {
+            return {
               ...strat,
-              elements: [...(strat.elements || []), data.createdItem],
+              elements: (strat.elements || [])
+                .map(item => 
+                  item?.isOptimistic ? createdItem : item
+                )
+                .filter(item => item && item.id)  // Remove nulls/undefined
             };
-            console.log("Updated Strategy:", updatedStrat);
-            return updatedStrat;
           }
-          console.log("No Match for Strategy ID:", strat.id);
           return strat;
         });
       });
-
-      console.log("Optimistic UI with new data", streamData);
+  
+      // 5. Reset Form
+      setNewElement({ name: '', description: '', status: 'Created' });
+      setShowCreateInitiativeForm(false);
+  
     } catch (err) {
+      console.error("Creation failed:", err);
+      
+      // Rollback optimistic update
+      setStreamData(prevData => {
+        if (!prevData) return prevData;
+        
+        return prevData.map(strat => {
+          if (strat.id === targetStrategy.id) {
+            return {
+              ...strat,
+              elements: (strat.elements || [])
+                .filter(item => !item?.isOptimistic)
+            };
+          }
+          return strat;
+        });
+      });
+      
       alert(`Error: ${err.message}`);
     }
   };
@@ -294,9 +363,10 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   };
 
   const handleCreateStrategy = async (e) => {
+    
     e.preventDefault();
     try {
-        console.log("Calling POST API for", newStrategy);
+        console.log("handleCreateStrategy - Calling POST API for", newStrategy);
         
         // 1. Create and add optimistic data FIRST
         const tempId = `temp-${Date.now()}`;
@@ -367,6 +437,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   };
 
   const handleCancelCreateStrategy = () => {
+    console.log('handleCancelCreateStrategy called');
     setNewStrategy({
       name: '',
       description: '',

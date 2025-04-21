@@ -1,16 +1,16 @@
-import { appendEventToEventSourceDB, readEventsFromFile } from './eslib.js';
-import { projectRadarToSupabase } from './radarProjection.js'; // Import projection function
+import { appendEventToOrganisationsEventSourceDB } from './eslib.js';
+import { projectOrganisationToSupabase } from './organisationsProjection.js'; // Import projection function
 import {replayRadarAggregate} from './eventReplayRadars.js';
 import { publishIntegrationEvent } from '../../pubAndSub/pushAndSubEvents.js';
 
-export const sendRadarUpdated = async (event) => {
+export const sendOrganisationUpdated = async (event) => {
 
 
     // Add id (UUID) to the event payload
   
     const newtimestamp = new Date().getTime();
   
-    console.log("sendRadarUpdated:  event to store ", event);
+    console.log("sendOrganisationUpdated:  event to store ", event);
     
     const radarToUpdate = {
       eventType: "RADAR_UPDATED", // Static value for eventType
@@ -34,7 +34,7 @@ export const sendRadarUpdated = async (event) => {
 
       // Check if the result is null
       if (result === null) {
-        console.log("sendRadarUpdated - Radar Aggregate not found", event.radarId);
+        console.log("sendOrganisationUpdated - Radar Aggregate not found", event.radarId);
         return null;
       }
 
@@ -52,10 +52,10 @@ export const sendRadarUpdated = async (event) => {
     console.log ("eventstoreRadars.js publishing events", radarToUpdate);
   
     //eventStore.push(eventWithId); // Push the new event with the ID into the event store
-    const radarUpdated = await appendEventToEventSourceDB(radarToUpdate);
+    const radarUpdated = await appendEventToOrganisationsEventSourceDB(radarToUpdate);
   
     // Publish integration event
-    console.log ("sendRadarUpdated: event added to source:", radarUpdated);
+    console.log ("sendOrganisationUpdated: event added to source:", radarUpdated);
     try {
       publishIntegrationEvent(radarUpdated);
     } catch (error) {
@@ -68,7 +68,7 @@ export const sendRadarUpdated = async (event) => {
       try {
         // Project the event to Supabase
         console.log("Projection radar to supase", radarUpdated);
-        await projectRadarToSupabase(radarUpdated); // Pass the payload with id
+        await projectOrganisationToSupabase(radarUpdated); // Pass the payload with id
       } catch (error) {
         console.log('saveEvent: Error projecting radar to Supabase:', error);
       }

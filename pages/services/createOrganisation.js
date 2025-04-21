@@ -1,8 +1,8 @@
 // Service to create a radar entry into the organisation
 
-async function createRadar(name, purpose, context, level) {
+async function createOrganisation(name, purpose, context, level) {
   try {
-    const response = await fetch("/api/radars-create", {
+    const response = await fetch("/api/organisation-create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,7 +16,7 @@ async function createRadar(name, purpose, context, level) {
 
     const data = await response.json();
 
-    console.log("createRadarIndex.js radar:", data.result);
+    console.log("createOrganisation.js radar:", data.result);
 
     if (data.message === 'Successful') { 
       // Directly return the radar object from the data.result
@@ -30,4 +30,4 @@ async function createRadar(name, purpose, context, level) {
   }
 }
 
-export default createRadar;
+export default createOrganisation;

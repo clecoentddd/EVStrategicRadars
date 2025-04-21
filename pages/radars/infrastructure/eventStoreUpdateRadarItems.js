@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid"; // UUID generator for creating radar item id
 import { projectRadarItemToSupabase } from './radarItemsProjection'; // Import projection function
-import {appendEventToEventSourceDB} from './eslib';
+import {appendEventToRadatIemEventSourceDB} from './eslib';
 
 const radarItemEvents = []; // In-memory storage for radar item events
 
@@ -22,7 +22,7 @@ export const saveRadarItemEvent = async (event) => {
 
     // Save the event in memory
     // radarItemEvents.push(event);
-    const eventReturned = appendEventToEventSourceDB(event);
+    const eventReturned = appendEventToRadatIemEventSourceDB(event);
 
     console.log("Radar Item Event saved:", eventReturned);
     console.log("Current Radar Item Events in Memory:", radarItemEvents);

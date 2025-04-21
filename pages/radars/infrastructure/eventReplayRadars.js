@@ -1,10 +1,10 @@
-import { getEventsForRadar } from './eslib';
+import { getEventsForAnOrganisation } from './eslib';
 
 export async function replayRadarAggregate(aggregateId) {
   try {
     console.log("Replay Radar: ", aggregateId);
     // Get all events for the given aggregateId
-    const events = await getEventsForRadar(aggregateId);
+    const events = await getEventsForAnOrganisation(aggregateId);
 
     // Filter events based on the conditions
    

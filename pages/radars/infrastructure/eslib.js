@@ -3,13 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 import eventStoreInitiatives from "../../strategies/infrastructure/eventStoreInitiatives";
 
 // Get events for a specific radar
-export async function getEventsForRadar(radarId) {
+export async function getEventsForAnOrganisation(organisationId) {
   
-  console.log ("getEventsForRadar", radarId);
+  console.log ("getEventsForAnOrganisation", organisationId);
   const { data, error } = await supabase
-    .from('radar_events')
+    .from('organisation_events')
     .select('payload, eventType')
-    .eq('aggregateId', radarId)
+    .eq('aggregateId', organisationId)
     .eq('aggregateType', 'RADAR'); // Add filter for aggregateType
 
   if (error) {
@@ -17,7 +17,7 @@ export async function getEventsForRadar(radarId) {
     return [];
   }
 
-  console.log ("getEventsForRadar: events retreived", data);
+  console.log ("getEventsForAnOrganisation: events retreived", data);
 
   return data.map((row) => ({
     payload: row.payload,
@@ -30,7 +30,7 @@ export async function getEventsForRadarItem(radarItemId) {
   
   console.log ("getEventsForRadarItem", radarItemId);
   const { data, error } = await supabase
-    .from('radar_events')
+    .from('radar_items_events')
     .select('payload, eventType, created_at')
     .eq('aggregateId', radarItemId)
     .eq('aggregateType', 'RADAR_ITEM'); // Add filter for aggregateType
@@ -49,13 +49,31 @@ export async function getEventsForRadarItem(radarItemId) {
   }));
 }
 // Add an event to the database
-export async function appendEventToEventSourceDB(event) {
+export async function appendEventToRadatIemEventSourceDB(event) {
 
  
   console.log("appendEventToEventSourceDB", event);
 
   const { data, error } = await supabase
-    .from('radar_events')
+    .from('radar_items_events')
+    .insert([event])
+    .select();
+
+  if (error) {
+    console.error('Error inserting event in Radar Item Event Source DB:', error);
+    return null;
+  }
+
+  return data[0];
+}
+
+export async function appendEventToOrganisationsEventSourceDB(event) {
+
+ 
+  console.log("appendEventToEventSourceDB", event);
+
+  const { data, error } = await supabase
+    .from('organisation_events')
     .insert([event])
     .select();
 
@@ -66,6 +84,8 @@ export async function appendEventToEventSourceDB(event) {
 
   return data[0];
 }
+
+/*
 
 // Read an event by its eventStoreId
 export async function readEventByEventStoreId(radarId, eventStoreId) {
@@ -114,3 +134,4 @@ export async function getNumberOfEvents(radarId) {
 
   return count;
 }
+*/

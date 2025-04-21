@@ -1,4 +1,4 @@
-import {sendRadarDelete} from '../infrastructure/eventSourceDeleteRadars';
+import {sendOrganisationDeleted} from '../infrastructure/eventSourceDeleteRadars';
 
 export async function handleRadarDelete(command) {
   // console.log("Handling radar creation for:", command); // Log the received command
@@ -14,8 +14,8 @@ export async function handleRadarDelete(command) {
   // Save the radar creation event
   let savedEvent;
   try {
-    console.log("handleRadarDelete: Updating Radar: calling sendRadarCreated:",command);
-    savedEvent = await sendRadarDelete({ ...command.payload });
+    console.log("handleRadarDelete: Updating Radar: calling sendOrganisationCreated:",command);
+    savedEvent = await sendOrganisationDeleted({ ...command.payload });
     console.log("return { success: true, radar: savedEvent.payload }; SaveEvent created:",savedEvent);
 } catch (error) {
     console.error("handleRadarDelete: Error in saveEvent:", error.message);
