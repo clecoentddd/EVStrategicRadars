@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import styles from './InitiativeItem.module.css';
+import RelatedInitiatives from './RelatedInitiatives';
 
 const InitiativeItem = ({
   initiative,
@@ -266,7 +267,7 @@ const InitiativeItem = ({
             </div>
           </div>
 
-
+          <RelatedInitiatives initiativeId={initiative.id} />
 
           <div className={styles.rowButtonsEditCancelSave}>
             {editableElementId === initiative.id ? (
