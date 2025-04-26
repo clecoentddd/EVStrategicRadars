@@ -78,7 +78,7 @@ export default function StrategyStream() {
       <div className={styles.container}>
         <div className={styles.streamHeader}>
           <h1>
-            {streamAggregate && streamAggregate.organisationName ? streamAggregate.organisationName : "Loading..."}
+            {streamAggregate && streamAggregate.organisationName ? streamAggregate.organisationName : "Loading stream name..."}
           </h1>
           <h2>This is about strategic thinking now</h2>
         </div>
