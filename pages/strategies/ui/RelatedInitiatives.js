@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from "../../../utils/supabaseClient";
-import './RelatedInitiatives.module.css';
+import styles from './RelatedInitiatives.module.css'; // Import the CSS module
 
 const RelatedInitiatives = ({ initiativeId }) => {
   const [related, setRelated] = useState([]);
@@ -44,7 +44,7 @@ const RelatedInitiatives = ({ initiativeId }) => {
     if (!selectedId) return;
     
     setLoading(true);
-    const { error } = await supabase.from('initiative_links').insert([
+    const { error } = await supabase.from('initiative_links').insert([ 
       { source_initiative_id: initiativeId, target_initiative_id: selectedId },
     ]);
     if (error) {
@@ -74,19 +74,19 @@ const RelatedInitiatives = ({ initiativeId }) => {
   };
 
   return (
-    <div className="related-initiatives-container">
-      <h4 className="related-initiatives-title">Related Initiatives</h4>
+    <div className={styles['related-initiatives-container']}> {/* Apply styles using the CSS module */}
+      <h4 className={styles['related-initiatives-title']}>Related Initiatives</h4>
 
       {related.length === 0 ? (
-        <p className="related-initiatives-empty">No links yet.</p>
+        <p className={styles['related-initiatives-empty']}>No links yet.</p>
       ) : (
-        <ul className="related-initiatives-list">
+        <ul className={styles['related-initiatives-list']}>
           {related.map((item) => (
-            <li key={item.id} className="related-initiatives-item">
+            <li key={item.id} className={styles['related-initiatives-item']}>
               <span>• {item.projection_initiatives.name}</span>
               <button 
                 onClick={() => removeLink(item.id)}
-                className="related-initiatives-remove"
+                className={styles['related-initiatives-remove']} // Use class from CSS Module
                 disabled={loading}
               >
                 ×
@@ -96,11 +96,11 @@ const RelatedInitiatives = ({ initiativeId }) => {
         </ul>
       )}
 
-      <div className="related-initiatives-controls">
+      <div className={styles['related-initiatives-controls']}>
         <select
           value={selectedId}
           onChange={(e) => setSelectedId(e.target.value)}
-          className="related-initiatives-select"
+          className={styles['related-initiatives-select']}
           disabled={loading}
         >
           <option value="">Select initiative</option>
@@ -113,7 +113,7 @@ const RelatedInitiatives = ({ initiativeId }) => {
         <button
           onClick={addLink}
           disabled={!selectedId || loading}
-          className="related-initiatives-add"
+          className={styles['related-initiatives-add']}
         >
           {loading ? 'Processing...' : 'Add Link'}
         </button>

@@ -8,7 +8,7 @@
   }
 
   .radarItem {
-    fill: plum; /* Blue color for radar items */
+    fill: rgb(42, 243, 95); /* Blue color for radar items */
     cursor: pointer;
   }
 

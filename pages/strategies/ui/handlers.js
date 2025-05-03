@@ -16,10 +16,7 @@ export const useHandlers = (streamid, setStreamData, setStreamAggregate, setLoad
   const [tempStrategyData, setTempStrategyData] = useState(null);
   const [expandedElementId, setExpandedElementId] = useState(null);
   const [showCreateElementForm, setShowCreateInitiativeForm] = useState(false);
-  const [newElement, setNewElement] = useState({
-    name: '',
-    description: '',
-  });
+  const [newElement, setNewElement] = useState(null);
 
 
 const setTargetStrategy = (strategy) => {
@@ -27,7 +24,7 @@ const setTargetStrategy = (strategy) => {
     console.error('Attempted to set invalid target strategy:', strategy);
     return;
   }
-  console.log('Setting valid target strategy:', strategy.name);
+  console.log('Setting valid target strategy:', strategy);
   setTargetStrategyState(strategy);
 };
  

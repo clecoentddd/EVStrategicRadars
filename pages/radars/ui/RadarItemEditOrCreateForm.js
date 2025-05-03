@@ -1,10 +1,24 @@
 import React from 'react';
 import styles from './radarItemEditOrCreateForm.module.css';
 
+export const DEFAULT_FORM_VALUES = {
+  name: '',
+  detect: '',
+  assess: '',
+  respond: '',
+  category: '',
+  type: '',
+  distance: 'Detected',
+  impact: 'Low',
+  tolerance: 'High',
+  zoom_in: '',
+};
+
+
 const RadarItemEditOrCreateForm = ({
   showForm,
   editMode,
-  formData,
+  formData = DEFAULT_FORM_VALUES,
   typeOptions,
   categoryOptions,
   zoomInOptions,

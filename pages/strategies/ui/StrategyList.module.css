@@ -1,19 +1,51 @@
 .strategyGroup {
-    margin-bottom: 2rem;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  
-  .strategyGroup h2 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #333;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-transform: capitalize;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 0.5rem;
-  }
+  margin-bottom: 2rem;
+  padding: 1.5rem; /* Increased padding for more spacing */
+  border: 1px solid #dfe4e3; /* Soft green-grey border */
+  border-radius: 10px; /* More rounded corners for a modern look */
+  background-color: #e3f0ea; /* Light green-tinted background */
+  background-image: linear-gradient(135deg, #f7faf9, #f0f0f0); /* Subtle gradient for depth */
+  box-shadow: 0 4px 8px rgba(0, 50, 40, 0.12); /* Softer, more refined shadow */
+  transition: box-shadow 0.3s ease; /* Smooth transition on hover/focus */
+}
+
+.strategyGroup:hover {
+  box-shadow: 0 6px 12px rgba(0, 50, 40, 0.18); /* Slightly enhanced shadow on hover */
+}
+
+.strategyGroup h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #3b2c1e; /* Deep forest green text */
+  font-size: 1.6rem; /* Increased font size for better readability */
+  font-weight: 600; /* Slightly lighter weight for elegance */
+  letter-spacing: 0.5px; /* Subtle letter spacing for clarity */
+  text-transform: capitalize;
+  border-bottom: 3px solid #e0e6e4; /* Slightly thicker border for emphasis */
+  padding-bottom: 0.5rem;
+}
+
+
+
+.strategyGroup p {
+  color: #4a5d5a; /* Muted green-grey text for body */
+  font-size: 1rem;
+  line-height: 1.6; /* Better line spacing for readability */
+}
+
+.strategyGroup ul {
+  margin-top: 1rem;
+  padding-left: 1.5rem; /* Indentation for lists */
+  color: #4a5d5a;
+  font-size: 1rem;
+  list-style-type: disc;
+}
+
+.strategyGroup ul li {
+  margin-bottom: 0.5rem; /* Space between list items */
+}
+
+/* Focused state for accessibility */
+.strategyGroup:focus-within {
+  box-shadow: 0 6px 12px rgba(0, 50, 40, 0.15); /* Focused state enhances depth */
+}

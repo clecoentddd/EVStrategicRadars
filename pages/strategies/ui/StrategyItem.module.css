@@ -1,171 +1,171 @@
 /* Strategy Container */
 .strategyStyle {
-    margin-bottom: 30px;
-  }
-  
-  /* Strategy Headers */
-  .strategyHeaderDraft {
-    background-color: rgb(244, 175, 246);
-    color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-  
-  .strategyHeaderPublished {
-    background-color: violet;
-    color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-  
-  .strategyHeaderDefault {
-    background-color: grey;
-    color: black;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
-  
-  .strategyTitleStyle {
-    color: #ffffff;
-  }
-  
-  /* Details Container */
-  .strategyDetailsContainer {
-    margin-bottom: 15px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  /* Form Fields - Base Styles */
-  .textAreaInitiativeName,
-  .statusDropdown,
-  .progressInput {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #f5f5f5;
-    margin: 0.5rem 0 1rem 0;
-    font-family: inherit;
-  }
-  
-  /* Edit Mode Form Fields */
-  .textAreaInitiativeNameEditable,
-  .textAreaInitiativeName:not(:disabled),
-  .statusDropdown:not(:disabled),
-  .progressInput:not(:disabled) {
-    background-color: white;
-    border-color: #e1bee7;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-  
-  /* Table Styles */
-  .tableStyle {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
-  }
-  
-  .tableCell {
-    padding: 12px;
-    border: 1px solid #ddd;
-    background-color: #f5f5f5;
-    vertical-align: top;
-  }
-  
-  /* Edit Mode Table Cells */
-  .tableCellEditable {
-    padding: 12px; /* Keep padding consistent */
-    background-color: white;
-  }
-  
-  /* Textareas in Table Cells */
-  .tableCellEditable .textArea {
-    width: 100%;
-    min-height: 100px;
-    padding: 8px;
-    border: 1px solid #e1bee7;
-    border-radius: 6px;
-    background-color: white;
-    box-sizing: border-box;
-    resize: vertical;
-  }
-  
-  /* Button Styles */
-  .buttonGroupContainer {
-    display: flex;
-    gap: 1rem;
-    margin: 1.5rem 0 0.5rem 0;
-  }
-  
-  /* Base Button Styles */
-  .editStrategyButton,
-  .createInitiativeButtonStyle,
-  .saveElementButton,
-  .cancelElementButton {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  
-  /* Specific Button Styles */
-  .editStrategyButton {
-    background-color: violet;
-    color: white;
-  }
-  
-  .createInitiativeButtonStyle {
-    background-color: purple;
-    color: white;
-  }
-  
-  /* Edit Mode Buttons */
-  .rowButtonsEditCancelSave .saveElementButton,
-  .rowButtonsEditCancelSave .cancelElementButton {
-    background-color: #6a1b9a;
-    color: white;
-    margin-right: 10px;
-  }
-  
-  .rowButtonsEditCancelSave .cancelElementButton {
-    background-color: #f5f5f5;
-    color: #6a1b9a;
-    border: 1px solid #e1bee7;
-  }
-  
-  /* Focus States */
-  .textAreaInitiativeName:focus,
-  .statusDropdown:focus,
-  .progressInput:focus,
-  .textArea:focus {
-    outline: none;
-    border-color: #9c27b0;
-    box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.2);
-  }
-  
-  /* Dropdown Styling */
-  .statusDropdown {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236a1b9a' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 12px;
-    padding-right: 28px;
-  }
+  margin-bottom: 30px;
+}
+
+/* Strategy Headers */
+.strategyHeaderDraft {
+  background-color: #a4cbe3;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 40, 60, 0.2);
+}
+
+.strategyHeaderPublished {
+  background-color: #8bbad3;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 40, 60, 0.2);
+}
+
+.strategyHeaderDefault {
+  background-color: #d0d9df;
+  color: #1e2f3d;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 40, 60, 0.2);
+}
+
+.strategyTitleStyle {
+  color: #ffffff;
+}
+
+/* Details Container */
+.strategyDetailsContainer {
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: #f3f7f9;
+  border: 1px solid #c5d3dc;
+  border-radius: 5px;
+}
+
+/* Form Fields - Base Styles */
+.textAreaInitiativeName,
+.statusDropdown,
+.progressInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #c5d3dc;
+  border-radius: 6px;
+  background-color: #e9eff2;
+  margin: 0.5rem 0 1rem 0;
+  font-family: inherit;
+}
+
+/* Edit Mode Form Fields */
+.textAreaInitiativeNameEditable,
+.textAreaInitiativeName:not(:disabled),
+.statusDropdown:not(:disabled),
+.progressInput:not(:disabled) {
+  background-color: white;
+  border-color: #a4c0cf;
+  box-shadow: 0 1px 3px rgba(0, 40, 60, 0.1);
+}
+
+/* Table Styles */
+.tableStyle {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.tableCell {
+  padding: 12px;
+  border: 1px solid #c5d3dc;
+  background-color: #e9eff2;
+  vertical-align: top;
+}
+
+/* Edit Mode Table Cells */
+.tableCellEditable {
+  padding: 12px;
+  background-color: white;
+}
+
+/* Textareas in Table Cells */
+.tableCellEditable .textArea {
+  width: 100%;
+  min-height: 100px;
+  padding: 8px;
+  border: 1px solid #a4c0cf;
+  border-radius: 6px;
+  background-color: white;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+/* Button Styles */
+.buttonGroupContainer {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem 0;
+}
+
+/* Base Button Styles */
+.editStrategyButton,
+.createInitiativeButtonStyle,
+.saveElementButton,
+.cancelElementButton {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+/* Specific Button Styles */
+.editStrategyButton {
+  background-color: #5a91af;
+  color: white;
+}
+
+.createInitiativeButtonStyle {
+  background-color: #3a6e8f;
+  color: white;
+}
+
+/* Edit Mode Buttons */
+.rowButtonsEditCancelSave .saveElementButton,
+.rowButtonsEditCancelSave .cancelElementButton {
+  background-color: #2f5b77;
+  color: white;
+  margin-right: 10px;
+}
+
+.rowButtonsEditCancelSave .cancelElementButton {
+  background-color: #f3f7f9;
+  color: #2f5b77;
+  border: 1px solid #a4c0cf;
+}
+
+/* Focus States */
+.textAreaInitiativeName:focus,
+.statusDropdown:focus,
+.progressInput:focus,
+.textArea:focus {
+  outline: none;
+  border-color: #5a91af;
+  box-shadow: 0 0 0 2px rgba(90, 145, 175, 0.25);
+}
+
+/* Dropdown Styling */
+.statusDropdown {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235a91af' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  padding-right: 28px;
+}

@@ -4,36 +4,36 @@
 
 .radarDetails {
   text-align: center;
-  margin-top: 50px; /* Reduce top margin */
+  margin-top: 50px;
   margin-bottom: 5px; 
-  background-color: #e887cd;
+  background-color: #797195;
   padding: 5px; 
-  border-radius: 5px; /* Add rounded corners */
+  border-radius: 5px;
+  color: white;
 }
 
 .radarDetails h1 {
-  margin-top: 1px; /* Reduce top margin for h1 */
+  margin-top: 1px;
   margin-bottom: 1px;
-  font-size: 1.2rem; /* Slightly smaller font size */
+  font-size: 1.2rem;
   font-weight: bold;
-  color: #333;
+  color: #ecf0f1;
   font-family: 'Orbitron', sans-serif;
 }
 
 .radarDetails p {
   margin-bottom: 5px; 
   font-size: 8px; 
-  color: #555;
+  color: #ecf0f1;
   font-family: 'Orbitron', sans-serif;
 }
-/* container */
 
 .radarContainer {
   display: flex;
   flex-direction: column;
   padding: 10px; 
   border-radius: 5px;
-  background-color: #47f2b0;
+  background-color: #e0f7f1;
   font-family: 'Orbitron', sans-serif;
 }
 
@@ -53,8 +53,8 @@
 }
 
 .radarBackButton {
-  background-color: hsl(154, 84%, 12%);
-  color: rgb(232, 243, 241);
+  background-color: #16a085;
+  color: #ffffff;
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
@@ -66,15 +66,15 @@
 .radarInfo {
   font-size: 14px; 
   font-weight: bold;
-  background-color: rgb(76, 239, 195);
+  background-color: #1abc9c;
+  color: white;
   padding: 5px;
   margin: 5px 0; 
   font-family: 'Orbitron', sans-serif;
 }
 
-/* Show form */
 .showForm {
-  background-color: #f0f0f0; 
+  background-color: #f5fafa; 
   padding: 20px; 
   border-radius: 5px; 
   font-family: 'Orbitron', sans-serif;
@@ -82,11 +82,10 @@
 
 .formRow {
   display: flex;
-  align-items: flex-start; /* Align tops of all elements */
+  align-items: flex-start;
   margin-bottom: 15px;
   width: 100%;
 }
-
 
 .inputWrapper {
   flex: 1;
@@ -105,38 +104,34 @@
 }
 
 .column {
-  flex: 1; /* Default flex growth */
+  flex: 1;
   padding-left: 10px;
   display: flex;
-  flex-direction: column; /* Stack children vertically */
+  flex-direction: column;
 }
 
-/* First column (left) */
 .column:first-child { 
-  width: 50%; /* Fixed width */
+  width: 50%;
   padding-left: 0;
-  flex: none; /* Disable flex growth */
+  flex: none;
 }
 
-/* Middle column (centered towards right) */
 .column:nth-child(2) {
-  flex: 2; /* Takes more space than others */
-  margin-left: auto; /* Pushes column to the right */
-  justify-content: center; /* Centers content vertically */
-  align-items: center; /* Centers content horizontally */
+  flex: 2;
+  margin-left: auto;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Last column (far right) */
 .column:last-child {
-  width: 10%; /* Fixed width */
+  width: 10%;
   border-left: 5px solid #ccc;
   padding-left: 20px;
-  flex: none; /* Disable flex growth */
+  flex: none;
 }
 
 .inputField {
   padding: 6px;
-  border-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 70%; 
@@ -144,11 +139,10 @@
   margin-bottom: 20px;
 }
 
-/* Select element styling */
 select.inputField {
   padding: 8px 8px;
-  flex-grow: 1; /* Takes remaining space */
-  max-width: 400px; /* Prevent from growing too wide */
+  flex-grow: 1;
+  max-width: 400px;
 }
 
 .inputZoomInField {
@@ -159,16 +153,14 @@ select.inputField {
   font-family: 'Orbitron', sans-serif;
   margin-left: 0;
   margin-right: auto;
-  display: block; /* Ensure it takes its own line */
+  display: block;
 }
 
-/* If you need it to appear inline with other elements */
 .inputZoomInField.inline {
   display: inline-block;
   vertical-align: middle;
 }
 
-/* If you're using it in a flex container */
 .flex-container .inputZoomInField {
   flex: 0 0 auto;
   align-self: flex-start;
@@ -185,7 +177,7 @@ select.inputField {
 
 .saveButton {
   padding: 10px 20px; 
-  background-color: violet; 
+  background-color: #f39c12; 
   color: white;
   border: none;
   border-radius: 5px;
@@ -195,13 +187,13 @@ select.inputField {
 
 .buttonGroup {
   display: flex;
-  justify-content: center; /* Adjust spacing between buttons */
-  gap: 10px; /* Add space between buttons */
-  margin-top: 20px; /* Add some space above the buttons */
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .cancelButton {
-  background-color: plum;
+  background-color: #16a085;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -210,33 +202,6 @@ select.inputField {
   font-family: 'Orbitron', sans-serif;
 }
 
-/* top navigation bar */
-.navbar {
-  background-color: #333; /* Black background color */
-  position: fixed; /* Make it stick/fixed */
-  top: 0; /* Stay on top */
-  width: 100%; /* Full width */
-  transition: top 0.3s; /* Transition effect when sliding down (and up) */
-  font-family: 'Orbitron', sans-serif;
-}
-
-/* Style the navbar links */
-.navbar a {
-  float: left;
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 15px;
-  text-decoration: none;
-}
-
-.navbar a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* styles.css */
-/* styles.module.css (or styles.css, depending on your setup) */
 .radarChartTitle {
   font-size: 20px;
   color: #333;
@@ -262,23 +227,20 @@ select.inputField {
   border-radius: 10px;
 }
 
-
 .editButton {
   padding: 5px 10px;
-  background-color: plum;
+  background-color: #1abc9c;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-/* collapsible */
-
 .radarlist {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: lavender;
+  background-color: #f5fafa;
 }
 
 .radarItem {
@@ -287,11 +249,10 @@ select.inputField {
   padding-bottom: 10px;
   margin: 10px;
   border-radius: 5px;
-  background-color: lavender;
+  background-color: #f5fafa;
   font-family: 'Orbitron', sans-serif;
   transition: background-color 0.2s ease-in-out;
 }
-
 
 .itemName {
   font-size: 0.9em;
@@ -307,20 +268,20 @@ select.inputField {
   cursor: pointer;
   border: none;
   border-radius: 3px;
-  background-color: #007bff;
+  background-color: #1abc9c;
   color: white;
   transition: background-color 0.2s ease-in-out;
 }
 
 .button:hover {
-  background-color: #0056b3;
+  background-color: #16a085;
 }
 
 .collapsedContent {
   margin-top: 10px;
   padding-left: 15px;
   border-left: 2px solid #ddd;
-  background-color: lavender;
+  background-color: #f5fafa;
 }
 
 .collapsedContent p {
@@ -331,15 +292,14 @@ select.inputField {
 
 .radarItemList {
   list-style-type: none;
-  background-color: rgb(245, 243, 244);
+  background-color: #f5f5f5;
   padding-top: 5px;
-  padding-inline-start:0%;
+  padding-inline-start: 0%;
 }
 
-/* Create New Radar Item Button */
 .createButton {
   padding: 10px 15px;
-  background-color: #4CAF50; /* Green */
+  background-color: #1abc9c;
   color: white;
   border: none;
   border-radius: 4px;
@@ -350,5 +310,5 @@ select.inputField {
 }
 
 .createButton:hover {
-  background-color: #45a049;
+  background-color: #16a085;
 }

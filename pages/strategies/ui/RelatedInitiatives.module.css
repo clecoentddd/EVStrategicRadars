@@ -1,93 +1,159 @@
+/* Container for Related Initiatives */
 .related-initiatives-container {
-    padding: 1rem;
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    margin-top: 1rem;
-  }
-  
-  .related-initiatives-title {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #111827;
-  }
-  
-  .related-initiatives-empty {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 0.5rem;
-  }
-  
-  .related-initiatives-list {
-    margin-bottom: 0.5rem;
-    list-style-type: none;
-    padding-left: 0;
-  }
-  
-  .related-initiatives-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.875rem;
-    color: #374151;
-    padding: 0.25rem 0;
-  }
-  
-  .related-initiatives-remove {
-    background: none;
-    border: none;
-    color: #ef4444;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0 0.5rem;
-    transition: color 0.2s;
-  }
-  
-  .related-initiatives-remove:hover {
-    color: #dc2626;
-  }
-  
-  .related-initiatives-remove:disabled {
-    color: #9ca3af;
-    cursor: not-allowed;
-  }
-  
-  .related-initiatives-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .related-initiatives-select {
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
-    flex-grow: 1;
-    background-color: white;
-  }
-  
-  .related-initiatives-select:disabled {
-    background-color: #f3f4f6;
-    cursor: not-allowed;
-  }
-  
-  .related-initiatives-add {
-    background-color: #3b82f6;
-    color: white;
-    padding: 0.375rem 0.75rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .related-initiatives-add:hover {
-    background-color: #2563eb;
-  }
-  
-  .related-initiatives-add:disabled {
-    background-color: #9ca3af;
-    cursor: not-allowed;
-  }
+  padding: 1.5rem; /* Added some padding for better spacing */
+  background-color: #ffffff; /* White background for a clean look */
+  border: 1px solid #e0e7ff; /* Light blue border for a soft outline */
+  border-radius: 0.75rem; /* Rounded corners */
+  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Title */
+.related-initiatives-title {
+  font-weight: 600;
+  margin-bottom: 1rem; /* Increased space below for better separation */
+  color: #4a148c; /* Deep purple for contrast */
+  font-size: 1.1rem; /* Slightly larger font for emphasis */
+}
+
+/* Empty state */
+.related-initiatives-empty {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem; /* Added spacing below */
+  font-style: italic;
+}
+
+/* List styling */
+.related-initiatives-list {
+  margin-bottom: 1rem; /* More space below list */
+  list-style-type: none;
+  padding-left: 0;
+}
+
+/* Each initiative item */
+.related-initiatives-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #374151; /* Dark grey for text */
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6; /* Soft border for separation */
+  transition: background-color 0.3s ease;
+}
+
+.related-initiatives-item:hover {
+  background-color: #f1f5f9; /* Light grey on hover */
+}
+
+/* Remove button */
+.related-initiatives-remove {
+  background: none;
+  border: none;
+  color: #e11d48; /* Red color for emphasis */
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0 0.5rem;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.related-initiatives-remove:hover {
+  color: #9b1d3a; /* Darker red on hover */
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
+
+.related-initiatives-remove:disabled {
+  color: #9ca3af; /* Disabled state color */
+  cursor: not-allowed;
+}
+
+/* Controls for adding or selecting related initiatives */
+.related-initiatives-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Increased gap for better spacing */
+}
+
+/* Select dropdown */
+.related-initiatives-select {
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  flex-grow: 1;
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+
+.related-initiatives-select:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+/* Add button */
+.related-initiatives-add {
+  background-color: #6d28d9; /* Purple button for action */
+  color: white;
+  padding: 0.375rem 1rem; /* Slightly larger padding */
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.related-initiatives-add:hover {
+  background-color: #4c1d95; /* Darker purple on hover */
+  transform: scale(1.05); /* Slight scaling effect on hover */
+}
+
+.related-initiatives-add:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Tag styling for related initiatives */
+.related-initiatives-tag {
+  background-color: #e0e7ff; /* Light blue background for tags */
+  color: #4a148c; /* Deep purple text for contrast */
+  padding: 0.3rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.related-initiatives-tag:hover {
+  background-color: #dbeafe; /* Lighter blue on hover */
+  transform: scale(1.05); /* Slight scale on hover */
+}
+
+.related-initiatives-tag-remove {
+  background: none;
+  border: none;
+  color: #ef4444; /* Red for tag removal */
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+}
+
+.related-initiatives-tag-remove:hover {
+  color: #dc2626; /* Darker red on hover */
+}
+
+/* Tooltip style (for added accessibility) */
+.related-initiatives-tooltip {
+  background-color: #333;
+  color: white;
+  font-size: 0.875rem;
+  padding: 5px 10px;
+  border-radius: 4px;
+  max-width: 300px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}

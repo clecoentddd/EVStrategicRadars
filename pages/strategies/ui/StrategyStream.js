@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './StrategyStream.module.css';
-import Navbar from "./navbar";
+import Navbar from "@/components/Navbar";
 import StrategyList from './StrategyList';
 import CreateStrategyForm from './CreateStrategyForm';
 import CreateInitiativeForm from './CreateInitiativeForm';

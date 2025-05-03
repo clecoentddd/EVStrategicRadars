@@ -1,25 +1,27 @@
 .container {
-    font-family: 'Orbitron', sans-serif;
-  }
-  
-  .streamHeader {
-    text-align: center;
-    margin-top: 50px;
-    margin-bottom: 2px;
-    background-color: #e887cd;
-    padding: 2px;
-    border-radius: 5px;
-    font-size: 10px;
-  }
+  font-family: 'Orbitron', sans-serif;
+}
 
-  .createStrategyButtonStyle {
-    background-color: #688aef;
-    color: white;
-    margin-left: 5px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    padding: 8px;
-    border-bottom: none;
-    border-color: #688aef;
-  }
+.streamHeader {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 2px;
+  background-color: #797195; /* Deep muted radar green */
+  padding: 2px;
+  border-radius: 5px;
+  font-size: 10px;
+  color: white;
+}
+
+.createStrategyButtonStyle {
+  background-color: #2980B9; /* Balanced green tone */
+  color: white;
+  margin-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 8px;
+  border-bottom: none;
+  border-color: #3ba55d;
+  color: white;
+}

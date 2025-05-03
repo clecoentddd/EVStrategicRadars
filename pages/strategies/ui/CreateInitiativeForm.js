@@ -8,12 +8,18 @@ const CreateInitiativeForm = ({
   handleCreateInitiativeChange,
   handleCancelCreateInitiative
 }) => {
+  // Fallback for newElement to ensure it's always an object
+  const safeNewElement = newElement || { name: '', description: '', status: 'Created' };
+
   // Debug log - remove after fixing
   console.log('Rendering CreateInitiativeForm with:', {
     targetStrategy,
     hasName: !!targetStrategy?.name,
-    newElement
+    newElement: safeNewElement
   });
+
+  // Fallback strategy name if targetStrategy is not available
+  const strategyName = targetStrategy?.name || 'No Strategy Selected';
 
   return (
     <form 
@@ -26,15 +32,15 @@ const CreateInitiativeForm = ({
       {/* Debug header - shows if name is missing */}
       <h3>
         {targetStrategy?.name 
-          ? `For Strategy ${targetStrategy.name}: add a new Initiative that is value creation driven:`
-          : 'Add a new Initiative to selected strategy (DEBUG: name missing)'}
+          ? `For Strategy ${strategyName}: add a new Initiative that is value creation driven:` 
+          : `Add a new Initiative to selected strategy (DEBUG: name missing)` }
       </h3>
       
       {/* Name Input */}
       <input
         type="text"
         name="name"
-        value={newElement.name || ''}
+        value={safeNewElement.name || ''}  // Safe access to name
         onChange={handleCreateInitiativeChange}
         placeholder="Name"
         className={styles.initiativeInput}
@@ -44,7 +50,7 @@ const CreateInitiativeForm = ({
       {/* Description Textarea */}
       <textarea
         name="description"
-        value={newElement.description || ''}
+        value={safeNewElement.description || ''}  // Safe access to description
         onChange={(e) => handleCreateInitiativeChange(e)}
         placeholder="Description"
         className={styles.initiativeTextarea}
@@ -56,7 +62,7 @@ const CreateInitiativeForm = ({
       {/* Status Selector */}
       <select
         name="status"
-        value={newElement.status || 'Created'}
+        value={safeNewElement.status || 'Created'}  // Safe access to status
         onChange={(e) => handleCreateInitiativeChange(e)}
         className={styles.statusSelect}
       >

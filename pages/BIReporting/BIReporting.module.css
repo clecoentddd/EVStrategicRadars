@@ -1,0 +1,181 @@
+/* Dashboard container */
+.dashboard {
+    font-family: 'Orbitron', sans-serif;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Level section title */
+  .levelSection {
+    width: 100%;
+    margin-bottom: 40px;
+  }
+  
+  /* Level title */
+  .levelTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+  }
+  
+  /* Level cards container - Align cards to the left */
+  .levelCardsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+  
+  /* Organization card */
+  .organizationCard {
+    width: 260px;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .organizationCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .organizationName {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+  
+  /* Strategy Grid inside Organization Card */
+  .strategyGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  /* Strategy Card */
+  .strategyCard {
+    width: 200px;
+    min-height: 220px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+  
+  .strategyCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Strategy Header */
+  .strategyHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  /* Strategy Title (clear that this is a strategy) */
+  .strategyTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a237e; /* Indigo to stand out */
+    margin-bottom: 5px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+  }
+  
+  /* Progress Circle */
+  .progressCircle {
+    width: 60px;
+    height: 60px;
+    margin-top: 10px;
+  }
+  
+  /* Initiatives list */
+  .initiativesList {
+    width: 100%;
+    margin-top: 15px;
+    border-top: 1px dashed #ccc;
+    padding-top: 10px;
+  }
+  
+  /* Section label */
+  .initiativesList::before {
+    content: "Initiatives";
+    display: block;
+    font-size: 14px;
+   
+        color: purple;
+    margin-bottom: 8px;
+  }
+  
+  /* Initiative item */
+  .initiativeItem {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #34495e;
+  }
+  
+  /* Initiative name */
+  .initiativeName {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  
+  /* Progress bar container for initiatives */
+  .progressBarContainer {
+    width: 100%;
+    height: 10px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+  }
+  
+  /* Progress bar itself */
+  .progressBar {
+    height: 100%;
+    border-radius: 5px;
+    background-color: #4caf50; /* Green for progress */
+  }
+  
+  /* No initiatives message */
+  .noInitiatives {
+    font-size: 14px;
+    color: #95a5a6;
+    text-align: center;
+  }
+  
+  /* Loading and error states */
+  .loading, .error {
+    font-size: 18px;
+    font-weight: bold;
+    color: #8e44ad;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  /* Page title */
+  .titlePage {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #4B0082;
+    margin-bottom: 1rem;
+    text-align: center;
+    padding-top: 35px;
+  }
+  

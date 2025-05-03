@@ -4,285 +4,282 @@
   padding-left: 40px;
 }
 
-
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: 'Orbitron', sans-serif;
-  background-color: plum;
+  background-color: #f4f6f8; /* Light grey for a clean, professional look */
   border-radius: 5px;
-  gap: 20px;
+  gap: 10px;
+  margin-top: 50px;
 }
-  
-  .header {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    color: black;
-    position: relative; /* Allows button to be positioned in the header */
-  }
 
-  .headerTitle {
-    font-size: 2rem; /* Adjust as needed */
-    margin: 0;
-    text-align: center;
-  }
-  
-  .headerSubtitle {
-    font-size: 1rem; /* Smaller than h1 */
-    margin-top: 10px; /* Space below h1 */
-    text-align: center;
-    color: darkslateblue; /* Optional: Slightly dimmer color for distinction */
-    font-style: italic; 
-  }
-  
-  .button {
-    margin: 5px 5px;
-    padding: 10px 10px !important; 
-    border: none !important; 
-    border-radius: 5px !important; 
-    cursor: pointer !important;
-    background-color: #9400D3;
-    color: white;
-  }
-  .buttonGreen { 
-    background-color: green;
-    color: white;
-    margin: 5px 5px;
-    padding: 10px 10px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-  }
-
-  .buttonRed {
-    background-color: #d30000;
-    color: white;
-    margin: 5px 5px;
-    padding: 10px 15px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-
-  }
-  .buttonGrey {
-    background-color: #aaeb5b;
-    color: #c2e634;
-    margin: 5px 5px;
-    padding: 10px 15px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-  }
-  
-  .buttonViewStrategy {
-    background-color: purple;
-    color: white;
-    margin: 5px 5px;
-    padding: 5px 15px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-  }
-  
-  .buttonCreateRadar {
-    background-color: #9400D3;
-    color: white;
-    margin: 30px 20px 20px 0px;
-    padding: 12px 15px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-  }
-  
-  .buttonViewRadar {
-    background-color: purple;
-    color: white;
-    margin: 5px 5px;
-    padding: 5px 15px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-  }
-
-  
-  .buttonDelete {
-    background-color: plum;
-    color: white;
-    margin: 5px 5px;
-    padding: 5px 15px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-  }
-
-  .buttonUpdate {
-    background-color: plum;
-    color: white;
-    margin: 5px 5px;
-    padding: 5px 15px ; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer;
-  }
-
-  .createFormContainer {
-    display: block; /* Ensure the form is visible */
-    margin-top: 20px; /* Add spacing if needed */
-    padding: 20px; /* Add padding if needed */
-    border: 1px solid #ccc; /* Add a border for visibility */
-    border-radius: 8px; /* Optional: Add rounded corners */
-  }
-  
-  .formGroup {
-    margin-bottom: 15px;
-    font-family: 'Orbitron', sans-serif;
-  }
-  
-  .levelSeparator {
-    margin: 20px 0;
-    border-top: 1px solid violet
-  }
-  
-  .purposeTextarea {
-    width: 100%;
-    height: 100px;
-    resize: vertical;
-    font-family: 'Orbitron', sans-serif;
-  }
-  
-  .buttonGroup {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-
-  .radarPurpose {
-    display: block; /* Ensures it takes a new line */
-    margin-top: 8px; /* Adjust as needed for spacing */
-    font-size: 0.8rem; /* Smaller font size */
-    font-style:initial;
-    color: grey;         /* Optional: muted/darker gray color for better readability */
-  }
-
-  .radarItem {
-    /* Styles for the entire radar item container */
-    padding: 10px;
-    border-bottom: 1px solid lightgray;
-    margin-bottom: 10px;
-    background-color: lavender;
-    font-family: 'Orbitron', sans-serif;
-    border-radius: 5px;
-  }
-  
-  .radarItem h3 {
-    /* Styles for the radar name (<h3>) */
-    margin-top: 0;
-    margin-bottom: 5px;
-  }
-  
-  .radarItem p {
-    /* Styles for all paragraphs (purpose and level) */
-    margin-top: 5px;
-    margin-bottom: 0;
-  }
-  
-  .radarItem p strong {
-    /* Styles for the "Level" label */
-    margin-right: 5px;
-  }
-  
-  .radarItem p small {
-    /* Styles for the id information */
-    color: gray;
-    font-size: 0.8em;
-  }
-  
-  .syncStatus {
-    display: flex; 
-    justify-content: flex-end; 
-    margin-bottom: 20px; 
-  } 
-
- .radarListContainer {
-    /* Optional: Add some spacing */
-    margin-top: 20px; 
-  }
-  
-  .levelHeader {
-    font-size: 1em; 
-    padding: 5px;
-    margin-bottom: 5px;
-    text-align: center;
-    position: relative;
-    border-radius: 5px;
-    background-color: plum;
-    width: 100px;
-  }
-  /* AI COACH */
-  .buttonAICoach {
-    background-color: #4CAF50; /* Green */
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 8px;
-  }
-  
-  .aiCoachSubMenu {
-    margin-top: 16px;
-    padding: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-  }
-  
-  .aiCoachSubMenu label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-  }
-  
-  .aiCoachSubMenu input,
-  .aiCoachSubMenu textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .buttonCallAICoach {
-    background-color: #2196F3; /* Blue */
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  /* styles/index.module.css */
-.aiCoachContainer {
+.header {
+  margin-top: 20px;
   display: flex;
-  align-items: center; /* Vertically center the button and spinner */
-  gap: 8px; /* Add some space between the button and spinner */
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  color: #333; /* Dark grey for better contrast and readability */
+  position: relative;
 }
 
-.buttonSaveAICoach {
-  background-color: #4caf50; /* Green */
+.headerTitle {
+  font-size: 2rem;
+  margin: 0;
+  text-align: center;
+  color: #2c3e50; /* Dark, business-like color */
+}
+
+.headerSubtitle {
+  font-size: 1rem;
+  margin-top: 10px;
+  text-align: center;
+  color: #7f8c8d; /* Muted grey for subtler contrast */
+  font-style: italic;
+}
+
+.button {
+  margin: 5px 5px;
+  padding: 10px 10px !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  background-color: #2980b9; /* Blue for a professional vibe */
+  color: white;
+}
+
+.buttonGreen {
+  background-color: #27ae60; /* Business green */
+  color: white;
+  margin: 5px 5px;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonRed {
+  background-color: #e74c3c; /* Soft red for alerting without being too aggressive */
+  color: white;
+  margin: 5px 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonGrey {
+  background-color: #95a5a6; /* Neutral grey for a subtle tone */
+  color: white;
+  margin: 5px 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonViewStrategy {
+  background-color: #34495e; /* Dark slate for a professional, reserved appearance */
+  color: white;
+  margin: 5px 5px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonCreateRadar {
+  background-color: #2980b9; /* Matching with the main button color */
+  color: white;
+  margin: 30px 20px 20px 0px;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonViewRadar {
+  background-color: #34495e; /* Dark slate blue */
+  color: white;
+  margin: 5px 5px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonDelete {
+  background-color: #88a5c1; /* A more muted red for the delete button */
+  color: white;
+  margin: 5px 5px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonUpdate {
+  background-color: #34495e; /* Purple for an updated, more professional look */
+  color: white;
+  margin: 5px 5px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.createFormContainer {
+  display: block;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white; /* Clean and professional form background */
+}
+
+.formGroup {
+  margin-bottom: 15px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.levelSeparator {
+  margin: 20px 0;
+  border-top: 1px solid #bdc3c7; /* Soft grey line separator */
+}
+
+.purposeTextarea {
+  width: 100%;
+  height: 100px;
+  resize: vertical;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.radarPurpose {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  font-style: initial;
+  color: #7f8c8d; /* Muted grey for readability */
+}
+
+.radarItem {
+  padding: 10px;
+  border-bottom: 1px solid #ecf0f1; /* Very light grey border */
+  margin-bottom: 10px;
+  background-color: #ecf0f1; /* Light grey background */
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 5px;
+}
+
+.radarItem h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.radarItem p {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.radarItem p strong {
+  margin-right: 5px;
+}
+
+.radarItem p small {
+  color: gray;
+  font-size: 0.8em;
+}
+
+.syncStatus {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.radarListContainer {
+  margin-top: 20px;
+}
+
+.levelHeader {
+  font-size: 1em;
+  padding: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  position: relative;
+  border-radius: 5px;
+  background-color: #34495e; /* Dark slate blue */
+  width: 100px;
+  color: white;
+}
+
+/* AI COACH */
+.buttonAICoach {
+  background-color: #27ae60; /* Green */
+  color: white;
+  padding: 7px ;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.aiCoachSubMenu {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #bdc3c7; /* Soft grey border */
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.aiCoachSubMenu label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.aiCoachSubMenu input,
+.aiCoachSubMenu textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.buttonCallAICoach {
+  background-color: #3498db; /* Blue */
   color: white;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-left: 10px; /* Space between buttons */
+}
+
+.aiCoachContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.buttonSaveAICoach {
+  background-color: #27ae60; /* Green */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
 .buttonSaveAICoach:disabled {
-  background-color: #ccc; /* Gray when disabled */
+  background-color: #ccc;
   cursor: not-allowed;
 }

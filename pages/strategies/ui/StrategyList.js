@@ -1,6 +1,6 @@
 import React from 'react';
 import StrategyItem from './StrategyItem';
-import styles from './StrategyList.module.css';
+import styles from './StrategyList.module.css'; // Importing the CSS Module
 
 export default function StrategyList({ strategies, handlers, streamAggregate }) {
   const validStates = ["Draft", "Published", "Closed", "Deleted"];
@@ -20,10 +20,10 @@ export default function StrategyList({ strategies, handlers, streamAggregate }) 
 
   return (
     <div>
-      <h2>Strategies</h2>
+      <h2 className={styles.heading}>Strategies</h2> {/* Updated with CSS Module */}
       {orderedGroupedStrategies.map(([state, stateStrategies]) => (
-        <div key={state} className="strategyGroup">
-          <h2>{state}</h2>
+        <div key={state} className={styles.strategyGroup}> {/* Updated with CSS Module */}
+          <h2 className={styles.stateTitle}>{state}</h2> {/* Updated with CSS Module */}
           {stateStrategies.map(strategy => (
             <StrategyItem 
               key={strategy.id} 

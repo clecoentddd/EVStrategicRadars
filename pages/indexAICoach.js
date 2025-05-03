@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { ClipLoader } from 'react-spinners';
 import callAICoach from './services/callAICoach';
 import saveAICoachResponse from './services/saveAICoachResponse'; // Import the new service
 import retrieveAICoachResponse from './services/retrieveAICoachResponse';

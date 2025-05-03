@@ -68,7 +68,7 @@ import RadarTooltip from './RadarToolTip';
           .endAngle((Math.PI / 2) * (i + 1))
         )
         .attr("fill", quadrantColors[i])
-        .attr("stroke", "plum");
+        .attr("stroke", "#228B22");
     }
 
         // Position items in each category quadrant based on distance
@@ -120,7 +120,7 @@ if (peopleAndKnowledgeLabel) {
       svg.append("circle")
         .attr("r", radius * d)
         .attr("fill", "none")
-        .attr("stroke", "plum") // Light blue for radar grid circles
+        .attr("stroke", "#228B22") // Light blue for radar grid circles
         .attr("stroke-width", d === 1 ? 5 : 1);
     });
 

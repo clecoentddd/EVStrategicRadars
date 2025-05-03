@@ -19,7 +19,7 @@
   
   .label {
     font-weight: bold;
-    color: #b3e5fc;
+    color: #228B22;
     margin-right: 6px;
     font-family: 'Orbitron', sans-serif;
   }
@@ -39,8 +39,8 @@
   
   .editButton {
     background-color: black;
-    border: 1px solid #a855f7; /* Tailwind's purple-500 */
-    color: #a855f7; /* Purple pencil */
+    border: 1px solid #228B22; /* Tailwind's purple-500 */
+    color: #228B22; /* Purple pencil */
     padding: 6px;
     border-radius: 6px;
     cursor: pointer;
@@ -52,8 +52,8 @@
   
   .editButton:hover {
     background-color: #1f1f1f;
-    border-color: #9333ea; /* Purple-600 on hover */
-    color: #9333ea;
+    border-color: #228B22; /* Purple-600 on hover */
+    color: #228B22;
   }
   
 
