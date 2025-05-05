@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './styles/index.module.css';
 import Navbar from "@/components/Navbar";
-import ConfigurationList from './styles/organisationList';
+import OrganisationList from './styles/organisationList';
+import OrganisationForm from './styles/organisationForm';
 import useAICoach from './indexAICoach';
 import createOrganisation from './services/createOrganisation';
 import updateOrganisation from './services/updateOrganisation';
@@ -109,7 +110,7 @@ function HomePage() {
           <div className={styles.header}>
             <h1 className={styles.headerTitle}>SPARK - Strategies that are executable</h1>
             <h2 className={styles.headerSubtitle}>
-              Agility: "the organizational capacity to detect, assess and respond to environmental changes..."
+              Agility: "The organizational capacity to effectively detect, assess, and respond to environmental changes in ways that are purposeful, decisive, and grounded in the will to win" - Leo Tilman - General Chuck Jacoby
             </h2>
             <button
               id="sync-status"
@@ -119,17 +120,26 @@ function HomePage() {
               {isSynced ? 'Synced' : 'Sync Issue'}
             </button>
           </div>
+
         </div>
         
         <button
-          id="create-config-button"
-          className={styles.buttonCreateRadar}
+          id="create-organisation-button"
+          className={styles.buttonCreateOrganisation}
           onClick={() => toggleForm('create')}
         >
           Create An Organisation
         </button>
+        {isCreateFormVisible && (
+        <OrganisationForm
+            mode="create"
+            onSubmit={handleCreate}
+            onCancel={() => setIsCreateFormVisible(false)}
+          />
+        )}
 
-        <ConfigurationList
+
+        <OrganisationList
           configurations={configurations}
           aiCoach={aiCoach}
           isUpdateFormVisible={isUpdateFormVisible}

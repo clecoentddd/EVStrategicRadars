@@ -1,0 +1,138 @@
+.formContainer {
+    display: block;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 10px);
+    max-width: 1000px;
+    box-sizing: border-box;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  /* Title */
+  .formTitle {
+    font-size: 1.6rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  /* Form Group */
+  .formGroup {
+    margin-bottom: 20px;
+  }
+  
+  /* Labels */
+  .formGroup label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    display: inline-block;
+  }
+  
+  /* Shared Input Styles */
+  .inputField,
+  .selectField {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+  
+  .selectField {
+    appearance: auto; /* Restore default dropdown style */
+    cursor: pointer;
+  }
+  
+  /* Textarea Styles */
+  .textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-top: 5px;
+    box-sizing: border-box;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    resize: none;
+    overflow: hidden;
+    min-height: 120px;
+  }
+  
+  .textarea.auto-grow {
+    height: auto;
+  }
+  
+  .textarea:focus,
+  .inputField:focus,
+  .selectField:focus {
+    border-color: #2980b9;
+    outline: none;
+  }
+  
+  /* Buttons */
+  .buttonGroup {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+  }
+  
+  .button {
+    background-color: #2980b9;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .button:hover {
+    background-color: #3498db;
+  }
+  
+  .buttonCancel {
+    background-color: #e74c3c;
+  }
+  
+  .buttonCancel:hover {
+    background-color: #c0392b;
+  }
+
+  .levelField {
+    width: 80px; /* Wider than before */
+    margin-left: 10px;
+    padding: 8px 10px; /* Add padding inside the dropdown */
+    font-size: 1rem;
+    font-family: 'Orbitron', sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    appearance: auto;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .aiCoachSubMenu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+

@@ -1,0 +1,165 @@
+/* === AI Coach Form Wrapper (for external container if needed) === */
+.aiCoachWrapper {
+    margin: 2rem 0;
+  }
+  
+  /* === AI Coach Form Panel === */
+  .aiCoachForm {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* === Headings === */
+  .aiCoachForm h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #2d3748;
+  }
+  
+  /* === Form Row === */
+  .formRow {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formRowNPS {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* === Labels === */
+  .formLabel {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #2d3748;
+    font-size: 0.95rem;
+  }
+
+  
+  /* === Inputs & Textareas === */
+  .npsInput {
+    width: 100px;
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  
+  .formTextarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+  
+  .formTextarea:focus,
+  .npsInput:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 1px #4299e1;
+  }
+  
+  
+  /* === Buttons Group === */
+  .buttonGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  
+  /* === Buttons Styling === */
+  .primaryButton {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .primaryButton:hover {
+    background-color: #3182ce;
+  }
+  
+  .primaryButton:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+  }
+  
+  .secondaryButton {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .secondaryButton:hover {
+    background-color: #38a169;
+  }
+  
+  .secondaryButton:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+  }
+  
+  /* === Cancel Button === */
+  .buttonCancel {
+    background-color: transparent;
+    color: #4299e1;
+    border: 1px solid #4299e1;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .buttonCancel:hover {
+    background-color: #4299e1;
+    color: white;
+  }
+  
+  /* === Toggle Button (inside card) === */
+  .buttonAICoach {
+    background: #1fd531;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .buttonAICoach:hover {
+    background: #36fb2c;
+  }
+  
+  .buttonAICoach:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+  }
+  

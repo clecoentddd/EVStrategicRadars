@@ -1,18 +1,34 @@
-import React, { useState } from 'react';
-import styles from './index.module.css';
-import ConfigurationForm from './organisationForm';
+import React, { useState, useRef, useEffect} from 'react';
+import styles from './organisationList.module.css';
+import OrganisationForm from './organisationForm';
 import AICoachForm from './AICoachForm';
 
-const ConfigurationList = ({ 
-  configurations, 
+const OrganisationList = ({
+  configurations,
   aiCoach,
   isUpdateFormVisible,
   configToUpdate,
   onUpdateSubmit,
   onToggleForm,
-  onDelete
+  onDelete,
 }) => {
   const [expandedConfigs, setExpandedConfigs] = useState({});
+  const updateFormRef = useRef(null);
+  const aiCoachRefs = useRef({});
+
+  useEffect(() => {
+    if (isUpdateFormVisible && updateFormRef.current) {
+      updateFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [isUpdateFormVisible]);
+  
+  useEffect(() => {
+    const visibleId = Object.keys(aiCoach.aiCoachVisible).find(id => aiCoach.aiCoachVisible[id]);
+    if (visibleId && aiCoachRefs.current[visibleId]) {
+      aiCoachRefs.current[visibleId].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [aiCoach.aiCoachVisible]);
+  
 
   const toggleConfig = (configId) => {
     setExpandedConfigs(prev => ({
@@ -35,75 +51,65 @@ const ConfigurationList = ({
     }
   };
 
+  const groupedConfigs = configurations.reduce((acc, config) => {
+    if (!acc[config.level]) acc[config.level] = [];
+    acc[config.level].push(config);
+    return acc;
+  }, {});
+
   return (
-    <div className={styles.radarListContainer}>
-      {Object.values(
-        configurations.reduce((acc, config) => {
-          if (!acc[config.level]) acc[config.level] = { level: config.level, configs: [] };
-          acc[config.level].configs.push(config);
-          return acc;
-        }, {})
-      ).map(levelGroup => (
-        <div key={levelGroup.level}>
-          <h2 className={styles.levelHeader}>Level {levelGroup.level}</h2>
-          {levelGroup.configs.map(config => (
-            <div key={config.id} className={styles.radarItem}>
-              <div className={styles.radarHeader} onClick={() => toggleConfig(config.id)}>
-                <h3>
-                  {config.name}
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
-                      backgroundColor: config.potentialNPS === null ? 'grey' : aiCoach.getNPSColor(config.potentialNPS || 0),
-                      marginLeft: '8px',
-                      verticalAlign: 'middle',
-                    }}
-                    title={`NPS: ${config.potentialNPS || 0}`}
-                  ></span>
-                  <br />
-                  <span className={styles.radarPurpose}>{config.purpose}</span>
-                </h3>
-              </div>
+    <div className={styles.organisationList}>
+      {Object.entries(groupedConfigs).map(([level, configs]) => (
+        <div key={level}>
+          <div className={styles.levelHeader}>
+            Level <span className={styles.levelCircle}>{level}</span>
+          </div>
 
-              {expandedConfigs[config.id] && (
-                <div className={styles.radarDetails}>
-                  <AICoachForm 
-                    config={config} 
-                    aiCoach={aiCoach}
-                  />
-
-                  <button className={styles.buttonViewRadar} onClick={() => viewConfig(config.name, config.id)}>
-                    View Radar
-                  </button>
-                  <button className={styles.buttonViewStrategy} onClick={() => viewStream(config.id)}>
-                    View Strategy
-                  </button>
-                  <button className={styles.buttonUpdate} onClick={() => onToggleForm('update', config)}>
-                    Edit
-                  </button>
-                  <button className={styles.buttonDelete} onClick={() => onDelete(config.id)}>
-                    Delete
-                  </button>
-
-                  {isUpdateFormVisible && configToUpdate?.id === config.id && (
-                    <ConfigurationForm
-                      mode="update"
-                      config={configToUpdate}
-                      onSubmit={onUpdateSubmit}
-                      onCancel={() => onToggleForm(null)}
-                    />
-                  )}
+          <div className={styles.cardGrid}>
+            {configs.map(config => (
+              <div key={config.id} className={styles.card}>
+                <div className={styles.cardHeader} onClick={() => toggleConfig(config.id)}>
+                  <h3 className={styles.cardTitle}>{config.name}</h3>
+                  <p className={styles.purposeText}>{config.purpose}</p>
                 </div>
-              )}
+
+                {expandedConfigs[config.id] && (
+                  <div className={styles.cardButtons}>
+                    <button onClick={() => viewConfig(config.name, config.id)} className={styles.buttonViewRadar}>View Radar</button>
+                    <button onClick={() => viewStream(config.id)} className={styles.buttonViewStrategy}>View Strategy</button>
+                    <button onClick={() => aiCoach.toggleAICoach(config.id)} className={styles.buttonAICoach}>AI Coach</button>
+                    <button onClick={() => onToggleForm('update', config)} className={styles.buttonEdit}>Edit</button>
+                    <button onClick={() => onDelete(config.id)} className={styles.buttonDelete}>Delete</button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Render AI Coach forms outside grid */}
+          {configs.map(config =>
+            aiCoach.aiCoachVisible[config.id] && (
+              <div key={`ai-form-${config.id}`} className={styles.formContainer}>
+                <AICoachForm config={config} aiCoach={aiCoach} />
+              </div>
+            )
+          )}
+
+          {/* Render update form outside grid */}
+          {isUpdateFormVisible && configToUpdate && configs.find(c => c.id === configToUpdate.id) && (
+            <div className={styles.formContainer}>
+              <OrganisationForm
+                mode="update"
+                config={configToUpdate}
+                onSubmit={onUpdateSubmit}
+                onCancel={() => onToggleForm(null)}
+              />
             </div>
-          ))}
+          )}
         </div>
       ))}
     </div>
   );
 };
 
-export default ConfigurationList;
+export default OrganisationList;

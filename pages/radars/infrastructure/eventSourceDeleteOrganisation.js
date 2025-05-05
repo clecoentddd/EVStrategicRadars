@@ -1,4 +1,4 @@
-import { appendEventToEventSourceDB } from './eslib.js';
+import { appendEventToOrganisationsEventSourceDB } from './eslib.js';
 import { projectOrganisationToSupabase } from './organisationsProjection.js'; // Import projection function
 import {replayOrganisationAggregate} from './eventReplayOrganisation.js';
 
@@ -29,7 +29,7 @@ export const sendOrganisationDeleted= async (event) => {
     console.log ("eventstoreRadars.js publishing events", radarToDelete);
   
     //eventStore.push(eventWithId); // Push the new event with the ID into the event store
-    const radarDeleted = await appendEventToOrganisationEventSourceDB( radarToDelete);
+    const radarDeleted = await appendEventToOrganisationsEventSourceDB( radarToDelete);
   
     // Publish integration event
     console.log ("eventstore.js publishing events 2", radarDeleted);
