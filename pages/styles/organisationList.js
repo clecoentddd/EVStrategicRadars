@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './organisationList.module.css';
 import OrganisationForm from './organisationForm';
 import AICoachForm from './AICoachForm';
@@ -12,7 +12,8 @@ const OrganisationList = ({
   onToggleForm,
   onDelete,
 }) => {
-  const [expandedConfigs, setExpandedConfigs] = useState({});
+  const [activeConfig, setActiveConfig] = useState(null);
+  const [hoveredConfig, setHoveredConfig] = useState(null); // New state to track hover
   const updateFormRef = useRef(null);
   const aiCoachRefs = useRef({});
 
@@ -21,21 +22,13 @@ const OrganisationList = ({
       updateFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [isUpdateFormVisible]);
-  
+
   useEffect(() => {
     const visibleId = Object.keys(aiCoach.aiCoachVisible).find(id => aiCoach.aiCoachVisible[id]);
     if (visibleId && aiCoachRefs.current[visibleId]) {
       aiCoachRefs.current[visibleId].scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [aiCoach.aiCoachVisible]);
-  
-
-  const toggleConfig = (configId) => {
-    setExpandedConfigs(prev => ({
-      ...prev,
-      [configId]: !prev[configId]
-    }));
-  };
 
   const viewConfig = (name, id) => {
     window.location.href = `/radars/ui/${encodeURIComponent(name)}?radarId=${encodeURIComponent(id)}`;
@@ -60,44 +53,52 @@ const OrganisationList = ({
   return (
     <div className={styles.organisationList}>
       {Object.entries(groupedConfigs).map(([level, configs]) => (
-        <div key={level}>
+        <div key={level} className={styles.levelSection}>
           <div className={styles.levelHeader}>
-            Level <span className={styles.levelCircle}>{level}</span>
+            <div className={styles.levelCircle}>{level}</div>
+            <div className={styles.levelTitle}>Level {level} Organizations</div>
           </div>
 
-          <div className={styles.cardGrid}>
-            {configs.map(config => (
-              <div key={config.id} className={styles.card}>
-                <div className={styles.cardHeader} onClick={() => toggleConfig(config.id)}>
-                  <h3 className={styles.cardTitle}>{config.name}</h3>
-                  <p className={styles.purposeText}>{config.purpose}</p>
+          <div className={styles.pillContainer}>
+            {configs.map(config => {
+              const nps = config.potentialNPS ?? 0;
+              const npsColor = aiCoach.getNPSColor(nps);
+
+              return (
+                <div
+                  key={config.id}
+                  className={`${styles.departmentPill} ${activeConfig?.id === config.id ? styles.activePill : ''}`}
+                  onClick={() => setActiveConfig(config)}
+                  onMouseEnter={() => setHoveredConfig(config)} // Set hovered config
+                  onMouseLeave={() => setHoveredConfig(null)} // Reset hovered config
+                  style={{ '--nps-color': npsColor }}
+                >
+                  <span>{config.name}</span>
+
+                  {/* Show buttons on hover */}
+                  {hoveredConfig?.id === config.id && (
+                    <div className={styles.hoverButtons}>
+                      <button onClick={() => viewConfig(config.name, config.id)}>View Radar</button>
+                      <button onClick={() => viewStream(config.id)}>View Strategy</button>
+                    </div>
+                  )}
                 </div>
-
-                {expandedConfigs[config.id] && (
-                  <div className={styles.cardButtons}>
-                    <button onClick={() => viewConfig(config.name, config.id)} className={styles.buttonViewRadar}>View Radar</button>
-                    <button onClick={() => viewStream(config.id)} className={styles.buttonViewStrategy}>View Strategy</button>
-                    <button onClick={() => aiCoach.toggleAICoach(config.id)} className={styles.buttonAICoach}>AI Coach</button>
-                    <button onClick={() => onToggleForm('update', config)} className={styles.buttonEdit}>Edit</button>
-                    <button onClick={() => onDelete(config.id)} className={styles.buttonDelete}>Delete</button>
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Render AI Coach forms outside grid */}
+          {/* AI Coach forms */}
           {configs.map(config =>
             aiCoach.aiCoachVisible[config.id] && (
-              <div key={`ai-form-${config.id}`} className={styles.formContainer}>
+              <div key={`ai-form-${config.id}`} className={styles.formContainer} ref={el => aiCoachRefs.current[config.id] = el}>
                 <AICoachForm config={config} aiCoach={aiCoach} />
               </div>
             )
           )}
 
-          {/* Render update form outside grid */}
+          {/* Update form */}
           {isUpdateFormVisible && configToUpdate && configs.find(c => c.id === configToUpdate.id) && (
-            <div className={styles.formContainer}>
+            <div className={styles.formContainer} ref={updateFormRef}>
               <OrganisationForm
                 mode="update"
                 config={configToUpdate}
@@ -108,6 +109,40 @@ const OrganisationList = ({
           )}
         </div>
       ))}
+
+      {/* Slide-out panel */}
+      {activeConfig && (
+        <div className={styles.slideOutPanel}>
+          <div className={styles.panelHeader}>
+            <button onClick={() => setActiveConfig(null)} className={styles.closeButton}>✖</button>
+            <h3>{activeConfig.name}</h3>
+            <p>{activeConfig.purpose}</p>
+          </div>
+          <div className={styles.panelActions}>
+          <button
+            className={`${styles.panelButton} ${styles.aiCoachButton}`}
+            onClick={() => aiCoach.toggleAICoach(activeConfig.id)}
+          >
+            AI Coach
+          </button>
+
+          <button
+            className={`${styles.panelButton} ${styles.editButton}`}
+            onClick={() => onToggleForm('update', activeConfig)}
+          >
+            Edit Organization
+          </button>
+
+          <button
+            className={`${styles.panelButton} ${styles.deleteButton}`}
+            onClick={() => onDelete(activeConfig.id)}
+          >
+            Delete Organization
+          </button>
+        </div>
+
+        </div>
+      )}
     </div>
   );
 };

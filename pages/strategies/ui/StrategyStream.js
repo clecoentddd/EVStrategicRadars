@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from './StrategyStream.module.css';
-import Navbar from "@/components/Navbar";
 import StrategyList from './StrategyList';
 import CreateStrategyForm from './CreateStrategyForm';
 import CreateInitiativeForm from './CreateInitiativeForm';
 import { useHandlers } from './handlers';
+import Navbar from '@/components/Navbar.js';
 
 export default function StrategyStream() {
   const router = useRouter();

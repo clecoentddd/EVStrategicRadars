@@ -7,6 +7,7 @@ const Navbar = ({ streamAggregate, getRadarUrl, radarId, sourcePage }) => {
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorBanner, setShowErrorBanner] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const currentPath = router.pathname;
 
   useEffect(() => {
@@ -24,8 +25,10 @@ const Navbar = ({ streamAggregate, getRadarUrl, radarId, sourcePage }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const goToHome = () => {
-    router.push('/');
+  const goToHome = async () => {
+    setIsLoading(true);
+    await router.push('/');
+    setIsLoading(false);
   };
 
   const handleRadarClick = () => {
@@ -92,6 +95,7 @@ const Navbar = ({ streamAggregate, getRadarUrl, radarId, sourcePage }) => {
         </div>
       )}
 
+      {isLoading && <div className={styles.loadingOverlay}>Loading...</div>}
       <div id="navbar" className={styles.navbar}>
         <a
           className={`${styles.navItem} ${currentPath === '/' ? styles.active : ''}`}
