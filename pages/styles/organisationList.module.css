@@ -147,6 +147,17 @@
   transition: all 0.2s ease;
   /* Make sure buttons are clickable */
   pointer-events: auto;
+  position: relative;
+}
+
+.hoverButtons button::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 0;
+  right: 0;
+  height: calc(100% + 15px);
+  pointer-events: none;
 }
 
 .hoverButtons button:hover {

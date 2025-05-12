@@ -77,10 +77,16 @@ const OrganisationList = ({
 
                   {/* Show buttons on hover */}
                   {hoveredConfig?.id === config.id && (
-                    <div className={styles.hoverButtons}>
-                      <button onClick={() => viewConfig(config.name, config.id)}>View Radar</button>
-                      <button onClick={() => viewStream(config.id)}>View Strategy</button>
-                    </div>
+                       <div className={styles.hoverButtons}>
+                       <button onClick={(e) => {
+                         e.stopPropagation();
+                         viewConfig(config.name, config.id);
+                       }}>View Radar</button>
+                       <button onClick={(e) => {
+                         e.stopPropagation();
+                         viewStream(config.id);
+                       }}>View Strategy</button>
+                     </div>
                   )}
                 </div>
               );
