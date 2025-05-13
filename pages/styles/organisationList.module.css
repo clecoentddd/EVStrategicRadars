@@ -210,7 +210,21 @@
   transition: transform 0.3s ease-in-out;
 }
 
-/* ... existing styles unchanged above ... */
+.slideOutPanel h2 {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.contextSection {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #475569; /* Tailwind slate-600 */
+  max-height: 200px;
+  overflow-y: auto;
+}
 
 /* Panel action buttons container */
 .panelActions {
@@ -251,3 +265,62 @@
   transform: translateY(-2px);
   opacity: 0.95;
 }
+
+
+.panelHeader {
+  position: relative;
+  padding: 2rem 1rem 1rem;
+  color: #1e293b;
+}
+
+/* Close (X) button */
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #64748b; /* Tailwind slate-500 */
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+  color: #ef4444; /* Tailwind red-500 */
+}
+
+/* Organisation name */
+.orgTitle {
+  margin-top: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Purpose / Context sections */
+.section {
+  margin-top: 1.5rem;
+}
+
+.section h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #334155; /* Tailwind slate-700 */
+}
+
+.section p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #475569; /* Tailwind slate-600 */
+  
+  /* Truncation styles */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+

@@ -39,7 +39,7 @@ const OrganisationForm = ({ mode, config = {}, onSubmit, onCancel }) => {
 
   return (
     <>
-      <h2 className={styles.formTitle}>{mode === 'create' ? 'Create an Organisation' : 'Update this Organisation'}</h2>
+      <h2 className={styles.formTitle}>{mode === 'create' ? 'Create an organisation' : 'Update this organisation'}</h2>
       <form onSubmit={handleSubmit} className={styles.formContainer}>
         <div className={styles.formGroup}>
           <label htmlFor="name">Name</label>

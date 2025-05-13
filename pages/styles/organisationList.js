@@ -121,9 +121,19 @@ const OrganisationList = ({
         <div className={styles.slideOutPanel}>
           <div className={styles.panelHeader}>
             <button onClick={() => setActiveConfig(null)} className={styles.closeButton}>✖</button>
-            <h3>{activeConfig.name}</h3>
-            <p>{activeConfig.purpose}</p>
+            <h2 className={styles.orgTitle}>{activeConfig.name}</h2>
+
+            <div className={styles.section}>
+              <h4>Purpose</h4>
+              <p>{activeConfig.purpose}</p>
+            </div>
+
+            <div className={styles.section}>
+              <h4>Context</h4>
+              <p>{activeConfig.context}</p>
+            </div>
           </div>
+
           <div className={styles.panelActions}>
           <button
             className={`${styles.panelButton} ${styles.aiCoachButton}`}
