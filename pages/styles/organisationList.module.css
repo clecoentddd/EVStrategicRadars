@@ -28,16 +28,14 @@
 .levelCircle {
   width: 60px;
   height: 60px;
-  background: rgb(186, 192, 226);
-  color: white;
+  background: #d1d5db;
+  color: #1e293b;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
   font-size: 1.3rem;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-  border: 3px solid white;
 }
 
 /* Hide the textual title */
@@ -135,8 +133,8 @@
 
 /* Style for hover buttons */
 .hoverButtons button {
-  background-color: #e0ecff;
-  color: #1e3a8a;
+  background-color: #d1d5db;
+  color: #1f2937;
   border: none;
   padding: 6px 12px;
   border-radius: 6px;
@@ -182,9 +180,9 @@
 
 /* Active state - ensure it appears above other elements */
 .activePill {
-  background: #1e293b;
+  background: #334155;
   color: white;
-  border-color: #1e293b;
+  border-color: #334155;
   transform: scale(1.05);
   box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
   z-index: 10;
@@ -288,7 +286,7 @@
 }
 
 .closeButton:hover {
-  color: #ef4444; /* Tailwind red-500 */
+  color: #fbbf24 ; /* Tailwind red-500 */
 }
 
 /* Organisation name */

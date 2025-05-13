@@ -129,7 +129,7 @@ if (peopleAndKnowledgeLabel) {
     for (let i = 0; i < numberOfLines; i++) { const angle = (Math.PI * 2 / numberOfLines) * i; const x = radius * Math.cos(angle); const y = radius * Math.sin(angle); svg.append("line") .attr("x1", 0) .attr("y1", 0) 
     .attr("x2", x) 
     .attr("y2", y) 
-    .attr("stroke", "plum") 
+    .attr("stroke", "#228B22") 
     .attr("stroke-width", 0.4); }
 
 

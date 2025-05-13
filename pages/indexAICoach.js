@@ -9,7 +9,8 @@ const useAICoach = () => {
   // State for AI Coach visibility and data
   const [aiCoachVisible, setAICoachVisible] = useState({});
   const [aiCoachData, setAICoachData] = useState({});
-  const [loading, setLoading] = useState(false); // Spinner when calling AI API
+  const [callingLoading, setCallingLoading] = useState(false);
+  const [savingLoading, setSavingLoading] = useState(false);
 
   // Refs for auto-resizing textareas
   const evaluationsTextareaRefs = useRef({});
@@ -39,7 +40,7 @@ const useAICoach = () => {
   // Handle "Call AI Coach" button click
   const handleCallAICoach = async (radarId, purpose, context) => {
     try {
-      setLoading(true); // Show the spinner
+      setCallingLoading(true); // Show the spinner
 
       const response = await callAICoach(radarId, purpose, context);
       console.log('AI Coach Response:', response);
@@ -57,14 +58,14 @@ const useAICoach = () => {
       console.error('Error calling AI Coach:', error.message);
       alert('Failed to call AI Coach. Please try again.');
     } finally {
-      setLoading(false); // Hide the spinner
+      setCallingLoading(false); // Hide the spinner
     }
   };
 
   // Handle "Save AI Coach Response" button click
   const handleSaveAICoachResponse = async (radarId, potentialNPS, evaluations, suggestions) => {
     try {
-      setLoading(true); // Show the spinner
+      setSavingLoading(true); // Show the spinner
       console.log('handleSaveAICoachResponse', radarId);
   
       // Ensure all required fields are present
@@ -80,13 +81,13 @@ const useAICoach = () => {
       console.error('Error saving data:', error.message);
       alert('Failed to save data. Please try again.');
     } finally {
-      setLoading(false); // Hide the spinner
+      setSavingLoading(false); // Hide the spinner
     }
   };
 
-const handleRetrieveAICoachResponse = async (radarId, setLoading, setAICoachData) => {
+const handleRetrieveAICoachResponse = async (radarId, setCallingLoading, setAICoachData) => {
   try {
-    setLoading(true); // Show the spinner
+    setCallingLoading(true); // Show the spinner
     console.log('handleRetrieveAICoachResponse', radarId);
 
     // Call the retrieve function
@@ -141,13 +142,14 @@ const handleRetrieveAICoachResponse = async (radarId, setLoading, setAICoachData
   return {
     aiCoachVisible,
     aiCoachData,
-    loading,
     evaluationsTextareaRefs,
     suggestionsTextareaRefs,
     toggleAICoach,
     handleCallAICoach,
     handleSaveAICoachResponse,
     getNPSColor,
+    callingLoading,
+    savingLoading,
   };
 };
 

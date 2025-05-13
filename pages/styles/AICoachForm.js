@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import styles from './AICoachForm.module.css';
-import { ClipLoader } from 'react-spinners';
+import React, { useState, useRef, useEffect } from 'react';
+import styles from './AICoachForm.module.css'; 
+import { ClipLoader } from 'react-spinners'; // Import the spinner
 
 const AICoachForm = ({ config, aiCoach }) => {
   // Init refs
-
   const formContainerRef = useRef(null);
+  const [callingLoading, setCallingLoading] = useState(false);
+  const [savingLoading, setSavingLoading] = useState(false);
 
   aiCoach.evaluationsTextareaRefs.current[config.id] = 
     aiCoach.evaluationsTextareaRefs.current[config.id] || React.createRef();
@@ -69,26 +70,31 @@ const AICoachForm = ({ config, aiCoach }) => {
       </div>
 
       <div className={styles.buttonGroup}>
-        <button
-          className={styles.primaryButton}
-          onClick={() =>
-            aiCoach.handleCallAICoach(config.id, config.purpose, config.context)
-          }
-          disabled={aiCoach.loading}
-        >
-          {aiCoach.loading ? <ClipLoader color="#fff" size={15} /> : 'Call AI Coach'}
-        </button>
+      <button
+  className={styles.primaryButton}
+  onClick={async () => {
+    setCallingLoading(true);
+    await aiCoach.handleCallAICoach(config.id, config.purpose, config.context);
+    setCallingLoading(false);
+  }}
+  disabled={callingLoading || savingLoading}
+>
+  {callingLoading ? <ClipLoader color="#fff" size={15} /> : 'Call AI Coach'}
+</button>
 
-        <button
-          className={styles.secondaryButton}
-          onClick={() => {
-            const { potentialNPS, evaluations, suggestions } = aiCoach.aiCoachData[config.id] || {};
-            aiCoach.handleSaveAICoachResponse(config.id, potentialNPS, evaluations, suggestions);
-          }}
-          disabled={aiCoach.loading}
-        >
-          Save
-        </button>
+<button
+  className={styles.secondaryButton}
+  onClick={async () => {
+    const { potentialNPS, evaluations, suggestions } = aiCoach.aiCoachData[config.id] || {};
+    setSavingLoading(true);
+    await aiCoach.handleSaveAICoachResponse(config.id, potentialNPS, evaluations, suggestions);
+    setSavingLoading(false);
+  }}
+  disabled={callingLoading || savingLoading}
+>
+  {savingLoading ? <ClipLoader color="#fff" size={15} /> : 'Save'}
+</button>
+
 
         <button
           type="button"

@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './organisationList.module.css';
 import OrganisationForm from './organisationForm';
 import AICoachForm from './AICoachForm';
+import LoadingButton from '@/components/LoadingButton';
+
+
 
 const OrganisationList = ({
   configurations,
@@ -14,6 +17,7 @@ const OrganisationList = ({
 }) => {
   const [activeConfig, setActiveConfig] = useState(null);
   const [hoveredConfig, setHoveredConfig] = useState(null); // New state to track hover
+  const [loadingAction, setLoadingAction] = useState({ type: null, id: null });
   const updateFormRef = useRef(null);
   const aiCoachRefs = useRef({});
 
@@ -35,12 +39,15 @@ const OrganisationList = ({
   };
 
   const viewStream = async (configId) => {
+    setLoadingAction({ type: 'strategy', id: configId });
     try {
       const response = await fetch(`/api/readmodel-strategies?radarId=${encodeURIComponent(configId)}`);
       const data = await response.json();
       if (data.id) window.location.href = `/strategies/ui/${encodeURIComponent(data.id)}`;
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setLoadingAction({ type: null, id: null });
     }
   };
 
@@ -78,14 +85,26 @@ const OrganisationList = ({
                   {/* Show buttons on hover */}
                   {hoveredConfig?.id === config.id && (
                        <div className={styles.hoverButtons}>
-                       <button onClick={(e) => {
-                         e.stopPropagation();
-                         viewConfig(config.name, config.id);
-                       }}>View Radar</button>
-                       <button onClick={(e) => {
-                         e.stopPropagation();
-                         viewStream(config.id);
-                       }}>View Strategy</button>
+                       <LoadingButton
+                          isLoading={loadingAction.type === 'radar' && loadingAction.id === config.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLoadingAction({ type: 'radar', id: config.id });
+                            viewConfig(config.name, config.id);
+                          }}
+                        >
+                          View Radar
+                        </LoadingButton>
+
+                       <LoadingButton
+                          isLoading={loadingAction.type === 'strategy' && loadingAction.id === config.id}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Optional: prevent triggering outer click
+                            viewStream(config.id);
+                          }}
+                        >
+                          View Strategy
+                        </LoadingButton>
                      </div>
                   )}
                 </div>

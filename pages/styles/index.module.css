@@ -9,7 +9,7 @@
   flex-direction: column;
   align-items: center;
   font-family: 'Orbitron', sans-serif;
-  background-color: #decebf; /* Softer light grey for clean look */
+  background-color: #d1d5db; /* Softer light grey for clean look */
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   padding: 30px 20px;
@@ -93,7 +93,7 @@
 }
 
 .buttonCreateOrganisation {
-  background-color: #2980b9;
+  background-color: #5a91af;
   color: white;
   margin-top: 10px;
   padding: 12px 20px;

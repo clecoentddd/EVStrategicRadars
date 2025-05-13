@@ -52,7 +52,7 @@ export default async function handler(req, res) {
   
   **Response Format:**
   - And please do stick to this format as I am parsing your response:
-  - 1. NPS Rating: [Rating between 0 and 5]
+  - 1. NPS Rating: [Rating between 0 and 5] - Please ensure you do give a rating between 0 and 5
   - 2. Evaluation Criteria: [Your feedback on the purpose, including emotional impact and focus]
   - 3. Suggestions: [3 suggestions if NPS < 4.5, otherwise "Job done"]`
 
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
 
   async function callMistralPurposeVisionMission(purpose, context) {
     const prompt = `Assess the following purpose, vision and mission based on the context of the organisation - its activities and goals - and provide:
-  1. An NPS rating between 0 to 5.
+  1. An NPS rating between 0 to 5. Please ensure you do give a rating between 0 and 5.
   2. Evaluations on the purpose:: Evaluation Criteria (please do rate each of these 5 sections of them 0 to 5- do not reuse numbering)
     2.1 Inspiration and Motivation:
     - Does the purpose statement inspire and motivate both employees and customers?

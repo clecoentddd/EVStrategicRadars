@@ -127,7 +127,7 @@
   }
   
   /* === Cancel Button === */
-  .buttonCancel {
+  .cancelButton {
     background-color: transparent;
     color: #4299e1;
     border: 1px solid #4299e1;
