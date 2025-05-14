@@ -19,7 +19,7 @@
   
   .label {
     font-weight: bold;
-    color: #228B22;
+    color: #00ff9f;
     margin-right: 6px;
     font-family: 'Orbitron', sans-serif;
   }
@@ -39,8 +39,8 @@
   
   .editButton {
     background-color: black;
-    border: 1px solid #228B22; /* Tailwind's purple-500 */
-    color: #228B22; /* Purple pencil */
+    border: 1px solid #00ff9f; /* Tailwind's purple-500 */
+    color: #00ff9f; /* Purple pencil */
     padding: 6px;
     border-radius: 6px;
     cursor: pointer;

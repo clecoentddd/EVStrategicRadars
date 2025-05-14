@@ -3,47 +3,49 @@
 /* Wrapper for radar container */
 .radarContainer {
   position: left;
-  display: flex; /* Use flexbox for easier centering */
-  justify-content: right; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  height: 100%; /* If you want to center within the parent container */
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  height: 100%;
   font-family: 'Orbitron', sans-serif;
 }
 
-/* Styling for radar items */
+/* Radar item with glow and interaction */
 .radarItem {
-  fill: rgb(42, 243, 95); /* Blue color for radar items */
+  fill: rgb(42, 243, 95);
   cursor: pointer;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 128, 0.5));
+  transition: transform 0.2s ease, filter 0.3s ease;
+}
+
+.radarItem:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 12px rgba(0, 255, 128, 0.9));
 }
 
 /* Text styling for radar items */
-.chartText { 
-  font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
+.chartText {
+  font-family: 'Orbitron', sans-serif;
   font-size: 12px;
-  fill: #eeeaea; /* Default text color */ 
-  font-weight: bold; 
+  fill: #c1fff4;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(0, 255, 191, 0.6);
+  letter-spacing: 0.5px;
 }
 
 /* Normal text for radar chart labels */
-.chartTextNormal { 
-  font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
-  font-size: 9px; 
-  fill: white; /* Default text color */
+.chartTextNormal {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  fill: white;
+  font-weight: 300;
+  text-anchor: middle;
+  letter-spacing: -0.2px;
 }
 
 /* Wrapper class for relative positioning */
 .wrapper {
   position: relative;
-}
-
-/* Adjustments for normal text */
-.chartTextNormal {
-  font-size: 11px;
-  fill: white;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 300;
-  text-anchor: middle;
-  letter-spacing: -0.2px;
 }
 
 /* Radar container for general structure */
@@ -55,60 +57,67 @@
 .categoryLabel {
   font-size: 14px;
   font-weight: bold;
-  fill: white;
+  fill: #00ffcc;
   font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
 }
 
 /* Radar grid circle styling */
 .radarGridCircle {
   fill: none;
-  stroke: #228B22; /* Dark green for grid lines */
+  stroke: #00ff9f;
+  stroke-opacity: 0.5; /* Initial opacity */
 }
 
+/* Outer radar grid circle */
 .radarGridCircleOuter {
   stroke-width: 5;
+  stroke: #00ffcc;
+  filter: drop-shadow(0 0 5px rgba(0, 255, 204, 0.3));
 }
 
+/* Inner radar grid circle */
 .radarGridCircleInner {
   stroke-width: 1;
 }
 
 /* Radial line styling */
 .radialLine {
-  stroke: #228B22; /* Blue color for radial lines */
-  stroke-width: 0.8;
-  opacity: 0.6;
+  stroke: #00ffaa;
+  stroke-width: 0.6;
+  stroke-dasharray: 2, 2;
+  opacity: 0.5;
 }
 
 /* Styling for each quadrant */
 .quadrantFillDark {
-  fill: #000; /* Black color for one of the quadrants */
+  fill: #0a0f0f;
 }
 
 .quadrantFillLight {
-  fill: #232b2b; /* Dark gray for the other quadrant */
+  fill: #131a1a;
 }
 
 /* Style for item circles based on impact */
 .itemCircleLowImpact {
-  fill: #77DD77; /* Light green color for low impact */
+  fill: #77DD77;
 }
 
 .itemCircleMediumImpact {
-  fill: #FFD580; /* Yellow color for medium impact */
+  fill: #FFD580;
 }
 
 .itemCircleHighImpact {
-  fill: #FF6961; /* Red color for high impact */
+  fill: #FF6961;
 }
 
 .itemCircleDefault {
-  fill: steelblue; /* Default color for items */
+  fill: steelblue;
 }
 
 /* Glow effect filter for opportunities */
 .itemGlowEffect {
-  filter: url(#sofGlow); /* Use this class if you want to apply the glow effect */
+  filter: url(#sofGlow);
 }
 
 /* Impact Color Styles */
@@ -128,6 +137,7 @@
   fill: steelblue;
 }
 
+/* Opportunity ring styles - NOT changed per instructions */
 .opportunityLow {
   fill: none;
   stroke: #77DD77;
@@ -145,4 +155,3 @@
   stroke: #FF6961;
   stroke-width: 3;
 }
-
