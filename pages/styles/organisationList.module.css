@@ -83,7 +83,14 @@
   z-index: 1;
 }
 
-/* Container for hover buttons - fixed positioning */
+.departmentPill:hover {
+  background: #5a91af; /* Tailwind blue-300 */
+  color: #1e293b;
+  border-color: #5a91af; /* blue-400 border on hover */
+  transform: scale(1.03);
+  color: white;
+}
+
 /* Hover buttons container - fix z-index */
 .departmentPill .hoverButtons {
   position: absolute;
@@ -133,8 +140,8 @@
 
 /* Style for hover buttons */
 .hoverButtons button {
-  background-color: #d1d5db;
-  color: #1f2937;
+  background-color: #5a91af;
+  color: white;
   border: none;
   padding: 6px 12px;
   border-radius: 6px;
@@ -169,13 +176,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 8px;
+  width: 4px; /* Narrower */
   height: 100%;
   border-top-left-radius: 2rem;
   border-bottom-left-radius: 2rem;
   background-color: var(--nps-color);
-  /* Ensure it stays within pill */
-  overflow: hidden;
+  opacity: 0.5; /* More subtle */
+  overflow: hidden; /* Prevent overflow */
 }
 
 /* Active state - ensure it appears above other elements */

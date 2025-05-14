@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
-import RadarChart from '../../../components/RadarChart';
+import RadarChart from '@/components/RadarChart';
 import Navbar from '@/components/Navbar'; // Import the Navbar component
 import styles from './name.module.css';
 import RadarItemEditOrCreateForm from './RadarItemEditOrCreateForm';

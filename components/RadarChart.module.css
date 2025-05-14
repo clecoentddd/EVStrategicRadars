@@ -1,27 +1,148 @@
+/* RadarChart.module.css */
+
+/* Wrapper for radar container */
 .radarContainer {
-    position: left;
-    display: flex; /* Use flexbox for easier centering */
-    justify-content: right; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 100%; /* If you want to center within the parent container */
-    font-family: 'Orbitron', sans-serif;
-  }
+  position: left;
+  display: flex; /* Use flexbox for easier centering */
+  justify-content: right; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100%; /* If you want to center within the parent container */
+  font-family: 'Orbitron', sans-serif;
+}
 
-  .radarItem {
-    fill: rgb(42, 243, 95); /* Blue color for radar items */
-    cursor: pointer;
-  }
+/* Styling for radar items */
+.radarItem {
+  fill: rgb(42, 243, 95); /* Blue color for radar items */
+  cursor: pointer;
+}
 
-    
-  .chartText { 
-    font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
-    font-size: 12px; fill: #eeeaea; /* Default text color */ 
-    font-weight: bold; 
-  }
+/* Text styling for radar items */
+.chartText { 
+  font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
+  font-size: 12px;
+  fill: #eeeaea; /* Default text color */ 
+  font-weight: bold; 
+}
 
-  .chartTextNormal { 
-    font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
-    font-size: 9px; fill: white; /* Default text color */ 
-  }
-  
-  
+/* Normal text for radar chart labels */
+.chartTextNormal { 
+  font-family: 'Orbitron', sans-serif; /* Replace 'Arial' with your desired font */ 
+  font-size: 9px; 
+  fill: white; /* Default text color */
+}
+
+/* Wrapper class for relative positioning */
+.wrapper {
+  position: relative;
+}
+
+/* Adjustments for normal text */
+.chartTextNormal {
+  font-size: 11px;
+  fill: white;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 300;
+  text-anchor: middle;
+  letter-spacing: -0.2px;
+}
+
+/* Radar container for general structure */
+.chartContainer {
+  position: relative;
+}
+
+/* Category label styling */
+.categoryLabel {
+  font-size: 14px;
+  font-weight: bold;
+  fill: white;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Radar grid circle styling */
+.radarGridCircle {
+  fill: none;
+  stroke: #228B22; /* Dark green for grid lines */
+}
+
+.radarGridCircleOuter {
+  stroke-width: 5;
+}
+
+.radarGridCircleInner {
+  stroke-width: 1;
+}
+
+/* Radial line styling */
+.radialLine {
+  stroke: #228B22; /* Blue color for radial lines */
+  stroke-width: 0.8;
+  opacity: 0.6;
+}
+
+/* Styling for each quadrant */
+.quadrantFillDark {
+  fill: #000; /* Black color for one of the quadrants */
+}
+
+.quadrantFillLight {
+  fill: #232b2b; /* Dark gray for the other quadrant */
+}
+
+/* Style for item circles based on impact */
+.itemCircleLowImpact {
+  fill: #77DD77; /* Light green color for low impact */
+}
+
+.itemCircleMediumImpact {
+  fill: #FFD580; /* Yellow color for medium impact */
+}
+
+.itemCircleHighImpact {
+  fill: #FF6961; /* Red color for high impact */
+}
+
+.itemCircleDefault {
+  fill: steelblue; /* Default color for items */
+}
+
+/* Glow effect filter for opportunities */
+.itemGlowEffect {
+  filter: url(#sofGlow); /* Use this class if you want to apply the glow effect */
+}
+
+/* Impact Color Styles */
+.lowImpact {
+  fill: #77DD77;
+}
+
+.mediumImpact {
+  fill: #FFD580;
+}
+
+.highImpact {
+  fill: #FF6961;
+}
+
+.defaultImpact {
+  fill: steelblue;
+}
+
+.opportunityLow {
+  fill: none;
+  stroke: #77DD77;
+  stroke-width: 3;
+}
+
+.opportunityMedium {
+  fill: none;
+  stroke: #FFD580;
+  stroke-width: 3;
+}
+
+.opportunityHigh {
+  fill: none;
+  stroke: #FF6961;
+  stroke-width: 3;
+}
+
