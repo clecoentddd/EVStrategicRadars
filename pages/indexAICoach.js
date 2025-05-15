@@ -4,6 +4,7 @@ import saveAICoachResponse from './services/saveAICoachResponse'; // Import the 
 import retrieveAICoachResponse from './services/retrieveAICoachResponse';
 
 
+
 // Custom hook for AI Coaching logic
 const useAICoach = () => {
   // State for AI Coach visibility and data
@@ -85,34 +86,32 @@ const useAICoach = () => {
     }
   };
 
-const handleRetrieveAICoachResponse = async (radarId, setCallingLoading, setAICoachData) => {
-  try {
-    setCallingLoading(true); // Show the spinner
-    console.log('handleRetrieveAICoachResponse', radarId);
-
-    // Call the retrieve function
-    const response = await retrieveAICoachResponse(radarId);
-
-    // Update the state with the retrieved data
-    if (response.data) {
-      setAICoachData((prev) => ({
-        ...prev,
-        [radarId]: {
-          potentialNPS: response.data.potentialNPS || '',
-          evaluations: response.data.evaluations || '',
-          suggestions: response.data.suggestions || '',
-        },
-      }));
+  const handleRetrieveAICoachResponse = async (radarId) => {
+    try {
+      setCallingLoading(true);
+  
+      const response = await retrieveAICoachResponse(radarId);
+  
+      if (response.data) {
+        setAICoachData((prev) => ({
+          ...prev,
+          [radarId]: {
+            potentialNPS: response.data.potentialNPS || '',
+            evaluations: response.data.evaluations || '',
+            suggestions: response.data.suggestions || '',
+          },
+        }));
+      }
+  
+      return response; // Optional: return if needed
+    } catch (error) {
+      console.error('Error retrieving data:', error.message);
+      alert('Failed to retrieve data. Please try again.');
+    } finally {
+      setCallingLoading(false);
     }
-
-    console.log('Data retrieved successfully:', response);
-  } catch (error) {
-    console.error('Error retrieving data:', error.message);
-    alert('Failed to retrieve data. Please try again.');
-  } finally {
-    setLoading(false); // Hide the spinner
-  }
-};
+  };
+  
 
   // Toggle AI Coach sub-menu visibility
   const toggleAICoach = async (radarId) => {
@@ -124,7 +123,7 @@ const handleRetrieveAICoachResponse = async (radarId, setCallingLoading, setAICo
   
     // If the sub-menu is being opened, fetch the latest AI Coach data
     if (!aiCoachVisible[radarId]) {
-      await handleRetrieveAICoachResponse(radarId, setLoading, setAICoachData);
+      await handleRetrieveAICoachResponse(radarId);
     }
   };
 
