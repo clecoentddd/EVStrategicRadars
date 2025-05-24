@@ -23,7 +23,9 @@ export default function StrategyList({ strategies, handlers, streamAggregate }) 
       <h2 className={styles.heading}>Strategies</h2> {/* Updated with CSS Module */}
       {orderedGroupedStrategies.map(([state, stateStrategies]) => (
         <div key={state} className={styles.strategyGroup}> {/* Updated with CSS Module */}
-          <h2 className={styles.stateTitle}>{state}</h2> {/* Updated with CSS Module */}
+          <h2 className={`${styles.stateTitle} ${state === 'Draft' ? styles.draftState : ''}`}>
+            {state}
+          </h2> 
           {stateStrategies.map(strategy => (
             <StrategyItem 
               key={strategy.id} 

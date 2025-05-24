@@ -24,11 +24,11 @@ const InitiativeItem = ({
 
   return (
     <div className={styles.initiative}>
-            <div
+      <div
         className={`${styles.initiativeHeader} ${
           strategy.state !== "Closed" ? styles.openState : styles.closedState
         }`}
-        onClick={onExpand}  // Use the passed handler
+        onClick={onExpand}
       >
         <span className={styles.initiativeTitleStyle}>
           {initiative.name} ({initiative.status || "Created"})
@@ -37,52 +37,52 @@ const InitiativeItem = ({
 
       {isExpanded && (
         <div className={styles.initiativeDetails}>
-          <div className={styles.horizontalAlignmentWrapper}>
-            <label className={styles.labelInitiativeStyle}>
-              <span className={styles.fieldLabel}>Name of the initiative</span>
-              <textarea
-                value={tempData?.name || initiative.name || ""}
-                onChange={(e) => handleFieldChange("name", e.target.value)}
-                disabled={editableElementId !== initiative.id}
-                className={
-                  editableElementId === initiative.id
-                    ? `${styles.textAreaInitiativeName} ${styles.textAreaInitiativeNameEditable}`
-                    : styles.textAreaInitiativeName
-                }
-              />
-            </label>
+          <div className={styles.flexRow}>
+  <label className={styles.halfWidth}>
+    <span className={styles.fieldLabel}>Name of the initiative</span>
+    <textarea
+      value={tempData?.name || initiative.name || ""}
+      onChange={(e) => handleFieldChange("name", e.target.value)}
+      disabled={editableElementId !== initiative.id}
+      className={
+        editableElementId === initiative.id
+          ? `${styles.textAreaInitiativeName} ${styles.textAreaInitiativeNameEditable}`
+          : styles.textAreaInitiativeName
+      }
+    />
+  </label>
 
-            {/* Add Status Dropdown */}
-            <label className={styles.labelInitiativeStyle}>
-              <span className={styles.fieldLabel}>Status</span>
-              <select
-                value={tempData?.status || initiative.status || "Created"}
-                onChange={(e) => handleFieldChange("status", e.target.value)}
-                disabled={editableElementId !== initiative.id}
-                className={styles.statusDropdown}
-              >
-                <option value="Created">Created</option>
-                <option value="In progress">In progress</option>
-                <option value="Closed">Closed</option>
-              </select>
-            </label>
+  <label className={styles.quarterWidth}>
+    <span className={styles.fieldLabel}>Status</span>
+    <select
+      value={tempData?.status || initiative.status || "Created"}
+      onChange={(e) => handleFieldChange("status", e.target.value)}
+      disabled={editableElementId !== initiative.id}
+      className={styles.statusDropdown}
+    >
+      <option value="Created">Created</option>
+      <option value="In progress">In progress</option>
+      <option value="Closed">Closed</option>
+    </select>
+  </label>
 
-            {/* Add Percentage Field - Only show when status is "In progress" */}
-            {(tempData?.status === "In progress" || initiative.status === "In progress") && (
-              <label className={styles.labelInitiativeStyle}>
-                <span className={styles.fieldLabel}>Progress (%)</span>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={tempData?.progress || initiative.progress || 0}
-                  onChange={(e) => handleFieldChange("progress", e.target.value)}
-                  disabled={editableElementId !== initiative.id}
-                  className={styles.progressInput}
-                />
-              </label>
-            )}
-          </div>
+  {(tempData?.status === "In progress" || initiative.status === "In progress") && (
+    <label className={styles.quarterWidth}>
+      <span className={styles.fieldLabel}>Progress (%)</span>
+      <input
+        type="number"
+        min="0"
+        max="100"
+        value={tempData?.progress || initiative.progress || 0}
+        onChange={(e) => handleFieldChange("progress", e.target.value)}
+        disabled={editableElementId !== initiative.id}
+        className={styles.progressInput}
+      />
+    </label>
+  )}
+</div>
+
+
           <table className={styles.tableStyle}>
             <thead>
               <tr>
@@ -108,14 +108,12 @@ const InitiativeItem = ({
                         value={tempData?.[field] || ""}
                         onChange={(e) => {
                           handleFieldChange(field, e.target.value);
-                          // Auto-expand the textarea
                           e.target.style.height = 'auto';
                           e.target.style.height = `${e.target.scrollHeight}px`;
                         }}
                         className={styles.textArea}
                         autoFocus
                         onFocus={(e) => {
-                          // Initial expansion on focus
                           e.target.style.height = 'auto';
                           e.target.style.height = `${e.target.scrollHeight}px`;
                         }}
@@ -184,8 +182,6 @@ const InitiativeItem = ({
                     onChange={(e) => {
                       const selectedTagId = e.target.value;
                       const selectedTag = availableTags.find((tag) => tag.id === selectedTagId);
-
-                      console.log('availableTags:', availableTags);
 
                       const currentTags = Array.isArray(tempData?.tags)
                         ? tempData.tags
@@ -296,4 +292,5 @@ const InitiativeItem = ({
     </div>
   );
 };
-export default InitiativeItem;  // Must have this default export
+
+export default InitiativeItem;

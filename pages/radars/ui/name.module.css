@@ -221,11 +221,24 @@ select.inputField {
 
 .radarChart {
   display: flex;
-  justify-content: center;
-  margin: 10px auto;
+  justify-content: flex-start;
   background-color: black;
   border-radius: 10px;
+  padding: 15px;
+  padding-top: 0px;
+  gap: 20px;
 }
+
+.leftPanel {
+  flex: 0 0 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 180px; /* adjust as needed */
+  color: white;
+}
+
 
 .editButton {
   padding: 5px 10px;
@@ -299,6 +312,7 @@ select.inputField {
 
 .createButton {
   padding: 10px 15px;
+  margin-top: 20px;
   background-color: #1abc9c;
   color: white;
   border: none;
@@ -311,4 +325,45 @@ select.inputField {
 
 .createButton:hover {
   background-color: #16a085;
+}
+
+.sliderForm {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 76.66%; /* Two-thirds of the page width */
+  height: 100vh;
+  background-color: grey;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease; /* Controls the speed and smoothness of the sliding effect */
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+  transform: translateX(100%); /* Initially hidden off-screen to the right */
+}
+
+.sliderFormVisible {
+  transform: translateX(0); /* Slide in from the right */
+}
+
+.sliderFormCloseButton {
+  position: absolute;
+  left: 95%;
+  width: 28px;
+  height: 28px;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1100;
+  line-height: 1;
+  padding: 0;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.sliderFormCloseButton:hover {
+  color: #f39c12; /* Optional hover color */
 }

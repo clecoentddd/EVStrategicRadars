@@ -267,3 +267,43 @@
   font-size: 14px;
   z-index: 1000;
 }
+
+.flexRow {
+  display: flex;
+  gap: 10px; /* exact spacing */
+  align-items: flex-start; /* align label text top with inputs */
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.halfWidth,
+.quarterWidth {
+  display: flex;
+  flex-direction: column;
+}
+
+.halfWidth {
+  flex-basis: 50%;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.quarterWidth {
+  flex-basis: 25%;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.fieldLabel {
+  font-weight: 600;
+  margin-bottom: 4px; /* space between label and input */
+  display: block; /* ensures consistent width */
+}
+
+/* Optional: make textarea/select/input take full width */
+.halfWidth textarea,
+.quarterWidth select,
+.quarterWidth input {
+  width: 95%;
+  box-sizing: border-box;
+}

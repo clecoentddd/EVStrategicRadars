@@ -1,12 +1,10 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 import RadarChart from '@/components/RadarChart';
-import Navbar from '@/components/Navbar'; // Import the Navbar component
+import Navbar from '@/components/Navbar';
 import styles from './name.module.css';
 import RadarItemEditOrCreateForm from './RadarItemEditOrCreateForm';
-import { DEFAULT_FORM_VALUES } from './RadarItemEditOrCreateForm'; // Import the default form values
-
-
+import { DEFAULT_FORM_VALUES } from './RadarItemEditOrCreateForm';
 
 export default function RadarPage() {
   const [radar, setRadar] = useState(null);
@@ -32,13 +30,12 @@ export default function RadarPage() {
   const [collapsedItems, setCollapsedItems] = useState([]);
 
   const formRef = useRef(null);
-  
+
   useEffect(() => {
     if (radarItems.length > 0) {
       setCollapsedItems(new Array(radarItems.length).fill(true));
     }
   }, [radarItems]);
-
 
   const fetchRadar = async () => {
     try {
@@ -115,7 +112,7 @@ export default function RadarPage() {
         const typeOptions = Object.values(data.typeOptions);
         const categoryOptions = Object.values(data.categoryOptions);
         const toleranceOptions = Object.values(data.toleranceOptions);
-        
+
         setImpactOptions(impactOptions);
         setTypeOptions(typeOptions);
         setToleranceOptions(toleranceOptions);
@@ -125,7 +122,7 @@ export default function RadarPage() {
         logMessage(` Error fetching config: ${error}`);
       }
     };
-  
+
     fetchConfig();
     fetchRadarItems();
     fetchZoomInOptions();
@@ -139,19 +136,18 @@ export default function RadarPage() {
     const { name, value } = e.target;
     console.log("handleInputChange: ", name, value);
     setFormData(prev => ({
-      ...DEFAULT_FORM_VALUES, // ensures missing fields are added back
+      ...DEFAULT_FORM_VALUES,
       ...prev,
       [name]: value
     }));
   };
-  
 
   const handleEdit = async (item) => {
     try {
       setEditMode(true);
       setCurrentEditingId(item.id);
       setShowForm(true);
-  
+
       const response = await fetch(`/api/radar-items?radarId=${item.radarId}&id=${item.id}`, {
         method: 'GET',
       });
@@ -161,15 +157,15 @@ export default function RadarPage() {
         setError(`Failed to fetch radar item: ${errorText}`);
         return;
       }
-  
+
       const rawResponseText = await response.text();
       const radarItem = JSON.parse(rawResponseText);
-  
+
       if (radarItem.success === false) {
         setError(radarItem.message);
         return;
       }
-  
+
       setFormData({
         name: radarItem.name || '',
         detect: radarItem.detect || '',
@@ -182,8 +178,6 @@ export default function RadarPage() {
         tolerance: radarItem.tolerance || '',
         zoom_in: radarItem.zoom_in || '',
       });
-
-      formRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       setError('Error fetching radar item for edit');
     }
@@ -261,8 +255,8 @@ export default function RadarPage() {
   if (!radar) return <p>No radar found</p>;
 
   return (
-    <div>    
-      <Navbar radarId={radarId} /> {/* Use the Navbar component here */}
+    <div>
+      <Navbar radarId={radarId} />
 
       <div className={styles.container}>
         {loadingRadar && <p>Loading radar details...</p>}
@@ -279,8 +273,26 @@ export default function RadarPage() {
       </div>
 
       <div className={styles.radarChart}>
-        <RadarChart items={radarItems} radius={280} onEditClick={handleEdit}/>
-      </div>
+  <div className={styles.leftPanel}>
+    <button
+      onClick={() => {
+        setShowForm(true);
+        setEditMode(false);
+        setCurrentEditingId(null);
+        setFormData(DEFAULT_FORM_VALUES);
+      }}
+      className={styles.createButton}
+    >
+      Create Radar Item
+    </button>
+    {/* You can add the tooltip here later */}
+  </div>
+
+  <div className={styles.chartArea}>
+    <RadarChart items={radarItems} radius={280} onEditClick={handleEdit} />
+  </div>
+</div>
+
 
       <h2 className={styles.radarItemsTitle}>Radar Items</h2>
       {!showForm && (
@@ -289,7 +301,7 @@ export default function RadarPage() {
             setShowForm(true);
             setEditMode(false);
             setCurrentEditingId(null);
-            setFormData();
+            setFormData(DEFAULT_FORM_VALUES);
           }}
           className={styles.createButton}
         >
@@ -298,7 +310,7 @@ export default function RadarPage() {
       )}
 
       {showForm && (
-        <div ref={formRef}>
+        <div className={`${styles.sliderForm} ${showForm ? styles.sliderFormVisible : ''}`}>
           <RadarItemEditOrCreateForm
             showForm={showForm || DEFAULT_FORM_VALUES}
             editMode={editMode}

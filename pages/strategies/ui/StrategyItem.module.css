@@ -5,7 +5,7 @@
 
 /* Strategy Headers */
 .strategyHeaderDraft {
-  background-color: #a4cbe3;
+  background-color: #9ebccf;
   color: white;
   padding: 0.75rem 1rem;
   border-radius: 8px;
@@ -16,8 +16,8 @@
 }
 
 .strategyHeaderPublished {
-  background-color: #8bbad3;
-  color: white;
+  background-color: #797195;
+  color: black;
   padding: 0.75rem 1rem;
   border-radius: 8px;
   margin-bottom: 0.5rem;
@@ -54,12 +54,14 @@
 .textAreaInitiativeName,
 .statusDropdown,
 .progressInput {
-  width: 100%;
+  flex: 1;
+  min-width: 0; /* Allows shrinking in tight spaces */
   padding: 8px 12px;
+  padding-left: 30px;
   border: 1px solid #c5d3dc;
   border-radius: 6px;
   background-color: #e9eff2;
-  margin: 0.5rem 0 1rem 0;
+  margin-left: 0; /* Remove this too, spacing is handled by gap */
   font-family: inherit;
 }
 
