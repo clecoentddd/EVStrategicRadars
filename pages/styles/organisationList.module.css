@@ -183,8 +183,8 @@
   background-color: var(--nps-color);
   opacity: 0.5; /* More subtle */
   overflow: hidden; /* Prevent overflow */
+  padding-left: 2px;
 }
-
 /* Active state - ensure it appears above other elements */
 .activePill {
   background: #334155;
