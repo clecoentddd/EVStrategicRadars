@@ -1,5 +1,5 @@
 import React from 'react';
-import InitiativeItem from './InitiativeItem'; 
+import InitiativeItem from './InitiativeItem';
 import styles from './StrategyItem.module.css';
 
 export default function StrategyItem({ strategy, handlers, streamAggregate }) {
@@ -41,7 +41,7 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
           {strategy.name} ({strategy.state})
         </span>
       </div>
-    
+
       {collapsedStrategies[strategy.id] && (
         <div className={styles.strategyDetailsContainer}>
           {/* View Mode */}
@@ -61,7 +61,7 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
                   <p>{strategy.state}</p>
                 </div>
               </div>
-              
+
               <div className={styles.buttonGroupContainer}>
                 <button
                   className={styles.editStrategyButton}
@@ -84,7 +84,7 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
 
           {/* Edit Mode - UPDATED CLASSES */}
           {editableStrategyId === strategy.id && (
-            <form 
+            <form
               className={styles.inlineEditForm}
               onSubmit={(e) => handleSaveStrategyClick(e, strategy)}
             >
@@ -94,36 +94,36 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
                   <textarea
                     name="description"
                     value={tempStrategyData?.description || ''}
-                    onChange={(e) => setTempStrategyData({ 
-                      ...tempStrategyData, 
-                      description: e.target.value 
+                    onChange={(e) => setTempStrategyData({
+                      ...tempStrategyData,
+                      description: e.target.value
                     })}
                     className={`${styles.textAreaInitiativeName} ${styles.textAreaInitiativeNameEditable}`}
                     rows="4"
                   />
                 </div>
-                
+
                 <div className={styles.strategySection}>
                   <h4>What We Will Not Do</h4>
                   <textarea
                     name="whatwewillnotdo"
                     value={tempStrategyData?.whatwewillnotdo || ''}
-                    onChange={(e) => setTempStrategyData({ 
-                      ...tempStrategyData, 
-                      whatwewillnotdo: e.target.value 
+                    onChange={(e) => setTempStrategyData({
+                      ...tempStrategyData,
+                      whatwewillnotdo: e.target.value
                     })}
                     className={`${styles.textAreaInitiativeName} ${styles.textAreaInitiativeNameEditable}`}
                     rows="4"
                   />
                 </div>
-                
+
                 <div className={styles.strategySection}>
                   <h4>Status</h4>
                   <select
                     value={tempStrategyData?.state || 'Draft'}
-                    onChange={(e) => setTempStrategyData({ 
-                      ...tempStrategyData, 
-                      state: e.target.value 
+                    onChange={(e) => setTempStrategyData({
+                      ...tempStrategyData,
+                      state: e.target.value
                     })}
                     className={styles.statusDropdown}
                   >
@@ -136,8 +136,8 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
               </div>
 
               <div className={`${styles.buttonGroupContainer} ${styles.rowButtonsEditCancelSave}`}>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className={styles.saveElementButton}
                 >
                   Save
@@ -152,39 +152,39 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
               </div>
             </form>
           )}
-
-          {/* Initiatives List */}
-          <div id={`elements-${strategy.id}`} className="initiatives">
-          {strategy.elements
-            ?.filter(initiative => initiative && initiative.id) // Remove null/undefined and items without IDs
-            .map(initiative => {
-              const initiativeId = initiative.id; // Get ID once to avoid repetition
-              
-              return (
-                <InitiativeItem 
-                  key={initiativeId}
-                  initiative={initiative}
-                  isExpanded={expandedElementId === initiativeId}
-                  onExpand={() => handleElementExpand(initiativeId)}
-                  handlers={{
-                    handleSaveInitiative,
-                    handleCancelClick,
-                    handleFieldChange,
-                    handleEditInitiative,
-                    tempData,
-                    setTempData,
-                    editableElementId,
-                    availableTags
-                  }}
-                  strategy={strategy}
-                  streamAggregate={streamAggregate}
-                />
-              );
-            })
-          }
-          </div>
         </div>
       )}
+
+      {/* Initiatives List - Moved Outside strategyDetailsContainer */}
+      <div id={`elements-${strategy.id}`} className={styles.initiatives}>
+        {strategy.elements
+          ?.filter(initiative => initiative && initiative.id) // Remove null/undefined and items without IDs
+          .map(initiative => {
+            const initiativeId = initiative.id; // Get ID once to avoid repetition
+
+            return (
+              <InitiativeItem
+                key={initiativeId}
+                initiative={initiative}
+                isExpanded={expandedElementId === initiativeId}
+                onExpand={() => handleElementExpand(initiativeId)}
+                handlers={{
+                  handleSaveInitiative,
+                  handleCancelClick,
+                  handleFieldChange,
+                  handleEditInitiative,
+                  tempData,
+                  setTempData,
+                  editableElementId,
+                  availableTags
+                }}
+                strategy={strategy}
+                streamAggregate={streamAggregate}
+              />
+            );
+          })
+        }
+      </div>
     </div>
   );
 }
