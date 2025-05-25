@@ -25,15 +25,26 @@ const InitiativeItem = ({
 return (
   <div className={`${styles.initiative} ${isExpanded ? styles.expanded : ''}`}>
     <div
-      className={`${styles.initiativeHeader} ${
-        strategy.state !== "Closed" ? styles.openState : styles.closedState
-      }`}
-      onClick={onExpand}
-    >
-      <span className={styles.initiativeTitleStyle}>
-        {initiative.name} ({initiative.status || "Created"})
-      </span>
+  className={`${styles.initiativeHeader} ${
+    strategy.state !== "Closed" ? styles.openState : styles.closedState
+  }`}
+  onClick={onExpand}
+>
+  <div className={styles.titleMetaWrapper}>
+    <span className={styles.initiativeTitleStyle}>
+      {initiative.name}
+    </span>
+    <div className={styles.initiativeMetaRow}>
+      <span className={styles.statusLabel}>{initiative.status || "Created"}</span>
+      {initiative.status === "In progress" && (
+        <span className={styles.progressLabel}>
+          {initiative.progress || 0}%
+        </span>
+      )}
     </div>
+  </div>
+</div>
+
 
     {isExpanded && (
       <div className={styles.initiativeDetails}>

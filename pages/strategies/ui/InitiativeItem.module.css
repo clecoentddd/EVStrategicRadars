@@ -2,7 +2,7 @@
 .initiative {
   display: flex;
   flex-direction: column;
-  background: #84a9c0;
+  background: #dde1e6; /* light neutral background */
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -22,23 +22,102 @@
 
 /* ===== CARD HEADER ===== */
 .initiativeHeader {
-  padding: 16px 20px;
-  color: white;
+  position: relative;
+  width: 90%;
+  min-height: 56px;
+  padding: 18px 24px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* center title horizontally */
   align-items: center;
   cursor: pointer;
-  background-color: #84a9c0; /* Default blue */
+
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  color: #1e2a33; /* dark slate */
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-align: center;
+
+  border-bottom: 1px solid #c9d6e3;
+  box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.03);
+
+  border-left: 6px solid #394149; /* charcoal accent */
+  overflow: visible;
 }
 
 .initiativeHeader.closedState {
-  background-color: #b0bec5; /* Grey for closed */
+  background: rgba(240, 242, 245, 0.9);
+  backdrop-filter: blur(6px);
+  color: #616f7b;
+  font-weight: 500;
+  font-style: normal;
+  border-left: 6px solid #7a7a7a; /* medium gray */
 }
 
+.initiativeHeader:hover {
+  background: rgba(230, 230, 230, 0.85);
+  box-shadow: inset 0 -2px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== INITIATIVE TITLE & BADGE ===== */
 .initiativeTitleStyle {
+  position: relative;
+  font-size: 1.3em;
   font-weight: 600;
-  font-size: 1.2em;
   margin: 0;
+  line-height: 1.5;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.5px;
+  word-break: break-word;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* space between title and badge */
+  margin-bottom: 9px;
+}
+
+/* Badge style */
+.initiativeTitleStyle .badge {
+  display: inline-block;
+  background-color: #3a3f44; /* dark gray */
+  color: #f5f5f5; /* very light text */
+  font-size: 0.75em;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+/* Subtle animated underline on badge */
+.initiativeTitleStyle .badge::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  bottom: 4px;
+  width: 80%;
+  height: 2px;
+  background: #f5f5f5;
+  opacity: 0.4;
+  border-radius: 1px;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
+.initiativeTitleStyle .badge:hover {
+  background-color: #2a2e32;
+  cursor: default;
+}
+
+.initiativeTitleStyle .badge:hover::after {
+  transform: scaleX(1);
 }
 
 /* ===== CARD BODY ===== */
@@ -304,4 +383,41 @@
 .tagDropdown:focus {
   border-color: #007bff;
   outline: none;
+}
+
+.titleMetaWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center the whole block inside initiativeHeader */
+  width: 100%;
+}
+
+.initiativeTitleStyle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.initiativeMetaRow {
+  margin-top: 4px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  align-self: flex-start; /* align labels to the left */
+  font-size: 0.9rem;
+  color: #3d4852;
+}
+
+.statusLabel {
+  background-color: #e0f7fa;
+  color: #007b8f;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.progressLabel {
+  background-color: #e834ac;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
 }

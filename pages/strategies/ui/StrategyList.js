@@ -24,7 +24,7 @@ export default function StrategyList({ strategies, handlers, streamAggregate }) 
       {orderedGroupedStrategies.map(([state, stateStrategies]) => (
         <div key={state} className={styles.strategyGroup}> {/* Updated with CSS Module */}
           <h2 className={`${styles.stateTitle} ${state === 'Draft' ? styles.draftState : ''}`}>
-          {state}
+            {state} Strategy
         </h2> 
           {stateStrategies.map(strategy => (
             <StrategyItem 
@@ -36,6 +36,7 @@ export default function StrategyList({ strategies, handlers, streamAggregate }) 
           ))}
         </div>
       ))}
+  
     </div>
   );
 }

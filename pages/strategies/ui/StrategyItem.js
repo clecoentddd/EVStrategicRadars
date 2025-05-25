@@ -38,7 +38,7 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
         onClick={() => toggleStrategyCollapse(strategy.id)}
       >
         <span className={styles.strategyTitleStyle}>
-          {strategy.name} ({strategy.state})
+          {strategy.name}
         </span>
       </div>
 
@@ -156,35 +156,38 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
       )}
 
       {/* Initiatives List - Moved Outside strategyDetailsContainer */}
-      <div id={`elements-${strategy.id}`} className={styles.initiatives}>
-        {strategy.elements
-          ?.filter(initiative => initiative && initiative.id) // Remove null/undefined and items without IDs
-          .map(initiative => {
-            const initiativeId = initiative.id; // Get ID once to avoid repetition
+      {/* Initiatives Section */}
+<div className={styles.initiativesSection}>
+  <h3 className={styles.initiativesTitle}>Initiatives</h3>
+  <div id={`elements-${strategy.id}`} className={styles.initiatives}>
+    {strategy.elements
+      ?.filter(initiative => initiative && initiative.id)
+      .map(initiative => {
+        const initiativeId = initiative.id;
+        return (
+          <InitiativeItem
+            key={initiativeId}
+            initiative={initiative}
+            isExpanded={expandedElementId === initiativeId}
+            onExpand={() => handleElementExpand(initiativeId)}
+            handlers={{
+              handleSaveInitiative,
+              handleCancelClick,
+              handleFieldChange,
+              handleEditInitiative,
+              tempData,
+              setTempData,
+              editableElementId,
+              availableTags
+            }}
+            strategy={strategy}
+            streamAggregate={streamAggregate}
+          />
+        );
+      })}
+  </div>
+</div>
 
-            return (
-              <InitiativeItem
-                key={initiativeId}
-                initiative={initiative}
-                isExpanded={expandedElementId === initiativeId}
-                onExpand={() => handleElementExpand(initiativeId)}
-                handlers={{
-                  handleSaveInitiative,
-                  handleCancelClick,
-                  handleFieldChange,
-                  handleEditInitiative,
-                  tempData,
-                  setTempData,
-                  editableElementId,
-                  availableTags
-                }}
-                strategy={strategy}
-                streamAggregate={streamAggregate}
-              />
-            );
-          })
-        }
-      </div>
     </div>
   );
 }
