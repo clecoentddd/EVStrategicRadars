@@ -157,36 +157,35 @@ export default function StrategyItem({ strategy, handlers, streamAggregate }) {
 
       {/* Initiatives List - Moved Outside strategyDetailsContainer */}
       {/* Initiatives Section */}
-<div className={styles.initiativesSection}>
+<div id={`elements-${strategy.id}`} className={styles.initiativesContainer}>
   <h3 className={styles.initiativesTitle}>Initiatives</h3>
-  <div id={`elements-${strategy.id}`} className={styles.initiatives}>
+  <div className={styles.initiativesGrid}>
     {strategy.elements
       ?.filter(initiative => initiative && initiative.id)
-      .map(initiative => {
-        const initiativeId = initiative.id;
-        return (
-          <InitiativeItem
-            key={initiativeId}
-            initiative={initiative}
-            isExpanded={expandedElementId === initiativeId}
-            onExpand={() => handleElementExpand(initiativeId)}
-            handlers={{
-              handleSaveInitiative,
-              handleCancelClick,
-              handleFieldChange,
-              handleEditInitiative,
-              tempData,
-              setTempData,
-              editableElementId,
-              availableTags
-            }}
-            strategy={strategy}
-            streamAggregate={streamAggregate}
-          />
-        );
-      })}
+      .map(initiative => (
+        <InitiativeItem
+          key={initiative.id}
+          initiative={initiative}
+          isExpanded={expandedElementId === initiative.id}
+          onExpand={() => handleElementExpand(initiative.id)}
+          handlers={{
+            handleSaveInitiative,
+            handleCancelClick,
+            handleFieldChange,
+            handleEditInitiative,
+            tempData,
+            setTempData,
+            editableElementId,
+            availableTags
+          }}
+          strategy={strategy}
+          streamAggregate={streamAggregate}
+        />
+      ))}
   </div>
 </div>
+
+
 
     </div>
   );

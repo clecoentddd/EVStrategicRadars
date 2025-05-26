@@ -2,6 +2,8 @@ import React from 'react';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import styles from './InitiativeItem.module.css';
 import RelatedInitiatives from './RelatedInitiatives';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 const InitiativeItem = ({
   initiative,
@@ -31,18 +33,33 @@ return (
   onClick={onExpand}
 >
   <div className={styles.titleMetaWrapper}>
-    <span className={styles.initiativeTitleStyle}>
-      {initiative.name}
+  <span className={styles.initiativeTitleStyle}>
+    {initiative.name}
+  </span>
+
+  <div className={styles.initiativeMetaRow}>
+    <span className={`${styles.statusLabel} ${styles[`status${(initiative.status || 'Created').replace(/\s/g, '')}`]}`}>
+      {initiative.status || "Created"}
     </span>
-    <div className={styles.initiativeMetaRow}>
-      <span className={styles.statusLabel}>{initiative.status || "Created"}</span>
-      {initiative.status === "In progress" && (
-        <span className={styles.progressLabel}>
-          {initiative.progress || 0}%
-        </span>
-      )}
-    </div>
+
+    {initiative.status === "In progress" && (
+      <div className={styles.progressLabel}>
+        <CircularProgressbar
+          value={initiative.progress || 0}
+          text={`${initiative.progress || 0}%`}
+          className={styles.customCircularProgress}
+          styles={buildStyles({
+            pathColor: '#007bff',        // must stay here
+            trailColor: '#eee',          // must stay here
+            textColor: 'currentColor',   // or hardcoded color
+            textSize: 'inherit',         // allow CSS to control font-size
+          })}
+        />
+      </div>
+    )}
   </div>
+</div>
+
 </div>
 
 

@@ -1,181 +1,257 @@
-/* Strategy Container */
+/* =================== STRATEGY CONTAINER =================== */
+/* A strategy groups multiple initiatives and includes a title, status, and description. */
 .strategyStyle {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background-color: #f2f4f6;
 }
 
-/* Strategy Headers */
-.strategyHeaderDraft {
-  background-color: #00ff9f;
-  color: white;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 40, 60, 0.2);
-}
-
+/* Strategy Header Styles */
+.strategyHeaderDefault,
+.strategyHeaderDraft,
 .strategyHeaderPublished {
-  background-color: black;
-  color: white;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 40, 60, 0.2);
+  padding: 1rem 1.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
+/* Draft strategies use a soft green */
+.strategyHeaderDraft {
+  background-color: rgba(0, 255, 128, 0.5);
+  border-color:rgba(0, 255, 12);
+  padding: 16px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.strategyHeaderDraft:hover {
+   background-color: #b6ecda; /* soft yellow/amber for "draft" */
+  color: #10b981; /* deep amber for text */
+  color: green;
+}
+
+
+/* Published strategies should stand out subtly */
+.strategyHeaderPublished {
+  background-color: #e0e7ff;
+  color: #1e3a8a;
+  border-left: 6px solid #3b82f6;
+}
+
+/* Default/unknown state */
 .strategyHeaderDefault {
-  background-color: #d0d9df;
-  color: #1e2f3d;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 40, 60, 0.2);
+  background-color: #f2f4f6;
+  color: #374151;
 }
 
+/* Strategy Title Text */
 .strategyTitleStyle {
-  color: #ffffff;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: inherit;
 }
 
-/* Details Container */
+/* Strategy Details Section (below the header) */
 .strategyDetailsContainer {
-  margin-bottom: 15px;
-  padding: 15px;
-  background-color: #f3f7f9;
-  border: 1px solid #c5d3dc;
-  border-radius: 5px;
+  padding: 20px;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
 }
 
-/* Form Fields - Base Styles */
+/* =================== INITIATIVE CONTAINER =================== */
+/* Each initiative is a card inside its strategy. Initiatives have editable fields and status tracking. */
+.initiatives {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  padding: 20px 0;
+  background-color: #f2f4f6;
+}
+
+.initiativesSection {
+  margin-top: 24px;
+   background-color: transparent;
+  background-image: linear-gradient(135deg, #f7faf9, #f0f0f0);
+}
+
+.initiativesTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e2a33;
+  margin-bottom: 12px;
+  background-color: transparent;
+  border-bottom: #10b981;
+}
+
+/* Base initiative card */
+.initiative {
+  background: #f2f4f6; /* or white, depends on what fits */
+  color: #1e3a8a;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 16px 20px;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hover effect */
+.initiative:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+/* Initiative content container */
+.initiativeDetails {
+  padding: 20px;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* =================== FORM CONTROLS =================== */
 .textAreaInitiativeName,
 .statusDropdown,
 .progressInput {
-  flex: 1;
-  min-width: 0; /* Allows shrinking in tight spaces */
-  padding: 8px 12px;
-  padding-left: 30px;
-  border: 1px solid #c5d3dc;
-  border-radius: 6px;
-  background-color: #e9eff2;
-  margin-left: 5px; /* Remove this too, spacing is handled by gap */
+  width: 100%;
+  padding: 10px 14px;
   font-family: inherit;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background-color: #f1f5f9;
+  box-sizing: border-box;
 }
 
-/* Edit Mode Form Fields */
+/* Active state styles */
+.textAreaInitiativeName:focus,
+.statusDropdown:focus,
+.progressInput:focus,
+.textArea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  background-color: white;
+}
+
+/* Edit mode background */
 .textAreaInitiativeNameEditable,
 .textAreaInitiativeName:not(:disabled),
 .statusDropdown:not(:disabled),
 .progressInput:not(:disabled) {
   background-color: white;
-  border-color: #a4c0cf;
-  box-shadow: 0 1px 3px rgba(0, 40, 60, 0.1);
 }
 
-/* Table Styles */
+/* Dropdown enhancements */
+.statusDropdown {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%236b7280' viewBox='0 0 20 20'%3E%3Cpath d='M10 12l-6-6h12l-6 6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  padding-right: 36px;
+}
+
+/* =================== TABLE STYLING =================== */
 .tableStyle {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
-  margin: 1rem 0;
+  margin-top: 1rem;
+  font-size: 0.95rem;
 }
 
-.tableCell {
-  padding: 12px;
-  border: 1px solid #c5d3dc;
-  background-color: #e9eff2;
-  vertical-align: top;
-}
-
-/* Edit Mode Table Cells */
+.tableCell,
 .tableCellEditable {
   padding: 12px;
-  background-color: white;
+  border: 1px solid #d1d5db;
+  background-color: #f8fafc;
+  vertical-align: top;
+  word-wrap: break-word;
 }
 
-/* Textareas in Table Cells */
+.tableCellEditable {
+  background-color: #ffffff;
+}
+
+/* Textareas inside table cells */
 .tableCellEditable .textArea {
   width: 100%;
   min-height: 100px;
-  padding: 8px;
-  border: 1px solid #a4c0cf;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
   background-color: white;
   box-sizing: border-box;
   resize: vertical;
 }
 
-/* Button Styles */
+/* =================== BUTTON STYLES =================== */
 .buttonGroupContainer {
   display: flex;
   gap: 1rem;
   margin: 1.5rem 0 0.5rem 0;
+  flex-wrap: wrap;
 }
 
-/* Base Button Styles */
 .editStrategyButton,
 .createInitiativeButtonStyle,
 .saveElementButton,
 .cancelElementButton {
-  padding: 8px 16px;
+  padding: 10px 16px;
   border-radius: 6px;
   border: none;
-  cursor: pointer;
   font-weight: 500;
-  transition: all 0.2s;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 0.95rem;
 }
 
-/* Specific Button Styles */
 .editStrategyButton {
-  background-color: #5a91af;
+  background-color: #3b82f6;
   color: white;
 }
 
 .createInitiativeButtonStyle {
-  background-color: #3a6e8f;
+  background-color: #2563eb;
   color: white;
 }
 
-/* Edit Mode Buttons */
-.rowButtonsEditCancelSave .saveElementButton,
-.rowButtonsEditCancelSave .cancelElementButton {
-  background-color: #2f5b77;
+.saveElementButton {
+  background-color: #10b981;
   color: white;
-  margin-right: 10px;
 }
 
-.rowButtonsEditCancelSave .cancelElementButton {
-  background-color: #f3f7f9;
-  color: #2f5b77;
-  border: 1px solid #a4c0cf;
+.cancelElementButton {
+  background-color: #f9fafb;
+  color: #334155;
+  border: 1px solid #cbd5e1;
 }
 
-/* Focus States */
-.textAreaInitiativeName:focus,
-.statusDropdown:focus,
-.progressInput:focus,
-.textArea:focus {
-  outline: none;
-  border-color: #5a91af;
-  box-shadow: 0 0 0 2px rgba(90, 145, 175, 0.25);
+.initiativesContainer {
+  margin-top: 12px;
+  padding: 10px;
+  background-color: #f7faf9; /* or use your gradient if you want */
+  border-radius: 10px;
+  /* you can add background-image if you want gradient */
+  /* background-image: linear-gradient(135deg, #f7faf9, #f0f0f0); */
 }
 
-/* Dropdown Styling */
-.statusDropdown {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235a91af' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  background-size: 12px;
-  padding-right: 28px;
-}
-
-.initiatives {
+.initiativesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-  padding: 20px 0;
-  background-color: #f3f7f9; /* Match your strategy container */
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  margin-top: 12px; /* space below header */
 }
+
+
+/* =================== END =================== */
