@@ -220,6 +220,7 @@ select.inputField {
 }
 
 .radarChart {
+   height: 100%;
   display: flex;
   justify-content: flex-start;
   background-color: black;
