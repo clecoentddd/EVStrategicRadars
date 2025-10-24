@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React from 'react';
 import styles from './radarItemEditOrCreateForm.module.css';
 
 export const DEFAULT_FORM_VALUES = {
@@ -47,10 +47,30 @@ const RadarItemEditOrCreateForm = ({
 
   return (
     <div className={styles.showForm}>
-      <h3 className={styles.formTitle}>
-        {editMode ? 'Edit Radar Item' : 'Create Radar Item'}
-        {editMode && formData.name && `: ${formData.name}`}
-      </h3>
+      {/* This container aligns the title and buttons */}
+      <div className={styles.formHeader}>
+        <h3 className={styles.formTitle}>
+          {editMode ? 'Edit Radar Item' : 'Create Radar Item'}
+          {editMode && formData.name && `: ${formData.name}`}
+        </h3>
+        <div className={styles.headerButtons}>
+          <button
+            type="submit" // Can be type="button" if form submission is handled purely by JS
+            onClick={(e) => { e.preventDefault(); handleSaveItem(); }} // Explicitly call handleSaveItem
+            className={styles.saveButton}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowForm(false)}
+            className={styles.cancelButton}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
       <form onSubmit={(e) => { e.preventDefault(); handleSaveItem(); }}>
         <div className={styles.formRow}>
           <div className={`${styles.column} ${styles.flex2}`}>
@@ -226,17 +246,6 @@ const RadarItemEditOrCreateForm = ({
               </select>
             </div>
           </div>
-        </div>
-
-        <div className={`${styles.buttonGroup} ${styles.marginTop}`}>
-          <button type="submit" className={styles.saveButton}>Save</button>
-          <button
-            type="button"
-            onClick={() => setShowForm(false)}
-            className={styles.cancelButton}
-          >
-            Cancel
-          </button>
         </div>
       </form>
     </div>

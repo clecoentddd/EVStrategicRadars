@@ -1,5 +1,5 @@
 import {createStreamFromNewOrganisationHandler} from '../application/streamCreateHandler';
-import {updateStreamFromChangeInOrganisationHandler} from '../application/streamupdateHandler';
+import {updateStreamFromChangeInOrganisationHandler} from '../application/strategyUpdateHandler';
 
 export async function interfaceCreateStream(organisationAggregate) {
 
