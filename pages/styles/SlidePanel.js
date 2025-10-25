@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './SlidePanel.module.css';
+import styles from './slidePanel.module.css';
 import OrganisationForm from './organisationForm';
 import AICoachForm from './AICoachForm';
 

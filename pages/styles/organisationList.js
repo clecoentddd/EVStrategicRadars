@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './organisationList.module.css';
-import SlidePanel from './SlidePanel';
+import SlidePanel from './slidePanel';
 import LoadingButton from '@/components/LoadingButton';
 
 const OrganisationList = ({
