@@ -1,13 +1,238 @@
 /* RadarChart.module.css */
 
-/* Wrapper for radar container */
+/* Main container - holds radar and tooltip side by side */
 .radarContainer {
-  position: left;
   display: flex;
-  justify-content: right;
-  align-items: center;
-  height: 100%;
+  align-items: flex-start;
+  gap: 48px;
   font-family: 'Orbitron', sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+/* Wrapper for the SVG radar */
+.radarWrapper {
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Tooltip panel - fixed position on the right */
+.tooltipPanel {
+  flex: 0 0 320px; /* Fixed width */
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 20px;
+  gap: 16px;
+}
+
+/* Tooltip styling */
+.tooltip {
+  background: rgba(10, 15, 15, 0.85);
+  backdrop-filter: blur(8px);
+  color: #e0e0e0;
+  padding: 18px;
+  border-radius: 6px;
+  width: 100%;
+  border: 1px solid rgba(0, 255, 159, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Blink animation for tooltip changes */
+@keyframes tooltipBlink {
+  0%, 100% { 
+    border-color: rgba(0, 255, 159, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  50% { 
+    border-color: rgba(0, 255, 159, 0.8);
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.4);
+  }
+}
+
+.tooltip.blink {
+  animation: tooltipBlink 0.4s ease-in-out;
+}
+
+.tooltipPlaceholder {
+  background: rgba(10, 15, 15, 0.4);
+  backdrop-filter: blur(4px);
+  color: #666;
+  padding: 24px;
+  border-radius: 6px;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  transition: all 0.3s ease;
+}
+
+.row {
+  margin-bottom: 10px;
+  line-height: 1.6;
+  display: flex;
+  align-items: baseline;
+}
+
+.label {
+  font-weight: 600;
+  color: #00cc88;
+  margin-right: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 80px;
+}
+
+.value {
+  color: #e8e8e8;
+  font-size: 13px;
+}
+
+.link {
+  color: #5fb3d9;
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(95, 179, 217, 0.3);
+  transition: all 0.2s ease;
+}
+
+.link:hover {
+  color: #7ec9e8;
+  border-bottom-color: rgba(126, 201, 232, 0.6);
+}
+
+.editButton {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 204, 136, 0.3);
+  color: #00cc88;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+  margin-top: 16px;
+  width: auto;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.editButton .editIcon {
+  color: #FFD580;
+  font-size: 13px;
+}
+
+.editButton:hover {
+  background-color: rgba(0, 204, 136, 0.1);
+  border-color: rgba(0, 204, 136, 0.5);
+  color: #00ff9f;
+  transform: translateY(-1px);
+}
+
+.editButton:hover .editIcon {
+  color: #FFB347;
+}
+
+.mutedText {
+  color: #777;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+/* Zoom controls */
+.zoomControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.zoomTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: #00cc88;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.createButton {
+  background: rgba(0, 204, 136, 0.2);
+  border: 1px solid rgba(0, 204, 136, 0.4);
+  color: #00ff9f;
+  padding: 12px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  margin-top: 16px;
+}
+
+.createButton:hover {
+  background: rgba(0, 204, 136, 0.3);
+  border-color: rgba(0, 204, 136, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 255, 159, 0.2);
+}
+
+.zoomButton {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 204, 136, 0.3);
+  color: #00cc88;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.zoomButton:hover {
+  background: rgba(0, 204, 136, 0.15);
+  border-color: rgba(0, 204, 136, 0.6);
+  color: #00ff9f;
+}
+
+.zoomButton.active {
+  background: rgba(0, 204, 136, 0.25);
+  border-color: rgba(0, 204, 136, 0.8);
+  color: #00ff9f;
+  font-weight: 600;
+}
+
+.resetButton {
+  background: rgba(255, 100, 100, 0.2);
+  border-color: rgba(255, 100, 100, 0.3);
+  color: #ff6961;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.resetButton:hover {
+  background: rgba(255, 100, 100, 0.3);
+  border-color: rgba(255, 100, 100, 0.6);
+  color: #ff8a80;
 }
 
 /* Radar item with glow and interaction */
@@ -43,16 +268,6 @@
   letter-spacing: -0.2px;
 }
 
-/* Wrapper class for relative positioning */
-.wrapper {
-  position: relative;
-}
-
-/* Radar container for general structure */
-.chartContainer {
-  position: relative;
-}
-
 /* Category label styling */
 .categoryLabel {
   font-size: 14px;
@@ -66,7 +281,7 @@
 .radarGridCircle {
   fill: none;
   stroke: #00ff9f;
-  stroke-opacity: 0.5; /* Initial opacity */
+  stroke-opacity: 0.5;
 }
 
 /* Outer radar grid circle */
@@ -137,7 +352,7 @@
   fill: steelblue;
 }
 
-/* Opportunity ring styles - NOT changed per instructions */
+/* Opportunity ring styles */
 .opportunityLow {
   fill: none;
   stroke: #77DD77;
