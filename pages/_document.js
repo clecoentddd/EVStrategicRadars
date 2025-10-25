@@ -7,7 +7,7 @@ export default function Document() {
         <Html>
             <Head>
                 {/* Link your favicon */}
-                <link rel="icon" href="/radar.ico" />
+                <link rel="icon" type="image/svg+xml" href="radar.svg" />
             </Head>
             <body>
                 <Main />

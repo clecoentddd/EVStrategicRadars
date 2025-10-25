@@ -77,7 +77,7 @@
             <button class="button" onclick="viewRadar('${radar.name}', '${radar.id}')">View</button>
             <button class="button" onclick="alert('API to be implemented')">Update</button>
             <button class="button" onclick="alert('API to be implemented')">Delete</button>
-            <button class="button violet" onclick="viewStream('${radar.id}')">View Strategies</button>
+            <button class="button violet" onclick="viewStrategyPage('${radar.id}')">View Strategies</button>
           `;
           radarList.appendChild(listItem);
         });
@@ -86,7 +86,7 @@
       }
     }
 
-    async function viewStream(radarId) {
+    async function viewStrategyPage(radarId) {
   try {
     const response = await fetch(`/api/readmodel-strategies?radarId=${encodeURIComponent(radarId)}`);
     if (!response.ok) {
@@ -172,7 +172,7 @@ function addRadarToList(radar) {
     <button class="button" onclick="viewRadar('${radar.name}', '${radar.radarId}')">View</button>
     <button class="button" onclick="alert('API to be implemented')">Update</button>
     <button class="button" onclick="alert('API to be implemented')">Delete</button>
-    <button class="button green" onclick="viewStream('${radar.radarId}')">View Strategies</button>
+    <button class="button green" onclick="viewStrategyPage('${radar.radarId}')">View Strategies</button>
   `;
   
   // Append to the radar list

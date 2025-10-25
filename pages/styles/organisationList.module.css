@@ -1,3 +1,9 @@
+/*
+ * organisationList.module.css (Updated with hardcoded values)
+ * NOTE: All CSS Custom Properties (variables) have been removed 
+ * to bypass the "Selector :root is not pure" error.
+*/
+
 /* Organization List Layout */
 .organisationList {
   position: relative;
@@ -9,7 +15,8 @@
   position: relative;
   margin-bottom: 0.5rem;
   padding-left: 2rem;
-  border-left: 3px solid #1e293b;
+  /* Dark Grey-Blue border */
+  border-left: 1px solid #334155; 
 }
 
 .levelSection::before {
@@ -20,7 +27,8 @@
   left: 80px;
   width: calc(100% - 100px);
   height: 1px;
-  background: #e2e8f0;
+  /* Lightest Grey line */
+  background: #E2E8F0; 
   z-index: 0;
 }
 
@@ -28,8 +36,10 @@
 .levelCircle {
   width: 60px;
   height: 60px;
-  background: #d1d5db;
-  color: #1e293b;
+  /* Medium Grey background */
+  background: #94A3B8; 
+  /* Near Black text */
+  color: #1E293B; 
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -63,135 +73,128 @@
 }
 
 /* Department pill style */
-/* Department pill style - fixed overflow and hover buttons */
 .departmentPill {
-  background: rgb(186, 192, 226);
+  /* Light Grey Card Background */
+  background: #F8FAFC; 
   padding: 0.75rem 1.25rem;
   padding-left: 1.5rem;
   border-radius: 0.8rem;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
+  /* Lightest Grey border */
+  border: 1px solid #E2E8F0; 
   display: flex;
+  flex-direction: column;
   align-items: center;
   min-width: 140px;
-  justify-content: center;
+  /* Use flex-start to push content (title) up */
+  justify-content: flex-start;
   position: relative;
-  /* Fix overflow */
+  font-weight: 300;
   overflow: visible;
   z-index: 1;
+  height: 120px;
+  /* Reduced top padding and added bottom padding */
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+  /* Set base text color to near black */
+  color: #1E293B;
+}
+
+/* Style for the card title/content - making it bold and moving it up */
+.departmentPill > *:first-child {
+  font-weight: bold;
+  margin-top: -0.2rem; /* Move content up a bit */
 }
 
 .departmentPill:hover {
-  background: #5a91af; /* Tailwind blue-300 */
-  color: #1e293b;
-  border-color: #5a91af; /* blue-400 border on hover */
-  transform: scale(1.03);
-  color: white;
+  /* Slightly darker grey background on hover */
+  background: #F1F5F9; 
+  color: #1E293B; /* Maintain dark text for contrast */
+  /* Light Grey-Blue border on hover */
+  border-color: #94A3B8; 
+  transform: scale(1.03); /* Only scale up */
 }
 
-/* Hover buttons container - fix z-index */
+/* Hover buttons container - INSIDE THE PILL */
 .departmentPill .hoverButtons {
   position: absolute;
-  top: calc(100% + 5px);
-  left: 0;
-  width: 100%;
+  /* Position at the bottom inside the pill */
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  width: auto;
   display: flex;
-  justify-content: center;
-  gap: 8px;
+  justify-content: flex-start;
+  gap: 4px;
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: 3;
   pointer-events: none;
+  /* Style to blend with card (menu appearance) - Use a white/off-white background */
+  padding: 4px;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-height: 30px;
 }
 
-
-/* Add this new rule to create a hover buffer zone */
-.departmentPill:hover .hoverButtons::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 0;
-  right: 0;
-  height: 15px;
-}
-
-.departmentPill:hover .hoverButtons,
-.hoverButtons:hover,
-.departmentPill .hoverButtons:hover {
-  opacity: 1;
-  pointer-events: auto;
-  transition-delay: 0.1s; /* Small delay helps */
-}
-
+/* Show buttons only on pill hover */
 .departmentPill:hover .hoverButtons {
   opacity: 1;
   pointer-events: auto;
-  z-index: 3; /* Ensure it appears above .departmentPill */
+  transition-delay: 0.1s;
 }
 
-.departmentPill:hover .hoverButtons,
-.hoverButtons:hover {
-  pointer-events: auto; /* Enable when parent hovered or buttons hovered */
-  opacity: 1;
-}
-
-
-/* Style for hover buttons */
+/* Style for hover buttons - same tone as card */
 .hoverButtons button {
-  background-color: #5a91af;
+  /* Dark Grey-Blue button background */
+  background-color: #334155; 
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   transition: all 0.2s ease;
-  /* Make sure buttons are clickable */
   pointer-events: auto;
   position: relative;
 }
 
-.hoverButtons button::after {
-  content: '';
-  position: absolute;
-  top: -15px;
-  left: 0;
-  right: 0;
-  height: calc(100% + 15px);
-  pointer-events: none;
-}
-
 .hoverButtons button:hover {
-  background-color: #c3dbff;
-  transform: translateY(-2px);
+  /* Slightly darker button hover */
+  background-color: #1E293B; 
+  color: white;
+  transform: none;
 }
 
-/* NPS indicator - prevent overflow */
+/* NPS indicator - use a placeholder since the variable is gone */
 .departmentPill::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px; /* Narrower */
+  width: 4px;
   height: 100%;
-  border-top-left-radius: 2rem;
-  border-bottom-left-radius: 2rem;
-  background-color: var(--nps-color);
-  opacity: 0.5; /* More subtle */
-  overflow: hidden; /* Prevent overflow */
+  border-top-left-radius: 0.8rem;
+  border-bottom-left-radius: 0.8rem;
+  /* Placeholder: Medium Grey-Blue */
+  background-color: #64748B; 
+  opacity: 0.5;
+  overflow: hidden;
   padding-left: 2px;
 }
+
 /* Active state - ensure it appears above other elements */
 .activePill {
+  /* Dark Grey-Blue Active background */
   background: #334155;
   color: white;
   border-color: #334155;
   transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 5px 15px rgba(51, 65, 85, 0.4); /* Shadow based on active color */
   z-index: 10;
 }
 
@@ -200,132 +203,5 @@
   overflow: visible;
   position: relative;
   z-index: 1;
+  gap: 2rem;
 }
-/* Slide-out panel */
-.slideOutPanel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 400px;
-  height: 100%;
-  background: white;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  padding: 1.5rem;
-  transition: transform 0.3s ease-in-out;
-}
-
-.slideOutPanel h2 {
-  margin-top: 3rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.contextSection {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #475569; /* Tailwind slate-600 */
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-/* Panel action buttons container */
-.panelActions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 2rem;
-}
-
-/* Shared button base style */
-.panelButton {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-  font-size: 1rem;
-  color: white;
-}
-
-/* Specific button variants */
-.aiCoachButton {
-  background-color: #10b981; /* Green */
-}
-
-.editButton {
-  background-color: RGB(186, 192, 226); /* Light neutral */
-  color: #1e293b;
-}
-
-.deleteButton {
-  background-color: #a0c8f5; /* Red */
-}
-
-/* Hover effect for all panel buttons */
-.panelButton:hover {
-  transform: translateY(-2px);
-  opacity: 0.95;
-}
-
-
-.panelHeader {
-  position: relative;
-  padding: 2rem 1rem 1rem;
-  color: #1e293b;
-}
-
-/* Close (X) button */
-.closeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #64748b; /* Tailwind slate-500 */
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.closeButton:hover {
-  color: #fbbf24 ; /* Tailwind red-500 */
-}
-
-/* Organisation name */
-.orgTitle {
-  margin-top: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-/* Purpose / Context sections */
-.section {
-  margin-top: 1.5rem;
-}
-
-.section h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  color: #334155; /* Tailwind slate-700 */
-}
-
-.section p {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #475569; /* Tailwind slate-600 */
-  
-  /* Truncation styles */
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-

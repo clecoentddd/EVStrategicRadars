@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Dark background circle for contrast -->
+  <circle cx="32" cy="32" r="32" fill="#1a1a1a"/>
+  
+  <!-- Outer circle -->
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#00ff41" stroke-width="3"/>
+  
+  <!-- Inner circle -->
+  <circle cx="32" cy="32" r="16" fill="none" stroke="#00ff41" stroke-width="2"/>
+  
+  <!-- Center dot -->
+  <circle cx="32" cy="32" r="4" fill="#00ff41"/>
+  
+  <!-- Radar sweep line (static at 45 degrees) -->
+  <line x1="32" y1="32" x2="50" y2="14" stroke="#00ff41" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+  
+  <!-- Blips -->
+  <circle cx="45" cy="18" r="3" fill="#00ff41"/>
+  <circle cx="20" cy="38" r="2.5" fill="#00ff41" opacity="0.6"/>
+</svg>
