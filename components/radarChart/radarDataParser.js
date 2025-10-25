@@ -1,7 +1,8 @@
 // radarDataParser.js
 // Transforms raw data into normalized format for the radar chart
 
-import radarConfig from './radarConfig';
+import radarConfig from './RadarConfig';
+import styles from './RadarChart.module.css'; // import CSS module here
 
 /**
  * Parses raw items into normalized radar data
@@ -21,30 +22,38 @@ const normalizeItem = (rawItem) => {
   const impact = radarConfig.impacts[rawItem.impact] || radarConfig.impacts[radarConfig.defaults.impact];
   const tolerance = radarConfig.tolerances[rawItem.tolerance] || radarConfig.tolerances[radarConfig.defaults.tolerance];
 
-  if (!category) {
-    console.warn(`Unknown category: ${rawItem.category}`);
-  }
-  if (!distance) {
-    console.warn(`Unknown distance: ${rawItem.distance}`);
+  if (!category) console.warn(`Unknown category: ${rawItem.category}`);
+  if (!distance) console.warn(`Unknown distance: ${rawItem.distance}`);
+
+  // Map opportunityClass to the CSS module class
+  let opportunityClass = styles.opportunityLow; // default
+  switch (impact.opportunityClass) {
+    case 'opportunityLow':
+      opportunityClass = styles.opportunityLow;
+      break;
+    case 'opportunityMedium':
+      opportunityClass = styles.opportunityMedium;
+      break;
+    case 'opportunityHigh':
+      opportunityClass = styles.opportunityHigh;
+      break;
+    default:
+      opportunityClass = styles.opportunityLow;
   }
 
   return {
-    // Original data
     id: rawItem.id,
     name: rawItem.name,
     type: rawItem.type,
     zoom_in: rawItem.zoom_in,
-    
-    // Normalized position data
+
     quadrantIndex: category?.quadrantIndex ?? 0,
     radiusMultiplier: distance?.radiusMultiplier ?? 1.0,
-    
-    // Normalized styling data
-    color: impact.color,
+
+    color: impact.color,      // still keep color if needed for threats
     size: tolerance.radius,
-    opportunityClass: impact.opportunityClass,
-    
-    // Keep raw values for reference/tooltip
+    opportunityClass,         // now fully CSS module-safe
+
     raw: {
       category: rawItem.category,
       distance: rawItem.distance,
@@ -81,7 +90,7 @@ export const calculateItemPosition = (item, indexInGroup, totalInGroup, radius) 
   const angleStep = (Math.PI / 2) / (totalInGroup + 1);
   const angle = quadrantAngleStart + angleStep * (indexInGroup + 1);
   const distRadius = radius * item.radiusMultiplier;
-  
+
   return {
     x: distRadius * Math.cos(angle),
     y: distRadius * Math.sin(angle)
@@ -96,8 +105,7 @@ export const calculateItemPosition = (item, indexInGroup, totalInGroup, radius) 
 export const getCategoryLabels = (radius) => {
   return Object.entries(radarConfig.categories).map(([categoryName, config]) => {
     const { quadrantIndex, label, labelPosition } = config;
-    
-    // Calculate position based on quadrant
+
     let x, y;
     switch (quadrantIndex) {
       case 0: // Bottom right
@@ -120,7 +128,7 @@ export const getCategoryLabels = (radius) => {
         x = 0;
         y = 0;
     }
-    
+
     return {
       text: label,
       x,

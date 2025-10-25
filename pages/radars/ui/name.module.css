@@ -1,214 +1,49 @@
+/* Basic container */
 .container {
   font-family: 'Orbitron', sans-serif;
 }
 
+/* Radar details header */
 .radarDetails {
   text-align: center;
-  margin-top: 50px;
-  margin-bottom: 5px; 
+  margin: 50px 0 5px 0;
   background-color: #797195;
-  padding: 5px; 
+  padding: 5px;
   border-radius: 5px;
   color: white;
 }
 
 .radarDetails h1 {
-  margin-top: 1px;
-  margin-bottom: 1px;
+  margin: 1px 0;
   font-size: 1.2rem;
   font-weight: bold;
   color: #ecf0f1;
-  font-family: 'Orbitron', sans-serif;
 }
 
 .radarDetails p {
-  margin-bottom: 5px; 
-  font-size: 8px; 
+  margin-bottom: 5px;
+  font-size: 8px;
   color: #ecf0f1;
-  font-family: 'Orbitron', sans-serif;
 }
 
-.radarContainer {
+/* Radar chart wrapper */
+.radarChart {
   display: flex;
-  flex-direction: column;
-  padding: 10px; 
-  border-radius: 5px;
-  background-color: #e0f7f1;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.radarHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0; 
-  font-family: 'Orbitron', sans-serif;
-}
-
-.radarTitle {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0; 
-  font-family: 'Orbitron', sans-serif;
-}
-
-.radarBackButton {
-  background-color: #16a085;
-  color: #ffffff;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.radarInfo {
-  font-size: 14px; 
-  font-weight: bold;
-  background-color: #1abc9c;
-  color: white;
-  padding: 5px;
-  margin: 5px 0; 
-  font-family: 'Orbitron', sans-serif;
-}
-
-.showForm {
-  background-color: #f5fafa; 
-  padding: 20px; 
-  border-radius: 5px; 
-  font-family: 'Orbitron', sans-serif;
-}
-
-.formRow {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 15px;
-  width: 100%;
-}
-
-.inputWrapper {
-  flex: 1;
-  display: flex;
-}
-
-.label {
-  display: inline-block; 
-  margin-right: 10px; 
-  text-align: left; 
-  font-size: 14px;
-  padding: 3px;
-  padding-top: 5px;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: bold;
-}
-
-.column {
-  flex: 1;
-  padding-left: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.column:first-child { 
-  width: 50%;
-  padding-left: 0;
-  flex: none;
-}
-
-.column:nth-child(2) {
-  flex: 2;
-  margin-left: auto;
-  justify-content: center;
-  align-items: center;
-}
-
-.column:last-child {
-  width: 10%;
-  border-left: 5px solid #ccc;
-  padding-left: 20px;
-  flex: none;
-}
-
-.inputField {
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 70%; 
-  font-family: 'Orbitron', sans-serif;
-  margin-bottom: 20px;
-}
-
-select.inputField {
-  padding: 8px 8px;
-  flex-grow: 1;
-  max-width: 400px;
-}
-
-.inputZoomInField {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: auto;
-  font-family: 'Orbitron', sans-serif;
-  margin-left: 0;
-  margin-right: auto;
-  display: block;
-}
-
-.inputZoomInField.inline {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.flex-container .inputZoomInField {
-  flex: 0 0 auto;
-  align-self: flex-start;
-}
-
-.textArea {
-  padding: 2px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 90%; 
-  resize: vertical; 
-  font-family: 'Orbitron', sans-serif;
-}
-
-.saveButton {
-  padding: 10px 20px; 
-  background-color: #f39c12; 
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-}
-
-.buttonGroup {
-  display: flex;
-  justify-content: center;
+  flex-direction: column; /* stack button + radar vertically */
+  align-items: center; /* center horizontally */
+  background-color: black;
+  border-radius: 10px;
+  padding: 5px 15px 15px 15px;
   gap: 10px;
-  margin-top: 20px;
+  position: relative;
 }
 
-.cancelButton {
-  background-color: #16a085;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-}
-
+/* Titles */
 .radarChartTitle {
   font-size: 20px;
   color: #333;
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 5px;
-  font-family: 'Orbitron', sans-serif;
+  margin: 20px 0 5px 0;
 }
 
 .radarItemsTitle {
@@ -216,79 +51,24 @@ select.inputField {
   color: #555;
   text-align: left;
   margin-top: 15px;
+}
+
+/* Radar item list */
+.radarItemList {
+  list-style-type: none;
+  background-color: #f5f5f5;
+  padding-top: 5px;
+  padding-inline-start: 0;
   font-family: 'Orbitron', sans-serif;
-}
-
-.radarChart {
-   height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  background-color: black;
-  border-radius: 10px;
-  padding: 15px;
-  padding-top: 0px;
-  gap: 10px;
-}
-
-.leftPanel {
-  flex: 0 0 20%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
-  min-width: 180px; /* adjust as needed */
-  color: white;
-}
-
-
-.editButton {
-  padding: 5px 10px;
-  background-color: #1abc9c;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.radarlist {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background-color: #f5fafa;
 }
 
 .radarItem {
   border: 1px solid #ccc;
-  padding-left: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0 10px 10px;
   margin: 10px;
   border-radius: 5px;
   background-color: #f5fafa;
-  font-family: 'Orbitron', sans-serif;
   transition: background-color 0.2s ease-in-out;
-}
-
-.itemName {
-  font-size: 0.9em;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.button {
-  padding: 5px 10px;
-  margin-top: 10px;
-  font-size: 0.9em;
-  cursor: pointer;
-  border: none;
-  border-radius: 3px;
-  background-color: #1abc9c;
-  color: white;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.button:hover {
-  background-color: #16a085;
 }
 
 .collapsedContent {
@@ -304,47 +84,75 @@ select.inputField {
   color: #666;
 }
 
-.radarItemList {
-  list-style-type: none;
-  background-color: #f5f5f5;
-  padding-top: 5px;
-  padding-inline-start: 0%;
+/* Buttons */
+.button,
+.editButton,
+.createButton,
+.saveButton,
+.cancelButton {
+  font-family: 'Orbitron', sans-serif;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.button,
+.editButton {
+  padding: 5px 10px;
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: white;
+  background-color: #1abc9c;
+}
+
+.button:hover,
+.editButton:hover {
+  background-color: #16a085;
 }
 
 .createButton {
   padding: 10px 15px;
-  margin-top: 20px;
+  margin: 20px 0;
+  font-size: 1rem;
   background-color: #1abc9c;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
 }
 
 .createButton:hover {
   background-color: #16a085;
 }
 
+.saveButton {
+  padding: 10px 20px;
+  background-color: #f39c12;
+  color: white;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background-color: #16a085;
+  color: white;
+}
+
+/* Slider form */
 .sliderForm {
   position: fixed;
   top: 0;
   right: 0;
-  width: 76.66%; /* Two-thirds of the page width */
+  width: 76.66%;
   height: 100vh;
   background-color: grey;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease; /* Controls the speed and smoothness of the sliding effect */
+  transition: transform 0.3s ease;
   z-index: 1000;
   padding: 20px;
   overflow-y: auto;
-  transform: translateX(100%); /* Initially hidden off-screen to the right */
+  transform: translateX(100%);
 }
 
 .sliderFormVisible {
-  transform: translateX(0); /* Slide in from the right */
+  transform: translateX(0);
 }
 
 .sliderFormCloseButton {
@@ -366,5 +174,5 @@ select.inputField {
 }
 
 .sliderFormCloseButton:hover {
-  color: #f39c12; /* Optional hover color */
+  color: #f39c12;
 }

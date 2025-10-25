@@ -1,64 +1,116 @@
-.tooltip {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.9);
-    color: white;
-    padding: 12px;
-    border-radius: 4px;
-    max-width: 300px; /* wider area */
-    width: fit-content;
-    z-index: 100;
-    pointer-events: auto;
-    font-family: 'Orbitron', sans-serif; /* Orbitron font */
-  }
-  
-  .row {
-    margin-bottom: 6px;
-    line-height: 1.4;
-    width: 300px;
-  }
-  
-  .label {
-    font-weight: bold;
-    color: #00ff9f;
-    margin-right: 6px;
-    font-family: 'Orbitron', sans-serif;
-  }
-  
-  .value {
-    color: white;
-  }
-  
-  .link {
-    color: #4fc3f7;
-    text-decoration: underline;
-  }
-  
-  .link:hover {
-    color: #82b1ff;
-  }
-  
-  .editButton {
-    background-color: black;
-    border: 1px solid #00ff9f; /* Tailwind's purple-500 */
-    color: #00ff9f; /* Purple pencil */
-    padding: 6px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .editButton:hover {
-    background-color: #1f1f1f;
-    border-color: #228B22; /* Purple-600 on hover */
-    color: #228B22;
-  }
-  
+/* Tooltip panel */
+.tooltipPanel {
+  flex: 0 0 20%;       /* take 20% of container width */
+  min-width: 200px;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 20px;
+  gap: 16px;
+  box-sizing: border-box;
+}
 
-  .mutedText {
-    color: #aaa;
-    font-style: italic;
+/* Blink animation */
+@keyframes tooltipBlink {
+  0%, 100% { 
+    border-color: rgba(0, 255, 159, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
-  
+  50% { 
+    border-color: rgba(0, 255, 159, 0.8);
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.4);
+  }
+}
+
+.tooltip.blink {
+  animation: tooltipBlink 0.4s ease-in-out;
+}
+
+.tooltipPlaceholder {
+  background: rgba(10, 15, 15, 0.4);
+  backdrop-filter: blur(4px);
+  color: #666;
+  padding: 24px;
+  border-radius: 6px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  transition: all 0.3s ease;
+}
+
+.row {
+  margin-bottom: 10px;
+  line-height: 1.6;
+  display: flex;
+  align-items: baseline;
+}
+
+.label {
+  font-weight: 600;
+  color: #00cc88;
+  margin-right: 10px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 80px;
+}
+
+.value {
+  color: #e8e8e8;
+  font-size: 13px;
+}
+
+.link {
+  color: #5fb3d9;
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(95, 179, 217, 0.3);
+  transition: all 0.2s ease;
+}
+
+.link:hover {
+  color: #7ec9e8;
+  border-bottom-color: rgba(126, 201, 232, 0.6);
+}
+
+.editButton {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 204, 136, 0.3);
+  color: #00cc88;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+  margin-top: 16px;
+  width: auto;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.editButton .editIcon { color: #FFD580; font-size: 13px; }
+
+.editButton:hover {
+  background-color: rgba(0, 204, 136, 0.1);
+  border-color: rgba(0, 204, 136, 0.5);
+  color: #00ff9f;
+  transform: translateY(-1px);
+}
+
+.editButton:hover .editIcon { color: #FFB347; }
+
+.mutedText {
+  color: #777;
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 300;
+}

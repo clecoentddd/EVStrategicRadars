@@ -23,7 +23,7 @@ export default function RadarPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // form & UI states
+  // Form & UI states
   const [formData, setFormData] = useState(DEFAULT_FORM_VALUES);
   const [showForm, setShowForm] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -34,7 +34,7 @@ export default function RadarPage() {
 
   const logMessage = (msg) => console.log(`[RadarPage] ${msg}`);
 
-  // 🔹 Fetch all radar-related data
+  // 🔹 Fetch radar data
   useEffect(() => {
     if (!radarId) return;
 
@@ -69,12 +69,46 @@ export default function RadarPage() {
   }, [radarId]);
 
   // 🔹 Handle editing
-  const handleEdit = (item) => {
-    setEditMode(true);
-    setCurrentEditingId(item.id);
-    setFormData(item);
-    setShowForm(true);
-  };
+const handleEdit = async (item) => {
+  console.log('Editing radar item ID:', item.id);
+  setEditMode(true);
+  setCurrentEditingId(item.id);
+  setShowForm(true);
+
+  try {
+    // 🔹 Fetch from backend projection/event replay
+    const res = await fetch(`/api/radar-items?id=${item.id}`);
+    const fullItem = await res.json();
+
+    console.log('Fetched full item for editing:', fullItem);
+
+    setFormData({
+      id: fullItem.id,
+      name: fullItem.name || '',
+      type: fullItem.type || '',
+      category: fullItem.category || '',
+      distance: fullItem.distance || '',
+      impact: fullItem.impact || '',
+      tolerance: fullItem.tolerance || '',
+      assess: fullItem.assess || '',
+      detect: fullItem.detect || '',
+      respond: fullItem.respond || '',
+      zoom_in: fullItem.zoom_in || '',
+    });
+  } catch (err) {
+    console.error('Failed to fetch full radar item', err);
+  }
+};
+
+
+
+  const handleCreate = () => {
+  setFormData(DEFAULT_FORM_VALUES);
+  setEditMode(false);
+  setCurrentEditingId(null);
+  setShowForm(true);
+};
+
 
   // 🔹 Handle saving
   const handleSaveItem = async () => {
@@ -89,13 +123,11 @@ export default function RadarPage() {
       });
 
       if (!res.ok) throw new Error('Failed to save radar item');
-      const result = await res.json();
+      await res.json();
 
-      // Refresh radar items
       const items = await GetRadarItems(radarId);
       setRadarItems(items);
 
-      // Reset form
       setShowForm(false);
       setEditMode(false);
       setCurrentEditingId(null);
@@ -115,6 +147,7 @@ export default function RadarPage() {
     <div>
       <Navbar radarId={radarId} />
 
+      {/* Radar Details */}
       <div className={styles.container}>
         <div className={styles.radarDetails}>
           <h1 className={styles.radarName}>{radar.name}</h1>
@@ -123,52 +156,30 @@ export default function RadarPage() {
         </div>
       </div>
 
+      {/* Radar Chart */}
       <div className={styles.radarChart}>
-        <div className={styles.leftPanel}>
-          <button
-            onClick={() => {
-              setShowForm(true);
-              setEditMode(false);
-              setFormData(DEFAULT_FORM_VALUES);
-            }}
-            className={styles.createButton}
-          >
-            Create Radar Item
-          </button>
-        </div>
-
-        <div className={styles.chartArea}>
-          <RadarChart items={radarItems} radius={280} onEditClick={handleEdit} />
-        </div>
+        <RadarChart
+          items={radarItems}
+          radius={280}
+          onEditClick={handleEdit}
+          onCreateClick={handleCreate}
+          showForm={showForm}
+          setShowForm={setShowForm}
+          formData={formData}
+          setFormData={setFormData}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          defaultFormValues={DEFAULT_FORM_VALUES}
+        />
       </div>
 
+      {/* Radar Items List */}
       <h2 className={styles.radarItemsTitle}>Radar Items</h2>
-
-      {showForm && (
-        <div className={`${styles.sliderForm} ${showForm ? styles.sliderFormVisible : ''}`}>
-          <RadarItemEditOrCreateForm
-            showForm={showForm}
-            editMode={editMode}
-            formData={formData}
-            typeOptions={Object.values(config.typeOptions || {})}
-            categoryOptions={Object.values(config.categoryOptions || {})}
-            zoomInOptions={zoomInOptions}
-            handleInputChange={(e) =>
-              setFormData({ ...formData, [e.target.name]: e.target.value })
-            }
-            handleSaveItem={handleSaveItem}
-            setShowForm={setShowForm}
-          />
-        </div>
-      )}
-
       <ul className={styles.radarItemList}>
         {radarItems.map((item, idx) => (
           <li
             key={item.id}
-            className={`${styles.radarItem} ${
-              collapsedItems[idx] ? styles.collapsed : styles.expanded
-            }`}
+            className={`${styles.radarItem} ${collapsedItems[idx] ? styles.collapsed : styles.expanded}`}
             onClick={() =>
               setCollapsedItems((prev) => {
                 const newArr = [...prev];
@@ -200,6 +211,23 @@ export default function RadarPage() {
           </li>
         ))}
       </ul>
+
+      {/* Slider Form */}
+      {showForm && (
+        <div className={`${styles.sliderForm} ${showForm ? styles.sliderFormVisible : ''}`}>
+          <RadarItemEditOrCreateForm
+            showForm={showForm}
+            editMode={editMode}
+            formData={formData}
+            typeOptions={Object.values(config.typeOptions || {})}
+            categoryOptions={Object.values(config.categoryOptions || {})}
+            zoomInOptions={zoomInOptions}
+            handleInputChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+            handleSaveItem={handleSaveItem}
+            setShowForm={setShowForm}
+          />
+        </div>
+      )}
     </div>
   );
 }
