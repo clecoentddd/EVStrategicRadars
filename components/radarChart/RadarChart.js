@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../../utils/supabaseClient';
 import styles from './RadarChart.module.css';
 import RadarTooltip from './RadarToolTip';
 
