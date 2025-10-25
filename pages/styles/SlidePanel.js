@@ -3,6 +3,7 @@ import styles from './slidePanel.module.css';
 import OrganisationForm from './organisationForm';
 import AICoachForm from './AICoachForm';
 
+// to edit description and contexte, delete, etc
 const SlidePanel = ({
   activeConfig,
   onClose,
