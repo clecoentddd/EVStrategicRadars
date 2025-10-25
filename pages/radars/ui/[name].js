@@ -32,8 +32,6 @@ export default function RadarPage() {
 
   const formRef = useRef(null);
 
-  const logMessage = (msg) => console.log(`[RadarPage] ${msg}`);
-
   // 🔹 Fetch radar data
   useEffect(() => {
     if (!radarId) return;
@@ -56,7 +54,6 @@ export default function RadarPage() {
         setZoomInOptions(allRadars.filter((r) => r.id !== radarId));
 
         setCollapsedItems(new Array(itemsData.length).fill(true));
-        logMessage('All radar data fetched successfully');
       } catch (err) {
         console.error(err);
         setError(err.message);
@@ -69,46 +66,39 @@ export default function RadarPage() {
   }, [radarId]);
 
   // 🔹 Handle editing
-const handleEdit = async (item) => {
-  console.log('Editing radar item ID:', item.id);
-  setEditMode(true);
-  setCurrentEditingId(item.id);
-  setShowForm(true);
+  const handleEdit = async (item) => {
+    setEditMode(true);
+    setCurrentEditingId(item.id);
+    setShowForm(true);
 
-  try {
-    // 🔹 Fetch from backend projection/event replay
-    const res = await fetch(`/api/radar-items?id=${item.id}`);
-    const fullItem = await res.json();
+    try {
+      const res = await fetch(`/api/radar-items?id=${item.id}`);
+      const fullItem = await res.json();
 
-    console.log('Fetched full item for editing:', fullItem);
-
-    setFormData({
-      id: fullItem.id,
-      name: fullItem.name || '',
-      type: fullItem.type || '',
-      category: fullItem.category || '',
-      distance: fullItem.distance || '',
-      impact: fullItem.impact || '',
-      tolerance: fullItem.tolerance || '',
-      assess: fullItem.assess || '',
-      detect: fullItem.detect || '',
-      respond: fullItem.respond || '',
-      zoom_in: fullItem.zoom_in || '',
-    });
-  } catch (err) {
-    console.error('Failed to fetch full radar item', err);
-  }
-};
-
-
+      setFormData({
+        id: fullItem.id,
+        name: fullItem.name || '',
+        type: fullItem.type || '',
+        category: fullItem.category || '',
+        distance: fullItem.distance || '',
+        impact: fullItem.impact || '',
+        tolerance: fullItem.tolerance || '',
+        assess: fullItem.assess || '',
+        detect: fullItem.detect || '',
+        respond: fullItem.respond || '',
+        zoom_in: fullItem.zoom_in || '',
+      });
+    } catch (err) {
+      console.error('Failed to fetch full radar item:', err);
+    }
+  };
 
   const handleCreate = () => {
-  setFormData(DEFAULT_FORM_VALUES);
-  setEditMode(false);
-  setCurrentEditingId(null);
-  setShowForm(true);
-};
-
+    setFormData(DEFAULT_FORM_VALUES);
+    setEditMode(false);
+    setCurrentEditingId(null);
+    setShowForm(true);
+  };
 
   // 🔹 Handle saving
   const handleSaveItem = async () => {
@@ -116,25 +106,37 @@ const handleEdit = async (item) => {
     const url = editMode ? `/api/radar-items?id=${currentEditingId}` : `/api/radar-items`;
 
     try {
+      const payload = { radarId, ...formData };
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ radarId, ...formData }),
+        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error('Failed to save radar item');
+      if (!res.ok) {
+        throw new Error('Failed to save radar item');
+      }
+
       await res.json();
 
-      const items = await GetRadarItems(radarId);
-      setRadarItems(items);
+      if (editMode) {
+        setRadarItems(prev =>
+          prev.map(item =>
+            item.id === currentEditingId ? {...item, ...formData, id: item.id} : item
+          )
+        );
+      } else {
+        const newItem = { id: formData.id || crypto.randomUUID(), ...formData };
+        setRadarItems(prev => [...prev, newItem]);
+      }
 
       setShowForm(false);
       setEditMode(false);
       setCurrentEditingId(null);
       setFormData(DEFAULT_FORM_VALUES);
-
-      logMessage('Radar item saved successfully');
     } catch (err) {
+      console.error('Error saving radar item:', err);
       setError(err.message);
     }
   };
@@ -163,13 +165,6 @@ const handleEdit = async (item) => {
           radius={280}
           onEditClick={handleEdit}
           onCreateClick={handleCreate}
-          showForm={showForm}
-          setShowForm={setShowForm}
-          formData={formData}
-          setFormData={setFormData}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          defaultFormValues={DEFAULT_FORM_VALUES}
         />
       </div>
 

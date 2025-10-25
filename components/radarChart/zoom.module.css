@@ -9,6 +9,14 @@
   align-items: center; /* center buttons horizontally if you want */
 }
 
+.zoomControls {
+  display: flex;
+  flex-wrap: wrap;       /* wrap on small screens */
+  align-items: center;
+  gap: 8px;              /* space between buttons */
+  margin-top: 8px;
+}
+
 /* Zoom section title */
 .zoomTitle {
   font-family: 'Orbitron', sans-serif;

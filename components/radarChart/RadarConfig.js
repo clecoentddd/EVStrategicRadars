@@ -10,29 +10,28 @@ export const radarConfig = {
     gridColor: '#228B22',
   },
 
-  // Category definitions - maps raw category names to quadrants
-  categories: {
-    'People and Knowledge': {
-      quadrantIndex: 0,
-      label: 'People and Knowledge',
-      labelPosition: { offsetX: -120, offsetY: 20, anchor: 'start' }
-    },
-    'Operating Model': {
-      quadrantIndex: 1,
-      label: 'Operating Model',
-      labelPosition: { offsetX: 68, offsetY: 20, anchor: 'end' }
-    },
-    'Business': {
-      quadrantIndex: 2,
-      label: 'Business',
-      labelPosition: { offsetX: 105, offsetY: -10, anchor: 'end' }
-    },
-    'Capabilities': {
-      quadrantIndex: 3,
-      label: 'Capabilities',
-      labelPosition: { offsetX: -88, offsetY: -10, anchor: 'start' }
-    }
+ categories: {
+  'Business': {
+    quadrantIndex: 2, // top-left
+    label: 'Business',
+    labelPosition: { offsetX: -120, offsetY: 20, anchor: 'start' }
   },
+  'Capabilities': {
+    quadrantIndex: 3, // top-right
+    label: 'Capabilities',
+    labelPosition: { offsetX: 68, offsetY: 20, anchor: 'end' }
+  },
+  'Operating Model': {
+    quadrantIndex: 1, // bottom-left
+    label: 'Operating Model',
+    labelPosition: { offsetX: 105, offsetY: -10, anchor: 'end' }
+  },
+  'People and Knowledge': {
+    quadrantIndex: 0, // bottom-right
+    label: 'People and Knowledge',
+    labelPosition: { offsetX: -88, offsetY: -10, anchor: 'start' }
+  }
+},
 
   // Distance/maturity mapping - maps raw distance names to ring positions
   distances: {

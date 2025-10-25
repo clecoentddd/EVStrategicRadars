@@ -151,16 +151,27 @@ const RadarChart = ({ items, radius, onEditClick, onCreateClick }) => {
   };
 
   const drawCategoryLabels = (svg, radius) => {
-    const labels = getCategoryLabels(radius);
-    labels.forEach(label => {
-      svg.append("text")
-        .attr("x", label.x)
-        .attr("y", label.y)
-        .attr("text-anchor", label.anchor)
-        .text(label.text)
-        .classed(styles.categoryLabel, true);
-    });
-  };
+  const categories = Object.values(radarConfig.categories);
+  const positions = [
+    { x: -radius + 20, y: -radius + 20, anchor: 'start' },   // top-left
+    { x: radius - 20, y: -radius + 20, anchor: 'end' },      // top-right
+    { x: -radius + 20, y: radius - 20, anchor: 'start' },    // bottom-left
+    { x: radius - 20, y: radius - 20, anchor: 'end' },       // bottom-right
+  ];
+
+  categories.forEach((cat, i) => {
+    const pos = positions[i] || { x: 0, y: 0, anchor: 'middle' };
+    svg.append("text")
+      .attr("x", pos.x)
+      .attr("y", pos.y)
+      .attr("text-anchor", pos.anchor)
+      .text(cat.label)
+      .classed(styles.categoryLabel, true)
+      .style("font-size", "14px")
+      .style("font-weight", "600")
+      .style("fill", "#00cc88");
+  });
+};
 
   const drawRadarGrid = (svg, radius) => {
     radarConfig.visual.distanceRings.forEach(multiplier => {
@@ -222,9 +233,29 @@ const RadarChart = ({ items, radius, onEditClick, onCreateClick }) => {
   };
 
   const drawOpportunity = (group, item, x, y, size) => {
-    group.append('circle').attr('cx', x).attr('cy', y).attr('r', size).attr('class', item.opportunityClass);
-    group.append('circle').attr('cx', x).attr('cy', y).attr('r', size * 0.7).classed(getImpactClass(item.raw.impact), true).attr('stroke', 'none');
-  };
+  const color = item.color || '#00cc88';
+  const impactClass = getImpactClass(item.raw?.impact);
+
+  // Outer circle (outline)
+  group.append('circle')
+    .attr('cx', x)
+    .attr('cy', y)
+    .attr('r', size)
+    .attr('fill', 'none')
+    .attr('stroke', color)
+    .attr('stroke-width', 2)
+    .attr('class', impactClass || styles.defaultImpact);
+
+  // Inner circle (solid)
+  group.append('circle')
+    .attr('cx', x)
+    .attr('cy', y)
+    .attr('r', size * 0.7)
+    .attr('fill', color)
+    .attr('stroke', 'none')
+    .attr('class', impactClass || styles.defaultImpact);
+};
+
 
   const drawThreat = (group, item, x, y, size) => {
     group.append('circle').attr('cx', x).attr('cy', y).attr('r', size).attr('fill', item.color).attr('stroke', 'none');

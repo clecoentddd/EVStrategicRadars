@@ -1,17 +1,55 @@
-/* Tooltip panel */
+/* ================================
+   🎯 Tooltip Panel Layout
+   ================================ */
 .tooltipPanel {
-  flex: 0 0 20%;       /* take 20% of container width */
-  min-width: 200px;
-  max-width: 350px;
+  flex: 0 0 15%;
+  width: 220px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding-top: 20px;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 20px 16px 0 16px;
   gap: 16px;
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
-/* Blink animation */
+/* Tooltip placeholder when nothing is selected */
+.tooltipPlaceholder {
+  width: 100%;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba(10, 15, 15, 0.4);
+  backdrop-filter: blur(4px);
+  color: #666;
+  border-radius: 6px;
+  box-sizing: border-box;
+  padding: 24px;
+  transition: all 0.3s ease;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+}
+
+/* ================================
+   🧭 Tooltip Active Content
+   ================================ */
+.tooltip {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 6px;
+  padding: 16px;
+  background: rgba(20, 25, 25, 0.7);
+  backdrop-filter: blur(6px);
+  color: #e8e8e8;
+  border: 1px solid rgba(0, 204, 136, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Subtle highlight when tooltip appears or updates */
 @keyframes tooltipBlink {
   0%, 100% { 
     border-color: rgba(0, 255, 159, 0.2);
@@ -27,21 +65,9 @@
   animation: tooltipBlink 0.4s ease-in-out;
 }
 
-.tooltipPlaceholder {
-  background: rgba(10, 15, 15, 0.4);
-  backdrop-filter: blur(4px);
-  color: #666;
-  padding: 24px;
-  border-radius: 6px;
-  width: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100px;
-  transition: all 0.3s ease;
-}
-
+/* ================================
+   📊 Tooltip Field Rows
+   ================================ */
 .row {
   margin-bottom: 10px;
   line-height: 1.6;
@@ -65,6 +91,9 @@
   font-size: 13px;
 }
 
+/* ================================
+   🔗 Links (Zoom-in / related)
+   ================================ */
 .link {
   color: #5fb3d9;
   text-decoration: none;
@@ -78,6 +107,9 @@
   border-bottom-color: rgba(126, 201, 232, 0.6);
 }
 
+/* ================================
+   🧰 Tooltip Buttons
+   ================================ */
 .editButton {
   background-color: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(0, 204, 136, 0.3);
@@ -97,7 +129,10 @@
   font-weight: 500;
 }
 
-.editButton .editIcon { color: #FFD580; font-size: 13px; }
+.editButton .editIcon {
+  color: #FFD580;
+  font-size: 13px;
+}
 
 .editButton:hover {
   background-color: rgba(0, 204, 136, 0.1);
@@ -106,11 +141,37 @@
   transform: translateY(-1px);
 }
 
-.editButton:hover .editIcon { color: #FFB347; }
+.editButton:hover .editIcon {
+  color: #FFB347;
+}
 
+/* ================================
+   🕶 Misc
+   ================================ */
 .mutedText {
   color: #777;
   font-style: italic;
   font-size: 13px;
   font-weight: 300;
+}
+
+/* ================================
+   📱 Responsive
+   ================================ */
+@media (max-width: 1024px) {
+  .tooltipPanel {
+    flex: none;
+    max-width: none;
+    width: 100%;
+    padding: 16px;
+  }
+
+  .tooltip,
+  .tooltipPlaceholder {
+    width: 100%;
+  }
+
+  .label {
+    min-width: 60px;
+  }
 }
