@@ -1,4 +1,6 @@
-import React from 'react';
+// RadarItemEditOrCreateForm.js
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import styles from './radarItemEditOrCreateForm.module.css';
 
 export const DEFAULT_FORM_VALUES = {
@@ -18,116 +20,97 @@ const RadarItemEditOrCreateForm = ({
   showForm,
   editMode,
   formData = DEFAULT_FORM_VALUES,
-  typeOptions,
-  categoryOptions,
-  zoomInOptions,
+  typeOptions = [],
+  categoryOptions = [],
+  zoomInOptions = [],
   handleInputChange,
   handleSaveItem,
   setShowForm
 }) => {
-  const distanceOptions = [
-    { value: 'Detected', label: 'Detected' },
-    { value: 'Assessing', label: 'Assessing' },
-    { value: 'Assessed', label: 'Assessed' },
-    { value: 'Responding', label: 'Responding' },
-    { value: 'Responded', label: 'Responded' }
-  ];
+  // don't render anything if not visible
+  if (!showForm) return null;
 
-  const impactOptions = [
-    { value: 'Low', label: 'Low' },
-    { value: 'Medium', label: 'Medium' },
-    { value: 'High', label: 'High' }
-  ];
+  // prevent background scrolling while modal is open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
 
-  const toleranceOptions = [
-    { value: 'High', label: 'High' },
-    { value: 'Medium', label: 'Medium' },
-    { value: 'Low', label: 'Low' }
-  ];
-
-  return (
-    <div className={styles.showForm}>
-      {/* This container aligns the title and buttons */}
-      <div className={styles.formHeader}>
-        <h3 className={styles.formTitle}>
-          {editMode ? 'Edit Radar Item' : 'Create Radar Item'}
-          {editMode && formData.name && `: ${formData.name}`}
-        </h3>
-        <div className={styles.headerButtons}>
+  const content = (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent} role="dialog" aria-modal="true">
+        {/* Header */}
+        <div className={styles.modalHeader}>
+          <h3 className={styles.formTitle}>
+            {editMode ? 'Edit Radar Item' : 'Create Radar Item'}
+            {editMode && formData.name ? `: ${formData.name}` : ''}
+          </h3>
           <button
-            type="submit" // Can be type="button" if form submission is handled purely by JS
-            onClick={(e) => { e.preventDefault(); handleSaveItem(); }} // Explicitly call handleSaveItem
-            className={styles.saveButton}
-          >
-            Save
-          </button>
-          <button
-            type="button"
             onClick={() => setShowForm(false)}
-            className={styles.cancelButton}
+            className={styles.closeButton}
+            aria-label="Close"
+            type="button"
           >
-            Cancel
+            ✖
           </button>
         </div>
-      </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); handleSaveItem(); }}>
-        <div className={styles.formRow}>
-          <div className={`${styles.column} ${styles.flex2}`}>
-            <label htmlFor="name" className={styles.label}>
-              Name
-            </label>
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              className={`${styles.inputField} ${styles.smallInput}`}
-            />
+        {/* Body */}
+        <form
+          onSubmit={(e) => { e.preventDefault(); handleSaveItem(); }}
+          className={styles.modalBody}
+        >
+          <div className={styles.formRow}>
+            {/* Left column */}
+            <div className={`${styles.column} ${styles.flex2}`}>
+              <label className={styles.label}>Name</label>
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className={styles.inputField}
+              />
 
-            <label htmlFor="detect" className={`${styles.label} ${styles.marginTop}`}>
-              What have you detected
-            </label>
-            <textarea
-              name="detect"
-              value={formData.detect}
-              onChange={handleInputChange}
-              required
-              className={`${styles.textArea} ${styles.smallTextArea}`}
-            />
+              <label className={styles.label}>What have you detected?</label>
+              <textarea
+                name="detect"
+                value={formData.detect}
+                onChange={handleInputChange}
+                required
+                className={styles.textArea}
+              />
 
-            <label htmlFor="assess" className={`${styles.label} ${styles.marginTop}`}>
-              What is your assessment
-            </label>
-            <textarea
-              name="assess"
-              value={formData.assess}
-              onChange={handleInputChange}
-              className={`${styles.textArea} ${styles.smallTextArea}`}
-            />
+              <label className={styles.label}>What is your assessment?</label>
+              <textarea
+                name="assess"
+                value={formData.assess}
+                onChange={handleInputChange}
+                className={styles.textArea}
+              />
 
-            <label htmlFor="respond" className={`${styles.label} ${styles.marginTop}`}>
-              What decisions could you take
-            </label>
-            <textarea
-              name="respond"
-              value={formData.respond}
-              onChange={handleInputChange}
-              className={`${styles.textArea} ${styles.smallTextArea}`}
-            />
-          </div>
+              <label className={styles.label}>What decisions could you take?</label>
+              <textarea
+                name="respond"
+                value={formData.respond}
+                onChange={handleInputChange}
+                className={styles.textArea}
+              />
+            </div>
 
-          <div className={`${styles.column} ${styles.flex1}`}>
-            {/* Type */}
-            <div className={`${styles.optionGroup} ${styles.marginVertical}`}>
-              <span className={styles.optionTitle}>Type</span>
-              <div className={styles.radioGroup}>
-                {typeOptions.map((option) => {
-                  const isSelected = formData.type === option.label;
-                  return (
+            {/* Right column */}
+            <div className={`${styles.column} ${styles.flex1}`}>
+              {/* Type */}
+              <div className={styles.optionGroup}>
+                <span className={styles.optionTitle}>Type</span>
+                <div className={styles.radioGroup}>
+                  {typeOptions.map((option) => (
                     <div
-                      key={option.value}
-                      className={`${styles.radioOption} ${isSelected ? styles.selected : ''}`}
+                      key={option.value ?? option.label}
+                      className={`${styles.radioOption} ${formData.type === option.label ? styles.selected : ''}`}
                       onClick={() => handleInputChange({ target: { name: 'type', value: option.label } })}
                       role="button"
                       tabIndex={0}
@@ -135,21 +118,18 @@ const RadarItemEditOrCreateForm = ({
                     >
                       {option.label}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Category */}
-            <div className={`${styles.optionGroup} ${styles.marginVertical}`}>
-              <span className={styles.optionTitle}>Category</span>
-              <div className={styles.radioGroup}>
-                {categoryOptions.map((option) => {
-                  const isSelected = formData.category === option.label;
-                  return (
+              {/* Category */}
+              <div className={styles.optionGroup}>
+                <span className={styles.optionTitle}>Category</span>
+                <div className={styles.radioGroup}>
+                  {categoryOptions.map((option) => (
                     <div
-                      key={option._id}
-                      className={`${styles.radioOption} ${isSelected ? styles.selected : ''}`}
+                      key={option._id ?? option.id ?? option.label}
+                      className={`${styles.radioOption} ${formData.category === option.label ? styles.selected : ''}`}
                       onClick={() => handleInputChange({ target: { name: 'category', value: option.label } })}
                       role="button"
                       tabIndex={0}
@@ -157,99 +137,99 @@ const RadarItemEditOrCreateForm = ({
                     >
                       {option.label}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Distance */}
-            <div className={`${styles.optionGroup} ${styles.marginVertical}`}>
-              <span className={styles.optionTitle}>Distance</span>
-              <div className={styles.radioGroup}>
-                {distanceOptions.map((option) => {
-                  const isSelected = formData.distance === option.value;
-                  return (
+              {/* Distance */}
+              <div className={styles.optionGroup}>
+                <span className={styles.optionTitle}>Distance</span>
+                <div className={styles.radioGroup}>
+                  {['Detected','Assessing','Assessed','Responding','Responded'].map(v => (
                     <div
-                      key={option.value}
-                      className={`${styles.radioOption} ${styles.distanceOption} ${isSelected ? styles.selected : ''}`}
-                      onClick={() => handleInputChange({ target: { name: 'distance', value: option.value } })}
+                      key={v}
+                      className={`${styles.radioOption} ${formData.distance === v ? styles.selected : ''}`}
+                      onClick={() => handleInputChange({ target: { name: 'distance', value: v } })}
                       role="button"
                       tabIndex={0}
-                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleInputChange({ target: { name: 'distance', value: option.value } }); } }}
+                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleInputChange({ target: { name: 'distance', value: v } }); } }}
                     >
-                      {option.label}
+                      {v}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Impact */}
-            <div className={`${styles.optionGroup} ${styles.marginVertical}`}>
-              <span className={styles.optionTitle}>Impact</span>
-              <div className={styles.radioGroup}>
-                {impactOptions.map((option) => {
-                  const isSelected = formData.impact === option.value;
-                  return (
+              {/* Impact */}
+              <div className={styles.optionGroup}>
+                <span className={styles.optionTitle}>Impact</span>
+                <div className={styles.radioGroup}>
+                  {['Low','Medium','High'].map(v => (
                     <div
-                      key={option.value}
-                      className={`${styles.radioOption} ${styles[`impact${option.value}`]} ${isSelected ? styles.selected : ''}`}
-                      onClick={() => handleInputChange({ target: { name: 'impact', value: option.value } })}
+                      key={v}
+                      className={`${styles.radioOption} ${styles['impact' + v]} ${formData.impact === v ? styles.selected : ''}`}
+                      onClick={() => handleInputChange({ target: { name: 'impact', value: v } })}
                       role="button"
                       tabIndex={0}
-                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleInputChange({ target: { name: 'impact', value: option.value } }); } }}
+                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleInputChange({ target: { name: 'impact', value: v } }); } }}
                     >
-                      {option.label}
+                      {v}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Tolerance */}
-            <div className={`${styles.optionGroup} ${styles.marginVertical}`}>
-              <span className={styles.optionTitle}>Tolerance</span>
-              <div className={styles.radioGroup}>
-                {toleranceOptions.map((option) => {
-                  const isSelected = formData.tolerance === option.value;
-                  return (
+              {/* Tolerance */}
+              <div className={styles.optionGroup}>
+                <span className={styles.optionTitle}>Tolerance</span>
+                <div className={styles.radioGroup}>
+                  {['High','Medium','Low'].map(v => (
                     <div
-                      key={option.value}
-                      className={`${styles.radioOption} ${styles[`tolerance${option.value}`]} ${isSelected ? styles.selected : ''}`}
-                      onClick={() => handleInputChange({ target: { name: 'tolerance', value: option.value } })}
+                      key={v}
+                      className={`${styles.radioOption} ${styles['tolerance' + v]} ${formData.tolerance === v ? styles.selected : ''}`}
+                      onClick={() => handleInputChange({ target: { name: 'tolerance', value: v } })}
                       role="button"
                       tabIndex={0}
-                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleInputChange({ target: { name: 'tolerance', value: option.value } }); } }}
+                      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleInputChange({ target: { name: 'tolerance', value: v } }); } }}
                     >
-                      {option.label}
+                      {v}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Zoom In */}
-            <div className={`${styles.optionGroup} ${styles.marginTop}`}>
-              <label className={styles.optionTitle}>Zoom In</label>
-              <select
-                name="zoom_in"
-                value={formData.zoom_in}
-                onChange={handleInputChange}
-                className={`${styles.inputField} ${styles.smallInput}`}
-              >
-                <option value="">Select a "zoom-in" radar</option>
-                {zoomInOptions.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
+              {/* Zoom In */}
+              <div className={styles.optionGroup}>
+                <label className={styles.optionTitle}>Zoom In</label>
+                <select
+                  name="zoom_in"
+                  value={formData.zoom_in}
+                  onChange={handleInputChange}
+                  className={styles.inputField}
+                >
+                  <option value="">Select a "zoom-in" radar</option>
+                  {zoomInOptions.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+
+          {/* Footer buttons */}
+          <div className={styles.modalFooter}>
+            <button type="button" className={styles.cancelButton} onClick={() => setShowForm(false)}>Cancel</button>
+            <button type="submit" className={styles.saveButton}>Save</button>
+          </div>
+        </form>
+      </div>
     </div>
   );
+
+  // render portal into document.body so modal isn't affected by parent containers
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default RadarItemEditOrCreateForm;

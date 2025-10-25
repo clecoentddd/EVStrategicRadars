@@ -1,297 +1,83 @@
 /* radarItemEditOrCreateForm.module.css */
 
-/* --- NEW / MODIFIED STYLES FOR HEADER & BUTTONS --- */
-
-/* Container for title and buttons */
-.formHeader {
-    display: flex;                /* Enables Flexbox */
-    justify-content: space-between; /* Pushes title to left, buttons to right */
-    align-items: center;          /* Vertically centers title and buttons */
-    margin-bottom: 20px;          /* Space below the header */
-    flex-wrap: wrap;              /* Allows buttons to wrap on smaller screens */
-    gap: 15px;                    /* Space between items if they wrap */
-    padding: 0 10px;              /* Match horizontal padding of .showForm if needed */
+/* === OVERLAY: ensures full-screen and center (use !important to avoid parent overrides) === */
+.modalOverlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  background: rgba(5, 5, 5, 0.85) !important;
+  backdrop-filter: blur(6px) !important;
+  z-index: 9999 !important;
+  animation: fadeIn 0.3s ease forwards;
 }
 
-/* Title styling */
-.formTitle {
-    margin: 0;                    /* Remove default margin from h3 */
-    font-size: 1.8em;             /* Keep title size as desired */
-    color: #00ff9f;               /* Example color to match theme */
-    flex-grow: 1;                 /* Allows title to take available space, pushing buttons right */
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* POP-UP BOX */
+.modalContent {
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(0, 255, 159, 0.25);
+  box-shadow:
+    0 0 30px rgba(0, 255, 159, 0.25),
+    0 0 10px rgba(0, 255, 159, 0.15) inset;
+  border-radius: 16px;
+  padding: 25px 30px;
+  width: 85%;
+  max-width: 950px;
+  max-height: 90vh;
+  overflow-y: auto;
+  color: #eee;
+  font-family: 'Orbitron', sans-serif;
+  transform: translateY(30px);
+  opacity: 0;
+  animation: popUp 0.4s cubic-bezier(0.25, 1, 0.3, 1) forwards;
+  margin: 0 auto; /* ensure centered if somehow inline/block */
+  left: 0;
+  right: 0;
 }
 
-/* Container for the Save and Cancel buttons at the top */
-.headerButtons {
-    display: flex;                /* Makes the buttons inside it align horizontally */
-    gap: 10px;                    /* Space between Save and Cancel buttons */
-}
+/* rest of CSS (same merged content) */
+.modalHeader { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:15px; }
+.formTitle { margin:0; font-size:1.8em; color:#00ff9f; text-transform:uppercase; letter-spacing:1px; flex-grow:1; }
+.closeButton { border:none; background:transparent; color:#5a91af; font-size:1.8rem; cursor:pointer; transition:all 0.3s; }
+.closeButton:hover { color:#00ff9f; transform:scale(1.1); }
+.modalBody { padding-bottom:20px; }
+.formRow { display:flex; gap:10px; }
+.column { padding:10px; border-radius:8px; background:rgba(30,30,30,0.7); border:1px solid #333; box-shadow:inset 0 1px 3px rgba(0,255,159,0.1); }
+.column:first-child { width:60%; }
+.column:last-child { width:40%; background:rgba(20,20,20,0.8); }
+.label { display:block; margin:15px 0 8px; font-size:14px; font-weight:bold; color:#00ff9f; text-transform:uppercase; letter-spacing:0.5px; }
+.inputField, .textArea { padding:12px 15px; border:1px solid #333; border-radius:6px; width:93%; font-family:'Orbitron',sans-serif; transition:all 0.3s; background:#222; color:#eee; box-shadow:inset 0 1px 3px rgba(0,0,0,0.5); box-sizing:border-box; }
+.inputField:focus, .textArea:focus { border-color:#00ff9f; outline:none; box-shadow:0 0 0 2px rgba(0,255,159,0.3), inset 0 1px 3px rgba(0,0,0,0.5); }
+.textArea { min-height:80px; resize:vertical; line-height:1.5; }
+.optionGroup { margin:20px 0; }
+.optionTitle { display:block; margin-bottom:12px; font-size:14px; font-weight:bold; color:#00ff9f; text-transform:uppercase; letter-spacing:0.5px; }
+.radioGroup { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+.radioOption { font-size:12px; background:#222; border:1px solid grey; color:grey; padding:5px 8px; border-radius:6px; display:inline-flex; justify-content:center; align-items:center; transition:all 0.3s ease; cursor:pointer; user-select:none; font-weight:500; white-space:nowrap; }
+.radioOption:hover { border-color:#5a91af; color:#5a91af; }
+.selected { color:white; border-color:#5a91af; font-weight:bold; background:#5a91af; }
+.impactLow.selected { color:#00ff9f; border-color:#00ff9f; background:rgba(0,255,159,0.15); }
+.impactMedium.selected { color:#ffbf00; border-color:#ffbf00; background:rgba(255,191,0,0.15); }
+.impactHigh.selected { color:#ff3860; border-color:#ff3860; background:rgba(255,56,96,0.15); }
+.toleranceHigh.selected { color:#00ff9f; border-color:#00ff9f; background:rgba(0,255,159,0.15); }
+.toleranceMedium.selected { color:#ffbf00; border-color:#ffbf00; background:rgba(255,191,0,0.15); }
+.toleranceLow.selected { color:#ff3860; border-color:#ff3860; background:rgba(255,56,96,0.15); }
+.modalFooter { display:flex; justify-content:flex-end; gap:12px; margin-top:25px; }
+.saveButton, .cancelButton { padding:10px 22px; border:none; border-radius:6px; cursor:pointer; font-family:'Orbitron',sans-serif; font-weight:bold; transition:all 0.3s; text-transform:uppercase; letter-spacing:0.5px; font-size:0.9em; overflow:hidden; }
+.saveButton { background:#00ff9f; color:#111; box-shadow:0 0 10px rgba(0,255,159,0.3); }
+.saveButton:hover { background:#00e68a; transform:translateY(-1px); box-shadow:0 3px 15px rgba(0,255,159,0.5); }
+.cancelButton { background:transparent; color:#5a91af; border:1px solid #5a91af; }
+.cancelButton:hover { background:rgba(90,145,175,0.1); color:#00ff9f; border-color:#00ff9f; }
 
-/* Adjusted button styles to fit the top right area */
-.saveButton, .cancelButton {
-    padding: 8px 18px; /* Slightly smaller padding for top buttons */
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: bold;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px; /* Slightly reduced letter-spacing for top buttons */
-    font-size: 0.9em; /* Slightly smaller font size for top buttons */
-    position: relative;
-    overflow: hidden;
-}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes popUp { from { transform:translateY(30px); opacity:0; } to { transform:translateY(0); opacity:1; } }
 
-/* Specific button colors and effects */
-.saveButton {
-    background: #00ff9f;
-    color: #111;
-    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3); /* Slightly reduced shadow */
-}
-
-.saveButton:hover {
-    background: #00e68a;
-    transform: translateY(-1px); /* Less aggressive hover effect */
-    box-shadow: 0 3px 15px rgba(0, 255, 159, 0.5); /* Less aggressive shadow on hover */
-}
-
-.cancelButton {
-    background: transparent;
-    color: #5a91af;
-    border: 1px solid #5a91af;
-}
-
-.cancelButton:hover {
-    background: rgba(90, 145, 175, 0.1);
-    color: #00ff9f;
-    border-color: #00ff9f;
-}
-
-/* --- END NEW / MODIFIED STYLES --- */
-
-
-/* FORM CONTAINER */
-.showForm {
-    background-color: #111;
-    padding: 10px; /* This padding will apply internally to the whole form */
-    border-radius: 12px;
-    font-family: 'Orbitron', sans-serif;
-    box-shadow: 0 8px 32px rgba(0, 255, 159, 0.15);
-    margin: 10px 0;
-    font-size: 14px;
-    border: 1px solid #333;
-    transform: translateX(-100%);
-    animation: slideIn 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-    position: relative;
-    z-index: 10;
-    color: #eee;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-/* FORM STRUCTURE */
-.formRow {
-    display: flex;
-    gap: 10px;
-}
-
-/* COLUMNS */
-.column {
-    padding: 10px;
-    border-radius: 8px;
-    background: rgba(30, 30, 30, 0.7);
-    border: 1px solid #333;
-    box-shadow: inset 0 1px 3px rgba(0, 255, 159, 0.1);
-}
-
-.column:first-child {
-    width: 60%;
-}
-
-.column:last-child {
-    width: 40%;
-    background: rgba(20, 20, 20, 0.8);
-}
-
-/* INPUT ELEMENTS */
-.label {
-    display: block;
-    margin: 15px 0 8px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #00ff9f;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.inputField, .textArea {
-    padding: 12px 15px;
-    border: 1px solid #333;
-    border-radius: 6px;
-    width: 93%; /* Adjust if needed to ensure full width within padded columns */
-    font-family: 'Orbitron', sans-serif;
-    transition: all 0.3s;
-    background: #222;
-    color: #eee;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-    box-sizing: border-box; /* Include padding/border in element's total width */
-}
-
-.inputField:focus, .textArea:focus {
-    border-color: #00ff9f;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 255, 159, 0.3), inset 0 1px 3px rgba(0,0,0,0.5);
-}
-
-.textArea {
-    min-height: 80px;
-    resize: vertical;
-    line-height: 1.5;
-}
-
-/* RADIO BUTTON GROUPS */
-.optionGroup {
-    margin: 20px 0;
-}
-
-.optionTitle {
-    display: block;
-    margin-bottom: 12px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #00ff9f;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.radioGroup {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1px;
-    align-items: center;
-}
-
-/* Custom toggle buttons */
-.radioOption {
-    font-size: 12px;
-    background: #222;
-    border: 1px solid grey;
-    color: grey;
-    margin-left: 5px; /* Keep this if you want an initial left margin */
-    margin-bottom: 5px;
-    padding: 3px 4px;
-    border-radius: 6px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    user-select: none;
-    font-weight: 500;
-    width: auto; /* Allows button to shrink/grow to fit text */
-    flex: 0 0 auto; /* Prevents stretching and allows content-based width */
-    white-space: nowrap; /* Prevents awkward line breaks */
-}
-
-.radioOption:hover {
-    border-color: #5a91af;
-    color: #5a91af;
-}
-
-.selected {
-    color: white;
-    border-color: #5a91af;
-    font-weight: bold;
-    background: #5a91af;
-}
-
-/* Impact specific colors */
-.impactLow.selected {
-    color: #00ff9f;
-    border-color: #00ff9f;
-    background: rgba(0, 255, 159, 0.15);
-}
-
-.impactMedium.selected {
-    color: #ffbf00;
-    border-color: #ffbf00;
-    background: rgba(255, 191, 0, 0.15);
-}
-
-.impactHigh.selected {
-    color: #ff3860;
-    border-color: #ff3860;
-    background: rgba(255, 56, 96, 0.15);
-}
-
-/* Tolerance specific colors */
-.toleranceHigh.selected {
-    color: #00ff9f;
-    border-color: #00ff9f;
-    background: rgba(0, 255, 159, 0.15);
-}
-
-.toleranceMedium.selected {
-    color: #ffbf00;
-    border-color: #ffbf00;
-    background: rgba(255, 191, 0, 0.15);
-}
-
-.toleranceLow.selected {
-    color: #ff3860;
-    border-color: #ff3860;
-    background: rgba(255, 56, 96, 0.15);
-}
-
-/* BUTTONS (Original bottom button styles - now unused in JSX but kept if needed elsewhere) */
-/* .buttonGroup {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
-} */
-/* Ensure you remove the .buttonGroup div from your JSX if it's no longer needed at the bottom */
-
-/* RESPONSIVE DESIGN */
-@media (max-width: 768px) {
-    .formRow {
-        flex-direction: column;
-    }
-
-    .column:first-child,
-    .column:last-child {
-        width: 100%;
-    }
-
-    .column:last-child {
-        margin-top: 20px;
-    }
-
-    /* Adjust header for smaller screens if needed */
-    .formHeader {
-        flex-direction: column; /* Stack title and buttons vertically on small screens */
-        align-items: flex-start; /* Align stacked items to the left */
-    }
-
-    .formTitle {
-        margin-bottom: 10px; /* Add space below title when stacked */
-    }
-
-    /* If you still want buttons centered when stacked, uncomment this */
-    /* .headerButtons {
-        justify-content: center;
-        width: 100%;
-    } */
+@media (max-width:768px) {
+  .formRow { flex-direction:column; }
+  .column:first-child, .column:last-child { width:100%; }
+  .modalContent { width:95%; padding:18px; }
+  .formTitle { font-size:1.3em; }
 }
