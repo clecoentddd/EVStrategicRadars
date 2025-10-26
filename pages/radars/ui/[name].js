@@ -105,41 +105,80 @@ export default function RadarPage() {
     const method = editMode ? 'PUT' : 'POST';
     const url = editMode ? `/api/radar-items?id=${currentEditingId}` : `/api/radar-items`;
 
+    console.log(`[Save] Starting ${method} request to: ${url}`);
+    console.log('[Save] Payload data:', JSON.stringify({ radarId, ...formData }));
+
     try {
-      const payload = { radarId, ...formData };
+        const payload = { radarId, ...formData };
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+        const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
 
-      if (!res.ok) {
-        throw new Error('Failed to save radar item');
-      }
+        if (!res.ok) {
+            console.error('[Save] API response failed:', res.status, res.statusText);
+            throw new Error(`Failed to save radar item (Status: ${res.status})`);
+        }
 
-      await res.json();
+        const responseBody = await res.json();
+        
+        // 🎯 FIX 1: Check if the response has a 'data' property and use it.
+        const savedItem = responseBody.data || responseBody;
+        console.log('[Save] API Success. Permanent Item Data:', savedItem);
 
-      if (editMode) {
-        setRadarItems(prev =>
-          prev.map(item =>
-            item.id === currentEditingId ? {...item, ...formData, id: item.id} : item
-          )
-        );
-      } else {
-        const newItem = { id: formData.id || crypto.randomUUID(), ...formData };
-        setRadarItems(prev => [...prev, newItem]);
-      }
 
-      setShowForm(false);
-      setEditMode(false);
-      setCurrentEditingId(null);
-      setFormData(DEFAULT_FORM_VALUES);
+        if (editMode) {
+            // OPTIMISTIC UI UPDATE: EDIT MODE
+            setRadarItems(prev => {
+                const updatedItems = prev.map(item => {
+                    if (item.id === currentEditingId) {
+                        const updatedItem = {
+                            ...item,
+                            ...formData,
+                            id: item.id
+                        };
+                        console.log(`[Save] Optimistic Update (PUT) for ID ${currentEditingId}:`, updatedItem);
+                        return updatedItem;
+                    }
+                    return item;
+                });
+                return updatedItems;
+            });
+        } else {
+            // OPTIMISTIC UI UPDATE: CREATE MODE (FIXED REGRESSION)
+            
+            // 🎯 FIX 2: Ensure savedItem.id is valid before creation.
+            if (!savedItem || !savedItem.id) {
+                console.error("[Save] Creation failed: Server response did not contain a permanent 'id'. Using fallback refresh.");
+                // Fallback: Force a full re-fetch of items
+                const itemsData = await GetRadarItems(radarId);
+                setRadarItems(itemsData);
+            } else {
+                const newItem = { 
+                    ...savedItem, 
+                    ...formData, 
+                    id: savedItem.id, 
+                };
+                
+                setRadarItems(prev => [...prev, newItem]);
+                console.log(`[Save] Optimistic Creation (POST) successful. Permanent ID: ${newItem.id}`);
+            }
+        }
+
+        // Clean up UI state
+        setShowForm(false);
+        setEditMode(false);
+        setCurrentEditingId(null);
+        setFormData(DEFAULT_FORM_VALUES);
+        console.log('[Save] UI state reset.');
+        
     } catch (err) {
-      console.error('Error saving radar item:', err);
-      setError(err.message);
+        console.error('[Save] Final Error saving radar item:', err.message, err);
+        setError(err.message);
     }
-  };
+};
 
   if (loading) return <p>Loading radar...</p>;
   if (error) return <p>Error: {error}</p>;
