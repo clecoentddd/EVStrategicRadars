@@ -14,22 +14,19 @@ export const radarConfig = {
   'Business': {
     quadrantIndex: 2, // top-left
     label: 'Business',
-    labelPosition: { offsetX: -120, offsetY: 20, anchor: 'start' }
   },
   'Capabilities': {
     quadrantIndex: 3, // top-right
     label: 'Capabilities',
-    labelPosition: { offsetX: 68, offsetY: 20, anchor: 'end' }
   },
   'Operating Model': {
     quadrantIndex: 1, // bottom-left
     label: 'Operating Model',
-    labelPosition: { offsetX: 105, offsetY: -10, anchor: 'end' }
+ 
   },
   'People and Knowledge': {
     quadrantIndex: 0, // bottom-right
     label: 'People and Knowledge',
-    labelPosition: { offsetX: -88, offsetY: -10, anchor: 'start' }
   }
 },
 
