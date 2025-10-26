@@ -3,9 +3,8 @@
    ================================ */
 .tooltipPanel {
     flex: 0 0 auto;
-    min-width: 220px; 
-    max-width: 220px; 
-    
+    min-width: 280px; 
+    max-width: 280px; 
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

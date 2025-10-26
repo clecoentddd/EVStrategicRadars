@@ -57,8 +57,6 @@ const normalizeItem = (rawItem) => {
     }
   };
 
-  console.log(`[RadarParser] Normalized "${rawItem.name}" | category="${rawItem.category}" | quadrantIndex=${quadrantIndex} | radiusMultiplier=${normalizedItem.radiusMultiplier} | impact=${rawItem.impact} | size=${normalizedItem.size}`);
-  
   return normalizedItem;
 };
 
