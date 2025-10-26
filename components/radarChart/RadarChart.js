@@ -19,14 +19,17 @@ const RadarChart = ({ items, radius, onEditClick, onCreateClick }) => {
   const [activeQuadrant, setActiveQuadrant] = useState(null);
 
   useEffect(() => {
-    const svgSize = radius * 2 + 100;
-    d3.select(svgRef.current).selectAll('*').remove();
+    const padding = 20;
+  const svgSize = radius * 2 + 100;
+  const totalWidth = svgSize + padding * 2;
 
-    const svg = d3.select(svgRef.current)
-      .attr('width', svgSize)
-      .attr('height', svgSize)
-      .append('g')
-      .attr('transform', `translate(${svgSize / 2}, ${svgSize / 2})`);
+  d3.select(svgRef.current).selectAll('*').remove();
+
+  const svg = d3.select(svgRef.current)
+    .attr('width', totalWidth)
+    .attr('height', svgSize)
+    .append('g')
+    .attr('transform', `translate(${totalWidth / 2}, ${svgSize / 2})`);
 
     // Add definitions
     svg.append('defs').html(`
